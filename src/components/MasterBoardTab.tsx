@@ -56,7 +56,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
         p.team.toLowerCase().includes(q) ||
         p.pos.toLowerCase().includes(q) ||
         p.tier.toLowerCase().includes(q) ||
-        ye .includes(q) ||
+        `bye ${p.bye}`.includes(q) ||
         p.profile.toLowerCase().includes(q);
 
       const matchesPos = posFilter === 'ALL' || p.pos === posFilter;
@@ -125,10 +125,10 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
     const isMulti = selectedPositions.length > 1 && !selectedPositions.includes('ALL');
 
     return (
-      <div key={posToRender} className={g-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden flex-1 min-w-[350px] }>
+      <div key={posToRender} className={`bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden flex-1 min-w-[350px] ${isMulti ? 'max-w-full' : ''}`}>
         <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center text-xs font-mono">
           <h2 className="font-bold uppercase tracking-wider text-slate-300">
-            {posToRender === 'ALL' ? 'LIVE DRAFT POOL' : ${posToRender} TIER LIST} ({tablePlayers.length} SPIELER)
+            {posToRender === 'ALL' ? 'LIVE DRAFT POOL' : `${posToRender} TIER LIST`} ({tablePlayers.length} SPIELER)
           </h2>
           {hasActiveFilters && (
             <span className="text-[10px] text-amber-400 font-bold">GEFILTERTE ANSICHT</span>
@@ -165,7 +165,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
 
                 return (
                   <React.Fragment key={player.id}>
-                    <tr className={	ransition-colors }>
+                    <tr className={`transition-colors ${rowBg}`}>
                       <td className="p-2 text-center font-mono font-bold text-slate-300">{String(player.ovrRank).padStart(2, '0')}</td>
                       <td className="p-2 font-bold">
                         <div className="flex flex-col gap-1">
@@ -196,12 +196,17 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                                 {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
                               </span>
                             )}
+                            {player.isRookie && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                                🌱 ROOKIE
+                              </span>
+                            )}
                           </div>
                         </div>
                       </td>
                       {!isMulti && (
                         <td className="p-2">
-                          <span className={px-1.5 py-0.5 rounded font-mono text-[10px] font-bold border }>{player.posRank}</span>
+                          <span className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold border ${getPosBadgeClass(player.pos)}`}>{player.posRank}</span>
                         </td>
                       )}
                       <td className="p-2 font-mono text-slate-400 text-[11px]">{player.team}</td>
@@ -210,7 +215,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                       <td className="p-2 text-right font-mono text-slate-200 font-semibold">{proj}</td>
                       <td className="p-2 text-right font-mono font-bold text-emerald-400">+{vorp}</td>
                       <td className="p-2">
-                        <span className={px-1.5 py-0.5 rounded text-[10px] font-bold border truncate max-w-[130px] inline-block } title={player.tier}>{player.tier}</span>
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border truncate max-w-[130px] inline-block ${getTierBadgeClass(player.tierNumber)}`} title={player.tier}>{player.tier}</span>
                       </td>
                       <td className="p-2 text-center font-mono text-[10px] font-bold uppercase">
                         {player.status === 'Mein Team' ? <span className="text-emerald-400">Mein Team</span> : player.status === 'Gedraftet (Gegner)' ? <span className="text-slate-500 line-through">Gedraftet</span> : <span className="text-blue-500">Verfügbar</span>}
@@ -235,7 +240,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                           <div className="bg-slate-900 border border-slate-800 rounded p-3 space-y-1.5 text-xs">
                             <div className="flex items-center justify-between text-slate-300 font-bold border-b border-slate-800 pb-1.5 font-mono">
                               <span className="flex items-center gap-1.5 text-blue-400"><Sparkles className="w-3.5 h-3.5" /> ANALYSE ({player.name})</span>
-                              <span>Target Share: {player.targetShare ? ${(player.targetShare * 100).toFixed(0)}% : '-'} | RZ Touches: {player.rzTouches}</span>
+                              <span>Target Share: {player.targetShare ? `${(player.targetShare * 100).toFixed(0)}%` : '-'} | RZ Touches: {player.rzTouches}</span>
                             </div>
                             <p className="text-slate-300 leading-relaxed text-[11px] pt-1 font-sans">{player.profile}</p>
                           </div>
@@ -270,7 +275,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
             <span className="text-slate-400 text-[11px]">STATUS:</span>
             <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
               {(['ALL', 'Verfügbar', 'Mein Team', 'Gedraftet (Gegner)'] as const).map((st) => (
-                <button key={st} onClick={() => setSelectedStatus(st)} className={px-2 py-0.5 rounded text-[11px] font-bold transition-colors cursor-pointer }>
+                <button key={st} onClick={() => setSelectedStatus(st)} className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors cursor-pointer ${selectedStatus === st ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}>
                   {st === 'Gedraftet (Gegner)' ? 'Gegner' : st}
                 </button>
               ))}
@@ -309,7 +314,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
             const count = players.filter((p) => (pos === 'ALL' || p.pos === pos) && p.status === 'Verfügbar').length;
             const isSelected = selectedPositions.includes(pos);
             return (
-              <button key={pos} onClick={() => togglePosition(pos)} className={lex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold transition-all cursor-pointer }>
+              <button key={pos} onClick={() => togglePosition(pos)} className={`flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${isSelected ? 'bg-blue-600 text-white shadow' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-700'}`}>
                 <span>{pos}</span><span className="text-[10px] opacity-75">({count})</span>
               </button>
             );

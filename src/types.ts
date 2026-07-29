@@ -28,6 +28,7 @@ export interface Player {
   rbRole?: 'RB1' | 'RB2' | 'Timeshare' | 'Handcuff' | 'RB3';
   wrRole?: 'WR1' | 'WR2' | 'WR3' | 'WR4';
   playerArchetype?: 'Upside' | 'Baseline';
+  isRookie?: boolean;
 }
 
 export interface DraftSettings {

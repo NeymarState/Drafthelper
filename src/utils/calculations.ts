@@ -313,12 +313,17 @@ export function enrichPlayerData(players: Player[]): Player[] {
 
   enriched.forEach(p => {
     const t = p.tier.toLowerCase();
+    const prof = p.profile.toLowerCase();
     if (t.includes('upside') || t.includes('breakout') || t.includes('sleeper')) {
       p.playerArchetype = 'Upside';
     } else if (p.tierNumber <= 2) {
       p.playerArchetype = 'Baseline';
     } else {
       p.playerArchetype = p.name.length % 2 === 0 ? 'Baseline' : 'Upside';
+    }
+    
+    if (t.includes('rookie') || prof.includes('rookie')) {
+      p.isRookie = true;
     }
   });
 

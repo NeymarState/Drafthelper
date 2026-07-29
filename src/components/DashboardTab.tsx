@@ -444,6 +444,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                               {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
                             </span>
                           )}
+                          {player.isRookie && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                              🌱 ROOKIE
+                            </span>
+                          )}
                         </div>
                       </div>
 
