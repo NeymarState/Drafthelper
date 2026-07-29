@@ -24,7 +24,7 @@ import { LayoutDashboard, Table, Layers, SlidersHorizontal, Shield, Sparkles } f
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version';
-const CURRENT_DATA_VERSION = 'v6-full-database';
+const CURRENT_DATA_VERSION = 'v8-updated-kickers';
 
 export default function App() {
   // 1. Initial State with LocalStorage persistence
