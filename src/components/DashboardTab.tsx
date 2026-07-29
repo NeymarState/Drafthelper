@@ -28,6 +28,25 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [showDrafted, setShowDrafted] = useState(false);
+  
+  const getPosBadgeClass = (pos: string) => {
+    switch (pos) {
+      case 'RB':
+        return 'bg-blue-500/20 text-blue-400';
+      case 'WR':
+        return 'bg-green-500/20 text-green-400';
+      case 'TE':
+        return 'bg-red-500/20 text-red-400';
+      case 'QB':
+        return 'bg-purple-500/20 text-purple-400';
+      case 'K':
+        return 'bg-orange-500/20 text-orange-400';
+      case 'DST':
+        return 'bg-yellow-500/20 text-yellow-400';
+      default:
+        return 'bg-slate-500/20 text-slate-400';
+    }
+  };
   // Filter and sort players for the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
@@ -70,25 +89,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
   const renderRosterCard = (slotLabel: string, player: Player | null, isFlex = false) => {
     const isStack = player && qbTeam && player.pos !== 'QB' && player.team === qbTeam;
-
-    const getPosBadgeClass = (pos: string) => {
-      switch (pos) {
-        case 'RB':
-          return 'bg-blue-500/20 text-blue-400';
-        case 'WR':
-          return 'bg-green-500/20 text-green-400';
-        case 'TE':
-          return 'bg-red-500/20 text-red-400';
-        case 'QB':
-          return 'bg-purple-500/20 text-purple-400';
-        case 'K':
-          return 'bg-orange-500/20 text-orange-400';
-        case 'DST':
-          return 'bg-yellow-500/20 text-yellow-400';
-        default:
-          return 'bg-slate-500/20 text-slate-400';
-      }
-    };
 
     return (
       <div
