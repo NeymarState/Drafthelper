@@ -205,6 +205,55 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               })}
             </div>
           </div>
+          {/* Global Draft Tracker */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 mb-3">
+              <TrendingUp className="w-4 h-4 text-emerald-400" /> GLOBAL DRAFT TRACKER
+            </h3>
+            <div className="grid grid-cols-4 gap-4">
+              {(['QB', 'RB', 'WR', 'TE'] as const).map((pos) => {
+                const totalAvailable = players.filter((p) => p.pos === pos).length;
+                const totalDrafted = players.filter((p) => p.pos === pos && p.status !== 'Verfügbar').length;
+                const fillPercent = Math.min((totalDrafted / Math.max(1, totalAvailable)) * 100, 100);
+                
+                // League threshold for QB and TE (typically 1 per team)
+                const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
+                const thresholdPercent = threshold ? Math.min((threshold / totalAvailable) * 100, 100) : null;
+                
+                const posColors: Record<string, string> = {
+                  QB: 'bg-purple-500',
+                  RB: 'bg-blue-500',
+                  WR: 'bg-green-500',
+                  TE: 'bg-red-500'
+                };
+                
+                return (
+                  <div key={pos} className="space-y-1.5 relative">
+                    <div className="flex justify-between items-end">
+                      <span className="font-bold text-[11px] text-slate-300">{pos}</span>
+                      <span className="font-mono text-[10px] text-slate-500">
+                        {totalDrafted}/{totalAvailable}
+                      </span>
+                    </div>
+                    <div className="relative h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                      <div
+                        className={`h-full transition-all duration-500 ${posColors[pos]}`}
+                        style={{ width: `${fillPercent}%` }}
+                      />
+                      {thresholdPercent !== null && (
+                        <div 
+                          className="absolute top-0 bottom-0 w-0.5 bg-rose-500 z-10 shadow-[0_0_5px_rgba(244,63,94,0.8)]"
+                          style={{ left: `${thresholdPercent}%` }}
+                          title={`Starter-Schwelle (${threshold} Picks)`}
+                        />
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          
           <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
             <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
@@ -335,7 +384,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         <span className={`font-bold text-xs ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
                           {player.name}
                         </span>
-                        <span className="text-[10px] font-mono px-1 py-0.5 bg-blue-500/20 text-blue-400 rounded font-bold">
+                        <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
                           {player.posRank}
                         </span>
                       </div>

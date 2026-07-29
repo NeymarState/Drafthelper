@@ -1927,8 +1927,8 @@ export const getUpdatedPlayers = (): Player[] => {
       let basePoints = 0;
       if (pos === 'RB') basePoints = 350 - (rank * 3.5);
       if (pos === 'WR') basePoints = 345 - (rank * 2.8);
-      if (pos === 'QB') basePoints = 260 - (rank * 3.0);
-      if (pos === 'TE') basePoints = 240 - (rank * 3.5);
+      if (pos === 'QB') basePoints = 285 - (rank * 3.0);
+      if (pos === 'TE') basePoints = 280 - (rank * 3.5);
       if (pos === 'K') basePoints = 120 - rank;
       if (pos === 'DST') basePoints = 120 - rank;
       
@@ -1953,6 +1953,13 @@ export const getUpdatedPlayers = (): Player[] => {
       });
       
       i += 6; // Move to next player (Name, Team, 4 ranks)
+    }
+  });
+
+  // Restore K and DST from INITIAL_PLAYERS since they are not in the pasted text
+  INITIAL_PLAYERS.forEach(player => {
+    if ((player.pos === 'K' || player.pos === 'DST') && !parsedPlayers.some(p => p.id === player.id)) {
+      parsedPlayers.push(player);
     }
   });
 
