@@ -5627,7 +5627,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Depth player added from full list.'
   },
   {
-    id: 'qb-goff',
+    id: 'qb-jaredgoff',
     name: 'Jared Goff',
     pos: 'QB',
     team: 'DET',
@@ -5644,7 +5644,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Sehr verlÃ¤sslicher System-QB in Detroit. Hoher Floor.'
   },
   {
-    id: 'qb-stafford',
+    id: 'qb-matthewstafford',
     name: 'Matthew Stafford',
     pos: 'QB',
     team: 'LAR',
@@ -5661,7 +5661,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Veteran mit exzellenten Waffen (Puka, Kupp). Upside durch Passvolumen.'
   },
   {
-    id: 'qb-cousins',
+    id: 'qb-kirkcousins',
     name: 'Kirk Cousins',
     pos: 'QB',
     team: 'ATL',
@@ -5678,7 +5678,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'In einer neuen Offense mit Bijan, London und Pitts.'
   },
   {
-    id: 'qb-herbert',
+    id: 'qb-justinherbert',
     name: 'Justin Herbert',
     pos: 'QB',
     team: 'LAC',
@@ -5695,7 +5695,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Unter Harbaugh evtl. run-heavy, aber Herbert hat immenses Talent.'
   },
   {
-    id: 'qb-mayfield',
+    id: 'qb-bakermayfield',
     name: 'Baker Mayfield',
     pos: 'QB',
     team: 'TB',
@@ -5712,7 +5712,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Starkes Comeback. Solider QB2 mit Evans und Godwin.'
   },
   {
-    id: 'qb-rodgers',
+    id: 'qb-aaronrodgers',
     name: 'Aaron Rodgers',
     pos: 'QB',
     team: 'NYJ',
@@ -5729,7 +5729,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'ZurÃ¼ck von der Verletzung. Risiko, aber hohes Potenzial.'
   },
   {
-    id: 'qb-tua',
+    id: 'qb-tuatagovailoa',
     name: 'Tua Tagovailoa',
     pos: 'QB',
     team: 'MIA',
@@ -5746,7 +5746,7 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Profitiert extrem von Tyreek und Waddle, verletzungsanfÃ¤llig.'
   },
   {
-    id: 'qb-lawrence',
+    id: 'qb-trevorlawrence',
     name: 'Trevor Lawrence',
     pos: 'QB',
     team: 'JAX',
@@ -5763,4 +5763,5 @@ export const INITIAL_PLAYERS: Player[] = [
     profile: 'Muss den nÃ¤chsten Schritt machen. Gute Waffen vorhanden.'
   }
 ];
+
 

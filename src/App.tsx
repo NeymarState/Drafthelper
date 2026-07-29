@@ -26,18 +26,28 @@ const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version';
 const CURRENT_DATA_VERSION = 'v9-enriched-roles';
 
+const deduplicatePlayers = (list: Player[]) => {
+  const seen = new Set();
+  return list.filter(p => {
+    const name = p.name.toLowerCase().trim();
+    if (seen.has(name)) return false;
+    seen.add(name);
+    return true;
+  });
+};
+
 export default function App() {
   // 1. Initial State with LocalStorage persistence
   const [players, setPlayers] = useState<Player[]>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
       if (saved) {
-        return enrichPlayerData(JSON.parse(saved));
+        return enrichPlayerData(deduplicatePlayers(JSON.parse(saved)));
       }
     } catch (e) {
       console.error('Failed to load saved players from localStorage', e);
     }
-    return enrichPlayerData(INITIAL_PLAYERS);
+    return enrichPlayerData(deduplicatePlayers(INITIAL_PLAYERS));
   });
 
   const [settings, setSettings] = useState<DraftSettings>(() => {
@@ -89,7 +99,7 @@ export default function App() {
           return fresh;
         });
         
-        setPlayers(enrichPlayerData(mergedPlayers));
+        setPlayers(enrichPlayerData(deduplicatePlayers(mergedPlayers)));
         localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
       }
     } catch (e) {
@@ -228,16 +238,43 @@ export default function App() {
     });
   };
 
+  const handleMoveToPosRank = (playerId: string, targetPosRank: number, pos: string) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === playerId);
+      if (draggedIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      
+      let posCount = 0;
+      let targetIndex = newList.length;
+      
+      for (let i = 0; i < newList.length; i++) {
+        if (newList[i].pos === pos) {
+          posCount++;
+          if (posCount === targetPosRank) {
+            targetIndex = i;
+            break;
+          }
+        }
+      }
+      
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
   const handleImportRankings = (importedPlayers: Player[]) => {
     setPlayers(prev => {
        const merged = [...importedPlayers];
        // Add any new players that exist in INITIAL_PLAYERS but not in the imported backup
+       // MATCH BY NAME TO AVOID DUPLICATES IF IDs CHANGED
        INITIAL_PLAYERS.forEach(systemPlayer => {
-          if (!merged.find(p => p.id === systemPlayer.id)) {
+          if (!merged.find(p => p.name.toLowerCase().trim() === systemPlayer.name.toLowerCase().trim())) {
              merged.push(systemPlayer);
           }
        });
-       return recomputeRanks(merged);
+       return recomputeRanks(deduplicatePlayers(merged));
     });
   };
 
@@ -403,6 +440,7 @@ export default function App() {
             onReorderPlayers={handleReorderPlayers}
             onMovePlayer={handleMovePlayer}
             onMoveToRank={handleMoveToRank}
+            onMoveToPosRank={handleMoveToPosRank}
             onImportRankings={handleImportRankings}
           />
         )}

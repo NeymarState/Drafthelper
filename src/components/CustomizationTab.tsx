@@ -8,6 +8,7 @@ interface CustomizationTabProps {
   onReorderPlayers: (draggedId: string, targetId: string) => void;
   onMovePlayer: (playerId: string, direction: 'up' | 'down', currentFilter: Position | 'ALL') => void;
   onMoveToRank: (playerId: string, targetRank: number) => void;
+  onMoveToPosRank: (playerId: string, targetPosRank: number, pos: string) => void;
   onImportRankings: (players: Player[]) => void;
 }
 
@@ -17,6 +18,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   onReorderPlayers,
   onMovePlayer,
   onMoveToRank,
+  onMoveToPosRank,
   onImportRankings,
 }) => {
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
@@ -268,30 +270,51 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                   </div>
                 </div>
 
-                <div className="col-span-2 flex flex-col justify-center">
-                  <div className="flex items-center gap-1 text-xs font-bold text-slate-300">
-                    OVR #
-                    <input 
-                      type="number" 
-                      defaultValue={player.ovrRank}
-                      onBlur={(e) => {
-                        const val = parseInt(e.target.value, 10);
-                        if (!isNaN(val) && val > 0 && val !== player.ovrRank) {
-                          onMoveToRank(player.id, val);
-                        } else {
-                          e.target.value = String(player.ovrRank);
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.currentTarget.blur();
-                        }
-                      }}
-                      className="w-12 bg-slate-900 border border-slate-700 rounded px-1 py-0.5 text-[11px] text-center focus:outline-none focus:border-blue-500"
-                    />
-                  </div>
-                  <div className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold w-max mt-0.5 border border-transparent ${getPosBadgeClass(player.pos)}`}>
-                    {player.posRank}
+                <div className="col-span-2">
+                  <div className="text-right">
+                    <div className="flex flex-col items-end gap-1 text-xs font-bold text-slate-300">
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] text-slate-500 font-normal">OVR</span>
+                        <input 
+                          type="number"
+                          defaultValue={player.ovrRank}
+                          className="w-12 bg-slate-950 border border-slate-700 text-white px-1 py-0.5 rounded text-center appearance-none cursor-text focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:bg-slate-800 transition-colors"
+                          onBlur={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            if (!isNaN(val) && val > 0 && val !== player.ovrRank) {
+                              onMoveToRank(player.id, val);
+                            } else {
+                              e.target.value = String(player.ovrRank);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') e.currentTarget.blur();
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="flex items-center gap-1">
+                        <span className="text-[9px] text-slate-500 font-normal">POS</span>
+                        <input 
+                          type="number"
+                          key={player.posRank}
+                          defaultValue={parseInt(player.posRank.replace(/[^\d]/g, ''), 10)}
+                          className={`w-12 bg-slate-950 border border-slate-700 ${player.pos === 'RB' ? 'text-emerald-400' : player.pos === 'WR' ? 'text-sky-400' : player.pos === 'QB' ? 'text-rose-400' : 'text-amber-400'} px-1 py-0.5 rounded text-center appearance-none cursor-text focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:bg-slate-800 transition-colors`}
+                          onBlur={(e) => {
+                            const val = parseInt(e.target.value, 10);
+                            const currentPosRank = parseInt(player.posRank.replace(/[^\d]/g, ''), 10);
+                            if (!isNaN(val) && val > 0 && val !== currentPosRank) {
+                              onMoveToPosRank(player.id, val, player.pos);
+                            } else {
+                              e.target.value = String(currentPosRank);
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') e.currentTarget.blur();
+                          }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
 
