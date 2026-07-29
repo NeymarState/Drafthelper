@@ -1921,16 +1921,16 @@ export const getUpdatedPlayers = (): Player[] => {
       
       const existing = existingMap.get(name.toLowerCase().trim());
       
+      // SYNTHESIZE ADP-BASED POINTS:
+      // This forces the sorting to reflect standard Redraft Half-PPR ADP
+      // RBs and WRs dominate the early rounds. QBs and TEs start later.
       let basePoints = 0;
-      if (existing) {
-        basePoints = existing.basePointsHalfPpr;
-      } else {
-        // synthesize base points so they sort reasonably well by VORP
-        if (pos === 'QB') basePoints = 350 * Math.pow(0.95, rank - 1);
-        if (pos === 'RB') basePoints = 300 * Math.pow(0.92, rank - 1);
-        if (pos === 'WR') basePoints = 280 * Math.pow(0.93, rank - 1);
-        if (pos === 'TE') basePoints = 220 * Math.pow(0.90, rank - 1);
-      }
+      if (pos === 'RB') basePoints = 350 - (rank * 3.5);
+      if (pos === 'WR') basePoints = 345 - (rank * 2.8);
+      if (pos === 'QB') basePoints = 260 - (rank * 3.0);
+      if (pos === 'TE') basePoints = 240 - (rank * 3.5);
+      if (pos === 'K') basePoints = 120 - rank;
+      if (pos === 'DST') basePoints = 120 - rank;
       
       parsedPlayers.push({
         id: existing ? existing.id : `${pos.toLowerCase()}-${rank}-${Date.now()}`,

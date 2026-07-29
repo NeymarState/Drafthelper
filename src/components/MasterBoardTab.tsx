@@ -57,7 +57,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
     else if (selectedVorpRange === 'NEGATIVE') matchesVorp = vorp <= 0;
 
     return matchesSearch && matchesPos && matchesStatus && matchesBye && matchesTier && matchesTeam && matchesVorp;
-  });
+  }).sort((a, b) => a.ovrRank - b.ovrRank);
 
   const resetAllFilters = () => {
     setSearchQuery('');
@@ -85,15 +85,29 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
   const getPosBadgeClass = (pos: Position) => {
     switch (pos) {
       case 'RB':
-        return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'WR':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'QB':
-        return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'WR':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
       case 'TE':
-        return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
-      default:
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'QB':
         return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      case 'K':
+        return 'bg-orange-500/20 text-orange-400 border-orange-500/30';
+      case 'DST':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      default:
+        return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+    }
+  };
+
+  const getTierBadgeClass = (tierNum?: number) => {
+    switch (tierNum) {
+      case 1: return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+      case 2: return 'bg-slate-300/20 text-slate-300 border-slate-400/30';
+      case 3: return 'bg-orange-700/20 text-orange-500 border-orange-700/30';
+      case 4: return 'bg-slate-700/20 text-slate-400 border-slate-700/30';
+      default: return 'bg-slate-800/20 text-slate-500 border-slate-800/30';
     }
   };
 
@@ -272,7 +286,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                 if (player.status === 'Mein Team') {
                   rowBg = 'bg-emerald-900/20 text-emerald-100 border-l-2 border-l-emerald-500 font-bold';
                 } else if (player.status === 'Gedraftet (Gegner)') {
-                  rowBg = 'opacity-40 grayscale pointer-events-none';
+                  rowBg = 'opacity-40 grayscale';
                 }
 
                 return (
@@ -332,8 +346,10 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                       </td>
 
                       {/* Tier */}
-                      <td className="p-2 italic text-slate-400 text-[11px] truncate max-w-[130px]">
-                        {player.tier}
+                      <td className="p-2">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border truncate max-w-[130px] inline-block ${getTierBadgeClass(player.tierNumber)}`} title={player.tier}>
+                          {player.tier}
+                        </span>
                       </td>
 
                       {/* Status */}

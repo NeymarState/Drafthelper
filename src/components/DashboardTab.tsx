@@ -73,16 +73,20 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
     const getPosBadgeClass = (pos: string) => {
       switch (pos) {
-        case 'QB':
-          return 'bg-red-500/20 text-red-400';
         case 'RB':
-          return 'bg-green-500/20 text-green-400';
-        case 'WR':
           return 'bg-blue-500/20 text-blue-400';
+        case 'WR':
+          return 'bg-green-500/20 text-green-400';
         case 'TE':
-          return 'bg-amber-500/20 text-amber-400';
-        default:
+          return 'bg-red-500/20 text-red-400';
+        case 'QB':
           return 'bg-purple-500/20 text-purple-400';
+        case 'K':
+          return 'bg-orange-500/20 text-orange-400';
+        case 'DST':
+          return 'bg-yellow-500/20 text-yellow-400';
+        default:
+          return 'bg-slate-500/20 text-slate-400';
       }
     };
 
@@ -166,6 +170,41 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left Column: Starters & Bench Roster */}
         <div className="lg:col-span-8 space-y-4">
+          {/* Draft Needs Chart */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 mb-3">
+              <Target className="w-4 h-4 text-blue-400" /> DRAFT BEDARF (TEAM NEEDS)
+            </h3>
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                { pos: 'QB', target: 1, current: userTeam.filter((p) => p.pos === 'QB').length, color: 'bg-purple-500' },
+                { pos: 'RB', target: 5, current: userTeam.filter((p) => p.pos === 'RB').length, color: 'bg-blue-500' },
+                { pos: 'WR', target: 5, current: userTeam.filter((p) => p.pos === 'WR').length, color: 'bg-green-500' },
+                { pos: 'TE', target: 1, current: userTeam.filter((p) => p.pos === 'TE').length, color: 'bg-red-500' },
+              ].map((need) => {
+                const fillPercent = Math.min((need.current / need.target) * 100, 100);
+                const isComplete = need.current >= need.target;
+                return (
+                  <div key={need.pos} className="space-y-1.5">
+                    <div className="flex justify-between items-end">
+                      <span className="font-bold text-[11px] text-slate-300">{need.pos}</span>
+                      <span className="font-mono text-[10px] text-slate-500">
+                        {need.current}/{need.target}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                      <div
+                        className={`h-full transition-all duration-500 ${need.color} ${
+                          isComplete ? 'opacity-50' : ''
+                        }`}
+                        style={{ width: `${fillPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
           <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
             <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">

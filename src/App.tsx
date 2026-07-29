@@ -24,7 +24,7 @@ import { LayoutDashboard, Table, Layers, BarChart3, Shield, Sparkles } from 'luc
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version';
-const CURRENT_DATA_VERSION = 'v2-thefantasyfootballers';
+const CURRENT_DATA_VERSION = 'v3-adp-sorting';
 
 export default function App() {
   // 1. Initial State with LocalStorage persistence
