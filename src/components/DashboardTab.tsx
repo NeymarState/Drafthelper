@@ -1,0 +1,287 @@
+import React from 'react';
+import { Player, DraftSettings, RosterState, AlertItem } from '../types';
+import { getAdjustedProjection, calculateVORP, getFormattedPick } from '../utils/calculations';
+import { AlertsBanner } from './AlertsBanner';
+import { Zap, PlusCircle, Award, Target, TrendingUp } from 'lucide-react';
+
+interface DashboardTabProps {
+  players: Player[];
+  userTeam: Player[];
+  roster: RosterState;
+  settings: DraftSettings;
+  alerts: AlertItem[];
+  onDraftForMe: (player: Player) => void;
+  onDraftForOpponent: (player: Player) => void;
+  onRemoveFromTeam: (player: Player) => void;
+}
+
+export const DashboardTab: React.FC<DashboardTabProps> = ({
+  players,
+  userTeam,
+  roster,
+  settings,
+  alerts,
+  onDraftForMe,
+  onRemoveFromTeam,
+}) => {
+  // Top Available Players by VORP
+  const availablePlayers = players
+    .filter((p) => p.status === 'Verfügbar')
+    .map((p) => ({
+      ...p,
+      vorp: calculateVORP(p, players, settings.scoringFormat, settings.leagueSize),
+      adjustedProj: getAdjustedProjection(p, settings.scoringFormat),
+      pickInfo: getFormattedPick(p.ovrRank, settings.leagueSize),
+    }))
+    .sort((a, b) => b.vorp - a.vorp);
+
+  const topAvailable = availablePlayers.slice(0, 5);
+
+  // Total Projected Points for Starter Lineup
+  const starterPlayers = [
+    roster.QB,
+    roster.RB1,
+    roster.RB2,
+    roster.WR1,
+    roster.WR2,
+    roster.TE,
+    roster.FLEX,
+    roster.DST,
+    roster.K,
+  ].filter((p): p is Player => p !== null);
+
+  const totalStarterProj = starterPlayers.reduce(
+    (sum, p) => sum + getAdjustedProjection(p, settings.scoringFormat),
+    0
+  );
+
+  // Stack teams in user team
+  const qbTeam = roster.QB?.team;
+
+  const renderRosterCard = (slotLabel: string, player: Player | null, isFlex = false) => {
+    const isStack = player && qbTeam && player.pos !== 'QB' && player.team === qbTeam;
+
+    const getPosBadgeClass = (pos: string) => {
+      switch (pos) {
+        case 'QB':
+          return 'bg-red-500/20 text-red-400';
+        case 'RB':
+          return 'bg-green-500/20 text-green-400';
+        case 'WR':
+          return 'bg-blue-500/20 text-blue-400';
+        case 'TE':
+          return 'bg-amber-500/20 text-amber-400';
+        default:
+          return 'bg-purple-500/20 text-purple-400';
+      }
+    };
+
+    return (
+      <div
+        className={`border rounded-lg p-2.5 flex items-center justify-between gap-3 transition-all text-xs ${
+          player
+            ? isStack
+              ? 'bg-emerald-900/30 border-emerald-500/40 text-emerald-100'
+              : 'bg-emerald-900/20 border-emerald-500/30 text-slate-200'
+            : 'bg-slate-950/60 border-slate-800 text-slate-500'
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-8 rounded bg-slate-800 border border-slate-700 flex flex-col items-center justify-center font-mono shrink-0">
+            <span className={`text-[11px] font-bold ${player ? 'text-emerald-400' : 'text-slate-400'}`}>
+              {slotLabel}
+            </span>
+          </div>
+
+          {player ? (
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-slate-100 text-xs">{player.name}</span>
+                <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${getPosBadgeClass(player.pos)} font-bold`}>
+                  {player.posRank}
+                </span>
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">
+                  {player.team}
+                </span>
+                {isStack && (
+                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-blue-400" /> STACK
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-[11px] text-slate-400 mt-0.5 font-mono">
+                <span>Bye {player.bye}</span>
+                <span>•</span>
+                <span className="text-slate-300">{player.tier}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="text-xs italic text-slate-600">
+              {isFlex ? 'Leer (FLEX Position frei)' : `Leer...`}
+            </div>
+          )}
+        </div>
+
+        {player ? (
+          <div className="flex items-center gap-3">
+            <div className="text-right font-mono text-xs">
+              <div className="font-bold text-white">
+                {getAdjustedProjection(player, settings.scoringFormat)} <span className="text-[10px] text-slate-400 font-normal">pts</span>
+              </div>
+              <div className="text-[10px] text-emerald-400 font-semibold">
+                +{calculateVORP(player, players, settings.scoringFormat, settings.leagueSize)} VORP
+              </div>
+            </div>
+            <button
+              onClick={() => onRemoveFromTeam(player)}
+              className="text-slate-500 hover:text-rose-400 p-1 text-xs transition-colors cursor-pointer"
+              title="Vom Team entfernen"
+            >
+              ✕
+            </button>
+          </div>
+        ) : (
+          <div className="text-[10px] text-slate-600 font-mono uppercase">Unbesetzt</div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Live Alerts Header */}
+      <AlertsBanner alerts={alerts} />
+
+      {/* Main Grid: Live Team Roster + Recommendations */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left Column: Starters & Bench Roster */}
+        <div className="lg:col-span-8 space-y-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <Award className="w-4 h-4 text-blue-400" /> MEIN ROSTER (STARTERS)
+              </h2>
+              <div className="text-right font-mono text-xs">
+                <span className="text-slate-400 text-[10px] mr-2">STARTER PROJ:</span>
+                <span className="text-emerald-400 font-bold text-sm">{Math.round(totalStarterProj * 10) / 10} PTS</span>
+              </div>
+            </div>
+
+            {/* Starter Slots */}
+            <div className="p-3 space-y-2">
+              {renderRosterCard('QB', roster.QB)}
+              {renderRosterCard('RB1', roster.RB1)}
+              {renderRosterCard('RB2', roster.RB2)}
+              {renderRosterCard('WR1', roster.WR1)}
+              {renderRosterCard('WR2', roster.WR2)}
+              {renderRosterCard('TE', roster.TE)}
+              {renderRosterCard('FLEX', roster.FLEX, true)}
+              {renderRosterCard('DST', roster.DST)}
+              {renderRosterCard('K', roster.K)}
+            </div>
+          </div>
+
+          {/* Bench Roster */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                BENCH SPIELER ({roster.BENCH.length})
+              </h3>
+              <span className="text-[10px] font-mono text-slate-500">TIEFENPLATZE & HANDCUFFS</span>
+            </div>
+
+            <div className="p-3">
+              {roster.BENCH.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {roster.BENCH.map((player) => (
+                    <div key={player.id} className="bg-slate-950 border border-slate-800 rounded-lg p-2 flex items-center justify-between text-xs">
+                      <div>
+                        <div className="font-bold text-slate-200 flex items-center gap-1.5">
+                          <span>{player.name}</span>
+                          <span className="text-[10px] px-1 bg-slate-800 text-blue-400 rounded font-mono">{player.posRank}</span>
+                        </div>
+                        <div className="text-[10px] font-mono text-slate-400">{player.team} • Bye {player.bye}</div>
+                      </div>
+                      <button
+                        onClick={() => onRemoveFromTeam(player)}
+                        className="text-slate-500 hover:text-rose-400 text-xs px-1 cursor-pointer"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-3 text-xs text-slate-500 italic font-mono">
+                  Noch keine Ersatzspieler auf der Bank gedraftet.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Dynamic Draft Assistant & Best VORP Available */}
+        <div className="lg:col-span-4 space-y-4">
+          {/* Best Available by VORP */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+            <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Target className="w-4 h-4 text-emerald-400" /> LIVE VORP TARGETS
+              </h3>
+              <span className="text-[10px] font-mono text-emerald-400 font-bold">TOP 5</span>
+            </div>
+
+            <div className="p-3 space-y-2">
+              {topAvailable.map((player) => (
+                <div
+                  key={player.id}
+                  className="bg-slate-950 border border-slate-800 hover:border-blue-500/50 rounded-lg p-2.5 transition-all flex items-center justify-between gap-2 group"
+                >
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-bold text-xs text-slate-100 group-hover:text-blue-400 transition-colors">
+                        {player.name}
+                      </span>
+                      <span className="text-[10px] font-mono px-1 py-0.5 bg-blue-500/20 text-blue-400 rounded font-bold">
+                        {player.posRank}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-slate-400 flex items-center gap-2 font-mono">
+                      <span className="text-emerald-400 font-bold">+{player.vorp} VORP</span>
+                      <span>•</span>
+                      <span>{player.pickInfo.formattedString}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => onDraftForMe(player)}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition-all shadow cursor-pointer shrink-0"
+                  >
+                    <PlusCircle className="w-3.5 h-3.5" />
+                    <span>Draft</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick Roster Strategy Summary */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg p-3 shadow-xl space-y-2 text-xs">
+            <h4 className="font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 text-xs">
+              <TrendingUp className="w-4 h-4 text-blue-400" /> DRAFT STRATEGIE & VALUE GUIDE
+            </h4>
+            <div className="text-slate-300 space-y-2 leading-relaxed text-[11px]">
+              <p>
+                • <strong className="text-blue-400">Scarcity Focus:</strong> Achte auf Positionsabfälle (Tier Drops) bei RBs und WRs vor Pick-Runden.
+              </p>
+              <p>
+                • <strong className="text-emerald-400">Stack Radar:</strong> Nutze QB + WR/TE Paare für Korrelations-Boni in wöchentlichen Matchups.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
