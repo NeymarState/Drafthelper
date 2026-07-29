@@ -300,9 +300,9 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
           </select>
           <select value={selectedVorpRange} onChange={(e) => setSelectedVorpRange(e.target.value as any)} className="bg-slate-950 text-slate-200 border border-slate-700 rounded px-2 py-0.5 focus:outline-none focus:border-blue-500 cursor-pointer">
             <option value="ALL">Alle VORP-Werte</option>
-            <option value="HIGH">Elite VORP (>= +40)</option>
-            <option value="POSITIVE">Positiver VORP (> 0)</option>
-            <option value="NEGATIVE">Neutral / Negativ (<= 0)</option>
+            <option value="HIGH">Elite VORP (&gt;= +40)</option>
+            <option value="POSITIVE">Positiver VORP (&gt; 0)</option>
+            <option value="NEGATIVE">Neutral / Negativ (&lt;= 0)</option>
           </select>
           <select value={selectedTeam} onChange={(e) => setSelectedTeam(e.target.value)} className="bg-slate-950 text-slate-200 border border-slate-700 rounded px-2 py-0.5 focus:outline-none focus:border-blue-500 cursor-pointer">
             <option value="ALL">Alle NFL Teams</option>
