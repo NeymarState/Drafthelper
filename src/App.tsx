@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { Player, DraftSettings } from './types';
 import { INITIAL_PLAYERS } from './data/initialPlayers';
+import { getUpdatedPlayers } from './data/updateRankings';
 import { calculateRosterSlots, generateLiveAlerts } from './utils/calculations';
 
 // Components
@@ -22,6 +23,8 @@ import { LayoutDashboard, Table, Layers, BarChart3, Shield, Sparkles } from 'luc
 
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
+const DATA_VERSION_KEY = 'ff_command_center_data_version';
+const CURRENT_DATA_VERSION = 'v2-thefantasyfootballers';
 
 export default function App() {
   // 1. Initial State with LocalStorage persistence
@@ -66,6 +69,31 @@ export default function App() {
       localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(players));
     } catch (e) {
       console.error('Failed to save players', e);
+    }
+  }, [players]);
+
+  // Data update merge logic
+  useEffect(() => {
+    try {
+      const storedVersion = localStorage.getItem(DATA_VERSION_KEY);
+      if (storedVersion !== CURRENT_DATA_VERSION) {
+        console.log(`Upgrading data from ${storedVersion} to ${CURRENT_DATA_VERSION}`);
+        const freshPlayers = getUpdatedPlayers();
+        
+        // Merge existing status
+        const mergedPlayers = freshPlayers.map(fresh => {
+          const existing = players.find(p => p.name.toLowerCase().trim() === fresh.name.toLowerCase().trim());
+          if (existing && existing.status !== 'Verfügbar') {
+            return { ...fresh, status: existing.status };
+          }
+          return fresh;
+        });
+        
+        setPlayers(mergedPlayers);
+        localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
+      }
+    } catch (e) {
+      console.error('Failed to apply data update', e);
     }
   }, [players]);
 

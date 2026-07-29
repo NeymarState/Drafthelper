@@ -1,0 +1,1845 @@
+[Josh Allen](https://www.thefantasyfootballers.com/fantasy/josh-allen/)
+BUF(7)
+1
+1
+1
+1
+[Lamar Jackson](https://www.thefantasyfootballers.com/fantasy/lamar-jackson/)
+BAL(13)
+2
+2
+2
+2
+[Jayden Daniels](https://www.thefantasyfootballers.com/fantasy/jayden-daniels/)
+WAS(7)
+3
+5
+3
+3
+[Drake Maye](https://www.thefantasyfootballers.com/fantasy/drake-maye/)
+NE(11)
+4
+3
+4
+6
+[Jalen Hurts](https://www.thefantasyfootballers.com/fantasy/jalen-hurts/)
+PHI(10)
+5
+4
+5
+5
+[Joe Burrow](https://www.thefantasyfootballers.com/fantasy/joe-burrow/)
+CIN(6)
+6
+8
+6
+4
+[Jaxson Dart](https://www.thefantasyfootballers.com/fantasy/jaxson-dart/)
+NYG(8)
+7
+7
+7
+12
+[Trevor Lawrence](https://www.thefantasyfootballers.com/fantasy/trevor-lawrence/)
+JAX(7)
+8
+9
+12
+7
+[Dak Prescott](https://www.thefantasyfootballers.com/fantasy/dak-prescott/)
+DAL(14)
+9
+13
+8
+8
+[Caleb Williams](https://www.thefantasyfootballers.com/fantasy/caleb-williams/)
+CHI(10)
+10
+11
+9
+10
+[Justin Herbert](https://www.thefantasyfootballers.com/fantasy/justin-herbert/)
+LAC(7)
+11
+18
+10
+11
+[Jared Goff](https://www.thefantasyfootballers.com/fantasy/jared-goff/)
+DET(6)
+12
+10
+13
+16
+[Brock Purdy](https://www.thefantasyfootballers.com/fantasy/brock-purdy/)
+SF(8)
+13
+14
+17
+9
+[Bo Nix](https://www.thefantasyfootballers.com/fantasy/bo-nix/)
+DEN(10)
+14
+6
+21
+18
+[Kyler Murray](https://www.thefantasyfootballers.com/fantasy/kyler-murray/)
+MIN(6)
+15
+20
+11
+15
+[Matthew Stafford](https://www.thefantasyfootballers.com/fantasy/matthew-stafford/)
+LAR(11)
+16
+15
+19
+14
+[Baker Mayfield](https://www.thefantasyfootballers.com/fantasy/baker-mayfield/)
+TB(10)
+17
+19
+14
+17
+[Patrick Mahomes](https://www.thefantasyfootballers.com/fantasy/patrick-mahomes/)
+KC(5)
+18
+16
+15
+19
+[Tyler Shough](https://www.thefantasyfootballers.com/fantasy/tyler-shough/)
+NO(8)
+19
+17
+22
+13
+[Malik Willis](https://www.thefantasyfootballers.com/fantasy/malik-willis/)
+MIA(6)
+20
+12
+18
+22
+[Jordan Love](https://www.thefantasyfootballers.com/fantasy/jordan-love/)
+GB(11)
+21
+23
+16
+21
+[Cam Ward](https://www.thefantasyfootballers.com/fantasy/cameron-ward/)
+TEN(9)
+22
+21
+20
+24
+[C.J. Stroud](https://www.thefantasyfootballers.com/fantasy/cj-stroud/)
+HOU(8)
+23
+22
+23
+23
+[Sam Darnold](https://www.thefantasyfootballers.com/fantasy/sam-darnold/)
+SEA(11)
+24
+26
+26
+20
+[Daniel Jones](https://www.thefantasyfootballers.com/fantasy/daniel-jones/)
+IND(13)
+25
+29
+24
+25
+[Jacoby Brissett](https://www.thefantasyfootballers.com/fantasy/jacoby-brissett/)
+ARI(14)
+26
+24
+28
+26
+[Bryce Young](https://www.thefantasyfootballers.com/fantasy/bryce-young/)
+CAR(5)
+27
+25
+27
+30
+[Aaron Rodgers](https://www.thefantasyfootballers.com/fantasy/aaron-rodgers/)
+PIT(9)
+28
+28
+25
+29
+[Geno Smith](https://www.thefantasyfootballers.com/fantasy/geno-smith/)
+NYJ(13)
+29
+27
+29
+31
+[Shedeur Sanders](https://www.thefantasyfootballers.com/fantasy/shedeur-sanders/)
+CLE(11)
+30
+30
+30
+27
+[Michael Penix Jr.](https://www.thefantasyfootballers.com/fantasy/michael-penix-jr/)
+ATL(11)
+31
+32
+31
+32
+[Tua Tagovailoa](https://www.thefantasyfootballers.com/fantasy/tua-tagovailoa/)
+ATL(11)
+32
+34
+34
+28
+[Fernando Mendoza](https://www.thefantasyfootballers.com/fantasy/fernando-mendoza/)
+LV(13)
+33
+31
+33
+33
+[Kirk Cousins](https://www.thefantasyfootballers.com/fantasy/kirk-cousins/)
+LV(13)
+34
+33
+32
+34
+[Carson Beck](https://www.thefantasyfootballers.com/fantasy/carson-beck/)
+ARI(14)
+35
+36
+35
+35
+[Deshaun Watson](https://www.thefantasyfootballers.com/fantasy/deshaun-watson/)
+CLE(11)
+36
+35
+36
+36
+
+[Jahmyr Gibbs](https://www.thefantasyfootballers.com/fantasy/jahmyr-gibbs/)
+DET(6)
+1
+1
+1
+2
+[Bijan Robinson](https://www.thefantasyfootballers.com/fantasy/bijan-robinson/)
+ATL(11)
+2
+3
+2
+1
+[Christian McCaffrey](https://www.thefantasyfootballers.com/fantasy/christian-mccaffrey/)
+SF(8)
+3
+2
+4
+3
+[Jonathan Taylor](https://www.thefantasyfootballers.com/fantasy/jonathan-taylor/)
+IND(13)
+4
+6
+3
+5
+[James Cook III](https://www.thefantasyfootballers.com/fantasy/james-cook/)
+BUF(7)
+5
+5
+5
+4
+[Derrick Henry](https://www.thefantasyfootballers.com/fantasy/derrick-henry/)
+BAL(13)
+6
+8
+6
+7
+[De'Von Achane](https://www.thefantasyfootballers.com/fantasy/devon-achane/)
+MIA(6)
+7
+4
+11
+9
+[Ashton Jeanty](https://www.thefantasyfootballers.com/fantasy/ashton-jeanty/)
+LV(13)
+8
+7
+7
+10
+[Kenneth Walker III](https://www.thefantasyfootballers.com/fantasy/kenneth-walker-iii/)
+KC(5)
+9
+10
+13
+6
+[Chase Brown](https://www.thefantasyfootballers.com/fantasy/chase-brown/)
+CIN(6)
+10
+12
+9
+8
+[Omarion Hampton](https://www.thefantasyfootballers.com/fantasy/omarion-hampton/)
+LAC(7)
+11
+9
+8
+14
+[Saquon Barkley](https://www.thefantasyfootballers.com/fantasy/saquon-barkley/)
+PHI(10)
+12
+11
+14
+11
+[Josh Jacobs](https://www.thefantasyfootballers.com/fantasy/josh-jacobs/)
+GB(11)
+13
+14
+12
+12
+[Kyren Williams](https://www.thefantasyfootballers.com/fantasy/kyren-williams/)
+LAR(11)
+14
+18
+10
+16
+[Jeremiyah Love](https://www.thefantasyfootballers.com/fantasy/jeremiyah-love/)
+ARI(14)
+15
+15
+17
+15
+[Cam Skattebo](https://www.thefantasyfootballers.com/fantasy/cam-skattebo/)
+NYG(8)
+16
+17
+15
+17
+[Breece Hall](https://www.thefantasyfootballers.com/fantasy/breece-hall/)
+NYJ(13)
+17
+13
+19
+22
+[Bucky Irving](https://www.thefantasyfootballers.com/fantasy/bucky-irving/)
+TB(10)
+18
+21
+16
+18
+[Javonte Williams](https://www.thefantasyfootballers.com/fantasy/javonte-williams/)
+DAL(14)
+19
+16
+20
+20
+[Quinshon Judkins](https://www.thefantasyfootballers.com/fantasy/quinshon-judkins/)
+CLE(11)
+20
+19
+23
+19
+[D'Andre Swift](https://www.thefantasyfootballers.com/fantasy/dandre-swift/)
+CHI(10)
+21
+29
+21
+13
+[TreVeyon Henderson](https://www.thefantasyfootballers.com/fantasy/treveyon-henderson/)
+NE(11)
+22
+22
+18
+26
+[Travis Etienne Jr.](https://www.thefantasyfootballers.com/fantasy/travis-etienne/)
+NO(8)
+23
+20
+25
+21
+[Bhayshul Tuten](https://www.thefantasyfootballers.com/fantasy/bhayshul-tuten/)
+JAX(7)
+24
+23
+24
+24
+[David Montgomery](https://www.thefantasyfootballers.com/fantasy/david-montgomery/)
+HOU(8)
+25
+26
+22
+25
+[Chuba Hubbard](https://www.thefantasyfootballers.com/fantasy/chuba-hubbard/)
+CAR(5)
+26
+25
+26
+27
+[Jadarian Price](https://www.thefantasyfootballers.com/fantasy/jadarian-price/)
+SEA(11)
+27
+30
+27
+29
+[Jaylen Warren](https://www.thefantasyfootballers.com/fantasy/jaylen-warren/)
+PIT(9)
+28
+28
+28
+35
+[Rico Dowdle](https://www.thefantasyfootballers.com/fantasy/rico-dowdle/)
+PIT(9)
+29
+24
+35
+32
+[Rhamondre Stevenson](https://www.thefantasyfootballers.com/fantasy/rhamondre-stevenson/)
+NE(11)
+30
+27
+29
+36
+[Tony Pollard](https://www.thefantasyfootballers.com/fantasy/tony-pollard/)
+TEN(9)
+31
+37
+31
+31
+[Kenny Gainwell](https://www.thefantasyfootballers.com/fantasy/kenny-gainwell/)
+TB(10)
+32
+32
+38
+30
+[Kyle Monangai](https://www.thefantasyfootballers.com/fantasy/kyle-monangai/)
+CHI(10)
+33
+35
+32
+34
+[Jordan Mason](https://www.thefantasyfootballers.com/fantasy/jordan-mason/)
+MIN(6)
+34
+31
+39
+33
+[Jacory Croskey-Merritt](https://www.thefantasyfootballers.com/fantasy/jacory-croskey-merritt/)
+WAS(7)
+35
+39
+37
+28
+[RJ Harvey](https://www.thefantasyfootballers.com/fantasy/rj-harvey/)
+DEN(10)
+36
+40
+30
+37
+[Rachaad White](https://www.thefantasyfootballers.com/fantasy/rachaad-white/)
+WAS(7)
+37
+38
+34
+38
+[J.K. Dobbins](https://www.thefantasyfootballers.com/fantasy/jk-dobbins/)
+DEN(10)
+38
+48
+41
+23
+[Blake Corum](https://www.thefantasyfootballers.com/fantasy/blake-corum/)
+LAR(11)
+39
+34
+40
+40
+[Aaron Jones Sr.](https://www.thefantasyfootballers.com/fantasy/aaron-jones/)
+MIN(6)
+40
+46
+33
+39
+[Tyjae Spears](https://www.thefantasyfootballers.com/fantasy/tyjae-spears/)
+TEN(9)
+41
+33
+43
+45
+[Tyrone Tracy Jr.](https://www.thefantasyfootballers.com/fantasy/tyrone-tracy-jr/)
+NYG(8)
+42
+36
+44
+42
+[Chris Rodriguez Jr.](https://www.thefantasyfootballers.com/fantasy/chris-rodriguez-jr/)
+JAX(7)
+43
+47
+49
+41
+[Woody Marks](https://www.thefantasyfootballers.com/fantasy/woody-marks/)
+HOU(8)
+44
+45
+47
+47
+[Isiah Pacheco](https://www.thefantasyfootballers.com/fantasy/isaih-pacheco/)
+DET(6)
+45
+52
+46
+43
+[Zach Charbonnet](https://www.thefantasyfootballers.com/fantasy/zach-charbonnet/)
+SEA(11)
+46
+54
+36
+51
+[Dylan Sampson](https://www.thefantasyfootballers.com/fantasy/dylan-sampson/)
+CLE(11)
+47
+56
+50
+48
+[Jonah Coleman](https://www.thefantasyfootballers.com/fantasy/jonah-coleman/)
+DEN(10)
+48
+49
+42
+63
+[Brian Robinson Jr.](https://www.thefantasyfootballers.com/fantasy/brian-robinson-jr/)
+ATL(11)
+49
+64
+45
+49
+[Alvin Kamara](https://www.thefantasyfootballers.com/fantasy/alvin-kamara/)
+NO(8)
+50
+57
+48
+54
+[Keaton Mitchell](https://www.thefantasyfootballers.com/fantasy/keaton-mitchell/)
+LAC(7)
+51
+50
+65
+44
+[Tyler Allgeier](https://www.thefantasyfootballers.com/fantasy/tyler-allgeier/)
+ARI(14)
+52
+63
+53
+46
+[Jonathon Brooks](https://www.thefantasyfootballers.com/fantasy/jonathon-brooks/)
+CAR(5)
+53
+44
+69
+50
+[Kimani Vidal](https://www.thefantasyfootballers.com/fantasy/kimani-vidal/)
+LAC(7)
+54
+55
+54
+58
+[Jordan James](https://www.thefantasyfootballers.com/fantasy/jordan-james/)
+SF(8)
+55
+41
+51
+79
+[Tank Bigsby](https://www.thefantasyfootballers.com/fantasy/tank-bigsby/)
+PHI(10)
+56
+43
+72
+56
+[Justice Hill](https://www.thefantasyfootballers.com/fantasy/justice-hill/)
+BAL(13)
+57
+62
+59
+55
+[Samaje Perine](https://www.thefantasyfootballers.com/fantasy/samaje-perine/)
+CIN(6)
+58
+53
+57
+70
+[Mike Washington Jr.](https://www.thefantasyfootballers.com/fantasy/mike-washington-jr/)
+LV(13)
+59
+66
+55
+62
+[James Conner](https://www.thefantasyfootballers.com/fantasy/james-conner/)
+ARI(14)
+60
+69
+62
+59
+[Braelon Allen](https://www.thefantasyfootballers.com/fantasy/braelon-allen/)
+NYJ(13)
+61
+51
+66
+73
+[Ty Johnson](https://www.thefantasyfootballers.com/fantasy/ty-johnson/)
+BUF(7)
+62
+68
+58
+65
+[MarShawn Lloyd](https://www.thefantasyfootballers.com/fantasy/marshawn-lloyd/)
+GB(11)
+63
+42
+85
+66
+[Nicholas Singleton](https://www.thefantasyfootballers.com/fantasy/nicholas-singleton/)
+TEN(9)
+64
+74
+52
+67
+[Emmett Johnson](https://www.thefantasyfootballers.com/fantasy/emmett-johnson/)
+KC(5)
+65
+71
+75
+52
+[DJ Giddens](https://www.thefantasyfootballers.com/fantasy/dj-giddens/)
+IND(13)
+66
+60
+73
+69
+[Kaelon Black](https://www.thefantasyfootballers.com/fantasy/kaelon-black/)
+SF(8)
+67
+80
+71
+53
+[Jerome Ford](https://www.thefantasyfootballers.com/fantasy/jerome-ford/)
+WAS(7)
+68
+85
+63
+60
+[Ray Davis](https://www.thefantasyfootballers.com/fantasy/ray-davis/)
+BUF(7)
+69
+81
+67
+61
+[Sean Tucker](https://www.thefantasyfootballers.com/fantasy/sean-tucker/)
+TB(10)
+70
+58
+68
+83
+[Isaiah Davis](https://www.thefantasyfootballers.com/fantasy/isaiah-davis/)
+NYJ(13)
+71
+72
+61
+76
+[Emanuel Wilson](https://www.thefantasyfootballers.com/fantasy/emanuel-wilson/)
+SEA(11)
+72
+67
+79
+64
+[Jaylen Wright](https://www.thefantasyfootballers.com/fantasy/jaylen-wright/)
+MIA(6)
+73
+76
+64
+71
+[Devin Neal](https://www.thefantasyfootballers.com/fantasy/devin-neal/)
+NO(8)
+74
+61
+84
+72
+[LeQuint Allen Jr.](https://www.thefantasyfootballers.com/fantasy/lequint-allen/)
+JAX(7)
+75
+65
+70
+84
+[Brashard Smith](https://www.thefantasyfootballers.com/fantasy/brashard-smith/)
+KC(5)
+76
+79
+74
+68
+[George Holani](https://www.thefantasyfootballers.com/fantasy/george-holani/)
+SEA(11)
+77
+75
+90
+57
+[Devin Singletary](https://www.thefantasyfootballers.com/fantasy/devin-singletary/)
+NYG(8)
+78
+70
+78
+74
+[Jaydon Blue](https://www.thefantasyfootballers.com/fantasy/jaydon-blue/)
+DAL(14)
+79
+83
+56
+85
+[Kaytron Allen](https://www.thefantasyfootballers.com/fantasy/kaytron-allen/)
+WAS(7)
+80
+59
+77
+90
+[Trevor Etienne](https://www.thefantasyfootballers.com/fantasy/trevor-etienne/)
+CAR(5)
+81
+88
+60
+80
+[Emari Demercado](https://www.thefantasyfootballers.com/fantasy/emari-demercado/)
+KC(5)
+82
+77
+82
+81
+[Kaleb Johnson](https://www.thefantasyfootballers.com/fantasy/kaleb-johnson/)
+PIT(9)
+83
+87
+76
+77
+[Will Shipley](https://www.thefantasyfootballers.com/fantasy/will-shipley/)
+PHI(10)
+84
+73
+83
+88
+[Ollie Gordon II](https://www.thefantasyfootballers.com/fantasy/ollie-gordon-ii/)
+MIA(6)
+85
+86
+86
+75
+[Adam Randall](https://www.thefantasyfootballers.com/fantasy/adam-randall/)
+BAL(13)
+86
+82
+80
+87
+[Demond Claiborne](https://www.thefantasyfootballers.com/fantasy/demond-claiborne/)
+MIN(6)
+87
+84
+89
+78
+[AJ Dillon](https://www.thefantasyfootballers.com/fantasy/aj-dillon/)
+CAR(5)
+88
+78
+88
+86
+[Tahj Brooks](https://www.thefantasyfootballers.com/fantasy/tahj-brooks/)
+CIN(6)
+89
+89
+81
+82
+[Audric Estimé](https://www.thefantasyfootballers.com/fantasy/audric-estime/)
+NO(8)
+90
+90
+87
+89
+
+[Ja'Marr Chase](https://www.thefantasyfootballers.com/fantasy/jamarr-chase/)
+CIN(6)
+1
+2
+1
+1
+[Puka Nacua](https://www.thefantasyfootballers.com/fantasy/puka-nacua/)
+LAR(11)
+2
+1
+2
+2
+[Jaxon Smith-Njigba](https://www.thefantasyfootballers.com/fantasy/jaxon-smith-njigba/)
+SEA(11)
+3
+3
+4
+3
+[Amon-Ra St. Brown](https://www.thefantasyfootballers.com/fantasy/amon-ra-st-brown/)
+DET(6)
+4
+4
+5
+4
+[CeeDee Lamb](https://www.thefantasyfootballers.com/fantasy/ceedee-lamb/)
+DAL(14)
+5
+5
+3
+5
+[Justin Jefferson](https://www.thefantasyfootballers.com/fantasy/justin-jefferson/)
+MIN(6)
+6
+6
+6
+6
+[Drake London](https://www.thefantasyfootballers.com/fantasy/drake-london/)
+ATL(11)
+7
+7
+7
+8
+[A.J. Brown](https://www.thefantasyfootballers.com/fantasy/aj-brown/)
+NE(11)
+8
+9
+8
+11
+[Nico Collins](https://www.thefantasyfootballers.com/fantasy/nico-collins/)
+HOU(8)
+9
+11
+11
+9
+[George Pickens](https://www.thefantasyfootballers.com/fantasy/george-pickens/)
+DAL(14)
+10
+8
+14
+12
+[Rashee Rice](https://www.thefantasyfootballers.com/fantasy/rashee-rice/)
+KC(5)
+11
+23
+9
+7
+[Chris Olave](https://www.thefantasyfootballers.com/fantasy/chris-olave/)
+NO(8)
+12
+19
+10
+10
+[Garrett Wilson](https://www.thefantasyfootballers.com/fantasy/garrett-wilson/)
+NYJ(13)
+13
+10
+12
+20
+[DeVonta Smith](https://www.thefantasyfootballers.com/fantasy/devonta-smith/)
+PHI(10)
+14
+14
+15
+15
+[Emeka Egbuka](https://www.thefantasyfootballers.com/fantasy/emeka-egbuka/)
+TB(10)
+15
+12
+13
+21
+[Zay Flowers](https://www.thefantasyfootballers.com/fantasy/zay-flowers/)
+BAL(13)
+16
+18
+16
+16
+[Tee Higgins](https://www.thefantasyfootballers.com/fantasy/tee-higgins/)
+CIN(6)
+17
+15
+19
+17
+[Tetairoa McMillan](https://www.thefantasyfootballers.com/fantasy/tetairoa-mcmillan/)
+CAR(5)
+18
+21
+18
+13
+[Christian Watson](https://www.thefantasyfootballers.com/fantasy/christian-watson/)
+GB(11)
+19
+20
+25
+14
+[Ladd McConkey](https://www.thefantasyfootballers.com/fantasy/ladd-mcconkey/)
+LAC(7)
+20
+13
+23
+25
+[Alec Pierce](https://www.thefantasyfootballers.com/fantasy/alec-pierce/)
+IND(13)
+21
+17
+28
+23
+[Jameson Williams](https://www.thefantasyfootballers.com/fantasy/jameson-williams/)
+DET(6)
+22
+16
+30
+22
+[Jaylen Waddle](https://www.thefantasyfootballers.com/fantasy/jaylen-waddle/)
+DEN(10)
+23
+30
+21
+19
+[Terry McLaurin](https://www.thefantasyfootballers.com/fantasy/terry-mclaurin/)
+WAS(7)
+24
+22
+22
+29
+[Malik Nabers](https://www.thefantasyfootballers.com/fantasy/malik-nabers/)
+NYG(8)
+25
+33
+17
+24
+[Davante Adams](https://www.thefantasyfootballers.com/fantasy/davante-adams/)
+LAR(11)
+26
+31
+27
+18
+[Carnell Tate](https://www.thefantasyfootballers.com/fantasy/carnell-tate/)
+TEN(9)
+27
+28
+26
+27
+[Rome Odunze](https://www.thefantasyfootballers.com/fantasy/rome-odunze/)
+CHI(10)
+28
+24
+24
+34
+[Mike Evans](https://www.thefantasyfootballers.com/fantasy/mike-evans/)
+SF(8)
+29
+36
+20
+26
+[Luther Burden III](https://www.thefantasyfootballers.com/fantasy/luther-burden-iii/)
+CHI(10)
+30
+27
+29
+28
+[Brian Thomas Jr.](https://www.thefantasyfootballers.com/fantasy/brian-thomas-jr/)
+JAX(7)
+31
+25
+31
+30
+[DK Metcalf](https://www.thefantasyfootballers.com/fantasy/dk-metcalf/)
+PIT(9)
+32
+26
+33
+32
+[Parker Washington](https://www.thefantasyfootballers.com/fantasy/parker-washington/)
+JAX(7)
+33
+29
+34
+37
+[Quentin Johnston](https://www.thefantasyfootballers.com/fantasy/quentin-johnston/)
+LAC(7)
+34
+32
+42
+31
+[Marvin Harrison Jr.](https://www.thefantasyfootballers.com/fantasy/marvin-harrison-jr/)
+ARI(14)
+35
+37
+32
+38
+[Jordyn Tyson](https://www.thefantasyfootballers.com/fantasy/jordyn-tyson/)
+NO(8)
+36
+38
+37
+35
+[Michael Pittman Jr.](https://www.thefantasyfootballers.com/fantasy/michael-pittman-jr/)
+PIT(9)
+37
+40
+38
+42
+[DJ Moore](https://www.thefantasyfootballers.com/fantasy/dj-moore/)
+BUF(7)
+38
+39
+35
+47
+[Courtland Sutton](https://www.thefantasyfootballers.com/fantasy/courtland-sutton/)
+DEN(10)
+39
+43
+39
+41
+[Jordan Addison](https://www.thefantasyfootballers.com/fantasy/jordan-addison/)
+MIN(6)
+40
+41
+43
+40
+[Michael Wilson](https://www.thefantasyfootballers.com/fantasy/michael-wilson/)
+ARI(14)
+41
+35
+53
+36
+[Ricky Pearsall](https://www.thefantasyfootballers.com/fantasy/ricky-pearsall/)
+SF(8)
+42
+47
+40
+39
+[Wan'Dale Robinson](https://www.thefantasyfootballers.com/fantasy/wandale-robinson/)
+TEN(9)
+43
+34
+47
+49
+[Josh Downs](https://www.thefantasyfootballers.com/fantasy/josh-downs/)
+IND(13)
+44
+49
+36
+48
+[Romeo Doubs](https://www.thefantasyfootballers.com/fantasy/romeo-doubs/)
+NE(11)
+45
+45
+45
+44
+[Chris Godwin Jr.](https://www.thefantasyfootballers.com/fantasy/chris-godwin/)
+TB(10)
+46
+52
+50
+33
+[Makai Lemon](https://www.thefantasyfootballers.com/fantasy/makai-lemon/)
+PHI(10)
+47
+44
+41
+52
+[Jakobi Meyers](https://www.thefantasyfootballers.com/fantasy/jakobi-meyers/)
+JAX(7)
+48
+42
+51
+45
+[Jayden Reed](https://www.thefantasyfootballers.com/fantasy/jayden-reed/)
+GB(11)
+49
+53
+44
+43
+[Xavier Worthy](https://www.thefantasyfootballers.com/fantasy/xavier-worthy/)
+KC(5)
+50
+48
+48
+51
+[Khalil Shakir](https://www.thefantasyfootballers.com/fantasy/khalil-shakir/)
+BUF(7)
+51
+46
+54
+55
+[Rashid Shaheed](https://www.thefantasyfootballers.com/fantasy/rashid-shaheed/)
+SEA(11)
+52
+56
+46
+53
+[Matthew Golden](https://www.thefantasyfootballers.com/fantasy/matthew-golden/)
+GB(11)
+53
+50
+57
+57
+[KC Concepcion](https://www.thefantasyfootballers.com/fantasy/kc-concepcion/)
+CLE(11)
+54
+54
+52
+59
+[Jayden Higgins](https://www.thefantasyfootballers.com/fantasy/jayden-higgins/)
+HOU(8)
+55
+60
+59
+50
+[Tre Tucker](https://www.thefantasyfootballers.com/fantasy/tre-tucker/)
+LV(13)
+56
+62
+67
+46
+[Jalen Coker](https://www.thefantasyfootballers.com/fantasy/jalen-coker/)
+CAR(5)
+57
+57
+64
+54
+[Omar Cooper Jr.](https://www.thefantasyfootballers.com/fantasy/omar-cooper-jr/)
+NYJ(13)
+58
+59
+55
+68
+[Jerry Jeudy](https://www.thefantasyfootballers.com/fantasy/jerry-jeudy/)
+CLE(11)
+59
+80
+49
+58
+[Malik Washington](https://www.thefantasyfootballers.com/fantasy/malik-washington/)
+MIA(6)
+60
+61
+70
+56
+[Calvin Ridley](https://www.thefantasyfootballers.com/fantasy/calvin-ridley/)
+TEN(9)
+61
+76
+63
+63
+[Travis Hunter](https://www.thefantasyfootballers.com/fantasy/travis-hunter/)
+JAX(7)
+62
+51
+77
+77
+[Cooper Kupp](https://www.thefantasyfootballers.com/fantasy/cooper-kupp/)
+SEA(11)
+63
+79
+60
+74
+[Keon Coleman](https://www.thefantasyfootballers.com/fantasy/keon-coleman/)
+BUF(7)
+64
+84
+68
+65
+[Germie Bernard](https://www.thefantasyfootballers.com/fantasy/germie-bernard/)
+PIT(9)
+65
+82
+69
+66
+[Adonai Mitchell](https://www.thefantasyfootballers.com/fantasy/adonai-mitchell/)
+NYJ(13)
+66
+74
+62
+81
+[Tank Dell](https://www.thefantasyfootballers.com/fantasy/nathaniel-dell/)
+HOU(8)
+67
+73
+87
+60
+[Jalen Nailor](https://www.thefantasyfootballers.com/fantasy/jalen-nailor/)
+LV(13)
+68
+58
+94
+72
+[DeMario Douglas](https://www.thefantasyfootballers.com/fantasy/demario-douglas/)
+NE(11)
+69
+65
+75
+84
+[Ryan Flournoy](https://www.thefantasyfootballers.com/fantasy/ryan-flournoy/)
+DAL(14)
+70
+81
+82
+62
+[Christian Kirk](https://www.thefantasyfootballers.com/fantasy/christian-kirk/)
+SF(8)
+71
+86
+72
+69
+[Isaac TeSlaa](https://www.thefantasyfootballers.com/fantasy/isaac-teslaa/)
+DET(6)
+72
+72
+86
+78
+[Tre' Harris](https://www.thefantasyfootballers.com/fantasy/tre-harris/)
+LAC(7)
+73
+66
+76
+95
+[Jalen McMillan](https://www.thefantasyfootballers.com/fantasy/jalen-mcmillan/)
+TB(10)
+74
+87
+83
+70
+[Darnell Mooney](https://www.thefantasyfootballers.com/fantasy/darnell-mooney/)
+NYG(8)
+75
+67
+61
+113
+[Jack Bech](https://www.thefantasyfootballers.com/fantasy/jack-bech/)
+LV(13)
+76
+95
+65
+83
+[Jauan Jennings](https://www.thefantasyfootballers.com/fantasy/jauan-jennings/)
+MIN(6)
+77
+55
+66
+123
+[Ted Hurst](https://www.thefantasyfootballers.com/fantasy/ted-hurst/)
+TB(10)
+78
+85
+56
+103
+[Denzel Boston](https://www.thefantasyfootballers.com/fantasy/denzel-boston/)
+CLE(11)
+79
+63
+106
+75
+[Tory Horton](https://www.thefantasyfootballers.com/fantasy/tory-horton/)
+SEA(11)
+80
+70
+91
+86
+[Darius Slayton](https://www.thefantasyfootballers.com/fantasy/darius-slayton/)
+NYG(8)
+81
+88
+89
+71
+[Troy Franklin](https://www.thefantasyfootballers.com/fantasy/troy-franklin/)
+DEN(10)
+82
+64
+88
+97
+[Tyquan Thornton](https://www.thefantasyfootballers.com/fantasy/tyquan-thornton/)
+KC(5)
+83
+90
+81
+80
+[Caleb Douglas](https://www.thefantasyfootballers.com/fantasy/caleb-douglas/)
+MIA(6)
+84
+77
+71
+104
+[Jalen Tolbert](https://www.thefantasyfootballers.com/fantasy/jalen-tolbert/)
+MIA(6)
+85
+100
+97
+61
+[Antonio Williams](https://www.thefantasyfootballers.com/fantasy/antonio-williams-2/)
+WAS(7)
+86
+83
+58
+122
+[Chris Bell](https://www.thefantasyfootballers.com/fantasy/chris-bell/)
+MIA(6)
+87
+71
+78
+114
+[Rashod Bateman](https://www.thefantasyfootballers.com/fantasy/rashod-bateman/)
+BAL(13)
+88
+102
+74
+89
+[Treylon Burks](https://www.thefantasyfootballers.com/fantasy/treylon-burks/)
+WAS(7)
+89
+97
+93
+76
+[Pat Bryant](https://www.thefantasyfootballers.com/fantasy/pat-bryant/)
+DEN(10)
+90
+75
+124
+67
+[Elic Ayomanor](https://www.thefantasyfootballers.com/fantasy/elic-ayomanor/)
+TEN(9)
+91
+69
+98
+101
+[Andrei Iosivas](https://www.thefantasyfootballers.com/fantasy/andrei-iosivas/)
+CIN(6)
+92
+116
+73
+82
+[Devaughn Vele](https://www.thefantasyfootballers.com/fantasy/devaughn-vele/)
+NO(8)
+93
+114
+96
+64
+[Kayshon Boutte](https://www.thefantasyfootballers.com/fantasy/kayshon-boutte/)
+NE(11)
+94
+78
+85
+118
+[Chimere Dike](https://www.thefantasyfootballers.com/fantasy/chimere-dike/)
+TEN(9)
+95
+68
+110
+106
+[Mack Hollins](https://www.thefantasyfootballers.com/fantasy/mack-hollins/)
+NE(11)
+96
+94
+105
+87
+[Jahan Dotson](https://www.thefantasyfootballers.com/fantasy/jahan-dotson/)
+ATL(11)
+97
+124
+80
+85
+[Kyle Williams](https://www.thefantasyfootballers.com/fantasy/kyle-williams-2/)
+NE(11)
+98
+112
+79
+102
+[Zachariah Branch](https://www.thefantasyfootballers.com/fantasy/zachariah-branch/)
+ATL(11)
+99
+121
+84
+90
+[Jaylin Lane](https://www.thefantasyfootballers.com/fantasy/jaylin-lane/)
+WAS(7)
+100
+105
+119
+73
+[Dontayvion Wicks](https://www.thefantasyfootballers.com/fantasy/dontayvion-wicks/)
+PHI(10)
+101
+92
+92
+115
+[Malachi Fields](https://www.thefantasyfootballers.com/fantasy/malachi-fields/)
+NYG(8)
+102
+91
+121
+88
+[Marvin Mims Jr.](https://www.thefantasyfootballers.com/fantasy/marvin-mims/)
+DEN(10)
+103
+98
+107
+96
+[Xavier Legette](https://www.thefantasyfootballers.com/fantasy/xavier-legette/)
+CAR(5)
+104
+93
+101
+108
+[Jaylin Noel](https://www.thefantasyfootballers.com/fantasy/jaylin-noel/)
+HOU(8)
+105
+104
+90
+110
+[Tez Johnson](https://www.thefantasyfootballers.com/fantasy/tez-johnson/)
+TB(10)
+106
+89
+117
+100
+[Ja'Kobi Lane](https://www.thefantasyfootballers.com/fantasy/jakobi-lane/)
+BAL(13)
+107
+118
+109
+79
+[Elijah Sarratt](https://www.thefantasyfootballers.com/fantasy/elijah-sarratt/)
+BAL(13)
+108
+119
+100
+94
+[Chris Brazzell II](https://www.thefantasyfootballers.com/fantasy/chris-brazzell-ii/)
+CAR(5)
+109
+125
+95
+93
+[Roman Wilson](https://www.thefantasyfootballers.com/fantasy/roman-wilson/)
+PIT(9)
+110
+106
+111
+99
+[Kalif Raymond](https://www.thefantasyfootballers.com/fantasy/kalif-raymond/)
+CHI(10)
+111
+111
+114
+92
+[Xavier Hutchinson](https://www.thefantasyfootballers.com/fantasy/xavier-hutchinson/)
+HOU(8)
+112
+101
+116
+105
+[Kendrick Bourne](https://www.thefantasyfootballers.com/fantasy/kendrick-bourne/)
+ARI(14)
+113
+99
+104
+120
+[Brenen Thompson](https://www.thefantasyfootballers.com/fantasy/brenen-thompson/)
+LAC(7)
+114
+103
+123
+98
+[Dont'e Thornton Jr.](https://www.thefantasyfootballers.com/fantasy/donte-thornton-jr/)
+LV(13)
+115
+108
+108
+109
+[Jordan Whittington](https://www.thefantasyfootballers.com/fantasy/jordan-whittington/)
+LAR(11)
+116
+122
+112
+91
+[Hollywood Brown](https://www.thefantasyfootballers.com/fantasy/marquise-brown/)
+PHI(10)
+117
+109
+99
+121
+[Cedric Tillman](https://www.thefantasyfootballers.com/fantasy/cedric-tillman/)
+CLE(11)
+118
+117
+103
+111
+[Olamide Zaccheaus](https://www.thefantasyfootballers.com/fantasy/olamide-zaccheaus/)
+ATL(11)
+119
+96
+127
+116
+[Tutu Atwell](https://www.thefantasyfootballers.com/fantasy/tutu-atwell/)
+MIA(6)
+120
+120
+113
+107
+[De'Zhaun Stribling](https://www.thefantasyfootballers.com/fantasy/dezhaun-stribling/)
+SF(8)
+121
+115
+102
+124
+[Calvin Austin III](https://www.thefantasyfootballers.com/fantasy/calvin-austin-iii/)
+NYG(8)
+122
+110
+118
+119
+[Devontez Walker](https://www.thefantasyfootballers.com/fantasy/devontez-walker/)
+BAL(13)
+123
+123
+115
+112
+[Van Jefferson](https://www.thefantasyfootballers.com/fantasy/van-jefferson/)
+WAS(7)
+124
+107
+128
+117
+[Bryce Lance](https://www.thefantasyfootballers.com/fantasy/bryce-lance/)
+NO(8)
+125
+113
+126
+128
+[Skyler Bell](https://www.thefantasyfootballers.com/fantasy/skyler-bell/)
+BUF(7)
+126
+127
+120
+125
+[Zavion Thomas](https://www.thefantasyfootballers.com/fantasy/zavion-thomas/)
+CHI(10)
+127
+126
+122
+126
+[Kendrick Law](https://www.thefantasyfootballers.com/fantasy/kendrick-law/)
+DET(6)
+128
+128
+125
+127
+
+[Brock Bowers](https://www.thefantasyfootballers.com/fantasy/brock-bowers/)
+LV(13)
+1
+1
+1
+1
+[Trey McBride](https://www.thefantasyfootballers.com/fantasy/trey-mcbride/)
+ARI(14)
+2
+2
+2
+2
+[Colston Loveland](https://www.thefantasyfootballers.com/fantasy/colston-loveland/)
+CHI(10)
+3
+3
+4
+3
+[Tyler Warren](https://www.thefantasyfootballers.com/fantasy/tyler-warren/)
+IND(13)
+4
+4
+3
+4
+[Harold Fannin Jr.](https://www.thefantasyfootballers.com/fantasy/harold-fannin-jr/)
+CLE(11)
+5
+6
+5
+7
+[Tucker Kraft](https://www.thefantasyfootballers.com/fantasy/tucker-kraft/)
+GB(11)
+6
+5
+7
+6
+[Sam LaPorta](https://www.thefantasyfootballers.com/fantasy/sam-laporta/)
+DET(6)
+7
+9
+6
+8
+[George Kittle](https://www.thefantasyfootballers.com/fantasy/george-kittle/)
+SF(8)
+8
+8
+10
+5
+[Kyle Pitts Sr.](https://www.thefantasyfootballers.com/fantasy/kyle-pitts/)
+ATL(11)
+9
+7
+8
+10
+[Brenton Strange](https://www.thefantasyfootballers.com/fantasy/brenton-strange/)
+JAX(7)
+10
+13
+11
+14
+[Travis Kelce](https://www.thefantasyfootballers.com/fantasy/travis-kelce/)
+KC(5)
+11
+17
+13
+9
+[Hunter Henry](https://www.thefantasyfootballers.com/fantasy/hunter-henry/)
+NE(11)
+12
+15
+16
+11
+[Jake Ferguson](https://www.thefantasyfootballers.com/fantasy/jake-ferguson/)
+DAL(14)
+13
+11
+14
+18
+[Dallas Goedert](https://www.thefantasyfootballers.com/fantasy/dallas-goedert/)
+PHI(10)
+14
+10
+21
+13
+[Mark Andrews](https://www.thefantasyfootballers.com/fantasy/mark-andrews/)
+BAL(13)
+15
+21
+9
+15
+[Chig Okonkwo](https://www.thefantasyfootballers.com/fantasy/chigoziem-okonkwo/)
+WAS(7)
+16
+18
+15
+19
+[Dalton Schultz](https://www.thefantasyfootballers.com/fantasy/dalton-schultz/)
+HOU(8)
+17
+12
+20
+20
+[Dalton Kincaid](https://www.thefantasyfootballers.com/fantasy/dalton-kincaid/)
+BUF(7)
+18
+19
+17
+16
+[Oronde Gadsden](https://www.thefantasyfootballers.com/fantasy/oronde-gadsden-ii/)
+LAC(7)
+19
+22
+12
+21
+[Kenyon Sadiq](https://www.thefantasyfootballers.com/fantasy/kenyon-sadiq/)
+NYJ(13)
+20
+30
+22
+12
+[T.J. Hockenson](https://www.thefantasyfootballers.com/fantasy/tj-hockenson/)
+MIN(6)
+21
+28
+19
+22
+[Isaiah Likely](https://www.thefantasyfootballers.com/fantasy/isaiah-likely/)
+NYG(8)
+22
+25
+18
+27
+[Greg Dulcich](https://www.thefantasyfootballers.com/fantasy/greg-dulcich/)
+MIA(6)
+23
+14
+39
+17
+[Pat Freiermuth](https://www.thefantasyfootballers.com/fantasy/pat-freiermuth/)
+PIT(9)
+24
+24
+25
+23
+[Juwan Johnson](https://www.thefantasyfootballers.com/fantasy/juwan-johnson/)
+NO(8)
+25
+16
+32
+24
+[Cade Otton](https://www.thefantasyfootballers.com/fantasy/cade-otton/)
+TB(10)
+26
+26
+27
+25
+[AJ Barner](https://www.thefantasyfootballers.com/fantasy/aj-barner/)
+SEA(11)
+27
+20
+34
+28
+[David Njoku](https://www.thefantasyfootballers.com/fantasy/david-njoku/)
+LAC(7)
+28
+33
+29
+26
+[Colby Parkinson](https://www.thefantasyfootballers.com/fantasy/colby-parkinson/)
+LAR(11)
+29
+23
+28
+38
+[Mike Gesicki](https://www.thefantasyfootballers.com/fantasy/mike-gesicki/)
+CIN(6)
+30
+38
+23
+31
+[Cole Kmet](https://www.thefantasyfootballers.com/fantasy/cole-kmet/)
+CHI(10)
+31
+35
+30
+30
+[Gunnar Helm](https://www.thefantasyfootballers.com/fantasy/gunnar-helm/)
+TEN(9)
+32
+27
+26
+44
+[Evan Engram](https://www.thefantasyfootballers.com/fantasy/evan-engram/)
+DEN(10)
+33
+31
+33
+33
+[Eli Stowers](https://www.thefantasyfootballers.com/fantasy/eli-stowers/)
+PHI(10)
+34
+36
+24
+39
+[Dawson Knox](https://www.thefantasyfootballers.com/fantasy/dawson-knox/)
+BUF(7)
+35
+37
+35
+35
+[Mason Taylor](https://www.thefantasyfootballers.com/fantasy/mason-taylor/)
+NYJ(13)
+36
+34
+41
+36
+[Michael Mayer](https://www.thefantasyfootballers.com/fantasy/michael-mayer/)
+LV(13)
+37
+39
+42
+32
+[Luke Musgrave](https://www.thefantasyfootballers.com/fantasy/luke-musgrave/)
+GB(11)
+38
+49
+37
+29
+[Terrance Ferguson](https://www.thefantasyfootballers.com/fantasy/terrance-ferguson/)
+LAR(11)
+39
+48
+31
+37
+[Theo Johnson](https://www.thefantasyfootballers.com/fantasy/theo-johnson/)
+NYG(8)
+40
+32
+46
+40
+[Ja'Tavion Sanders](https://www.thefantasyfootballers.com/fantasy/jatavion-sanders/)
+CAR(5)
+41
+41
+36
+41
+[Elijah Arroyo](https://www.thefantasyfootballers.com/fantasy/elijah-arroyo/)
+SEA(11)
+42
+29
+49
+46
+[Noah Gray](https://www.thefantasyfootballers.com/fantasy/noah-gray/)
+KC(5)
+43
+44
+48
+34
+[Darnell Washington](https://www.thefantasyfootballers.com/fantasy/darnell-washington/)
+PIT(9)
+44
+43
+43
+45
+[Tommy Tremble](https://www.thefantasyfootballers.com/fantasy/tommy-tremble/)
+CAR(5)
+45
+46
+47
+42
+[Max Klare](https://www.thefantasyfootballers.com/fantasy/max-klare/)
+LAR(11)
+46
+47
+45
+43
+[Ben Sinnott](https://www.thefantasyfootballers.com/fantasy/ben-sinnott/)
+WAS(7)
+47
+42
+44
+49
+[Justin Joly](https://www.thefantasyfootballers.com/fantasy/justin-joly/)
+DEN(10)
+48
+50
+38
+48
+[Noah Fant](https://www.thefantasyfootballers.com/fantasy/noah-fant/)
+NO(8)
+49
+45
+40
+51
+[Jake Tonges](https://www.thefantasyfootballers.com/fantasy/jake-tonges/)
+SF(8)
+50
+40
+53
+47
+[Marlin Klein](https://www.thefantasyfootballers.com/fantasy/marlin-klein/)
+HOU(8)
+51
+51
+50
+52
+[Nate Boerkircher](https://www.thefantasyfootballers.com/fantasy/nate-boerkircher/)
+JAX(7)
+52
+52
+52
+50
+[Oscar Delp](https://www.thefantasyfootballers.com/fantasy/oscar-delp/)
+NO(8)
+53
+53
+51
+53
