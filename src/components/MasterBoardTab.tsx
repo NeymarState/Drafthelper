@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
-import { Search, Filter, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal } from 'lucide-react';
+import { Search, Filter, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
 
 interface MasterBoardTabProps {
   players: Player[];
@@ -307,8 +307,11 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                           >
                             {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-blue-400" /> : <ChevronDown className="w-3.5 h-3.5" />}
                           </button>
-                          <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'Verfügbar' ? 'text-blue-400 font-bold' : 'line-through'}>
+                          <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'Verfügbar' ? 'text-blue-400 font-bold flex items-center gap-1.5' : 'line-through flex items-center gap-1.5'}>
                             {player.name}
+                            {player.customTag === 'Sleeper' && <Zap className="w-3.5 h-3.5 text-blue-400" title="Sleeper" />}
+                            {player.customTag === 'Target' && <Target className="w-3.5 h-3.5 text-green-400" title="Target" />}
+                            {player.customTag === 'Avoid' && <ShieldAlert className="w-3.5 h-3.5 text-rose-400" title="Avoid" />}
                           </span>
                         </div>
                       </td>

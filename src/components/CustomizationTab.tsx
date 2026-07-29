@@ -1,0 +1,232 @@
+import React, { useState } from 'react';
+import { Player, Position } from '../types';
+import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+
+interface CustomizationTabProps {
+  players: Player[];
+  onUpdatePlayer: (playerId: string, updates: Partial<Player>) => void;
+  onReorderPlayers: (draggedId: string, targetId: string) => void;
+  onMovePlayer: (playerId: string, direction: 'up' | 'down', currentFilter: Position | 'ALL') => void;
+}
+
+export const CustomizationTab: React.FC<CustomizationTabProps> = ({
+  players,
+  onUpdatePlayer,
+  onReorderPlayers,
+  onMovePlayer,
+}) => {
+  const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+
+  // Filter players
+  const displayPlayers = players.filter((p) => {
+    const matchesPos = selectedPos === 'ALL' || p.pos === selectedPos;
+    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesPos && matchesSearch;
+  });
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = 'move';
+    // Firefox requires some data to be set
+    e.dataTransfer.setData('text/plain', id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e: React.DragEvent, targetId: string) => {
+    e.preventDefault();
+    if (draggedId && draggedId !== targetId) {
+      onReorderPlayers(draggedId, targetId);
+    }
+    setDraggedId(null);
+  };
+
+  const getTagBadgeClass = (tag?: string | null) => {
+    switch (tag) {
+      case 'Sleeper':
+        return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
+      case 'Target':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      case 'Avoid':
+        return 'bg-rose-500/20 text-rose-400 border-rose-500/30';
+      default:
+        return '';
+    }
+  };
+
+  const getPosBadgeClass = (pos: string) => {
+    switch (pos) {
+      case 'RB': return 'bg-blue-500/20 text-blue-400';
+      case 'WR': return 'bg-green-500/20 text-green-400';
+      case 'TE': return 'bg-red-500/20 text-red-400';
+      case 'QB': return 'bg-purple-500/20 text-purple-400';
+      case 'K': return 'bg-orange-500/20 text-orange-400';
+      case 'DST': return 'bg-yellow-500/20 text-yellow-400';
+      default: return 'bg-slate-500/20 text-slate-400';
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 shadow-xl">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-2">
+          Spieler Anpassen & Eigene Rankings
+        </h2>
+        <p className="text-xs text-slate-400 leading-relaxed mb-4">
+          Hier kannst du die Reihenfolge der Spieler manuell überschreiben, ihre Tiers anpassen und persönliche Tags (Sleeper, Target, Avoid) vergeben. 
+          Greife einen Spieler am Griff-Symbol links, um ihn per Drag & Drop zu verschieben, oder nutze die Pfeile.
+        </p>
+        
+        {/* Filters */}
+        <div className="flex flex-wrap gap-3 mb-4">
+          <input
+            type="text"
+            placeholder="Spieler suchen..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 min-w-[200px] bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500"
+          />
+          <div className="flex bg-slate-950 p-1 rounded border border-slate-700">
+            {(['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'] as const).map((pos) => (
+              <button
+                key={pos}
+                onClick={() => setSelectedPos(pos)}
+                className={`px-3 py-1 rounded text-xs font-bold transition-colors cursor-pointer ${
+                  selectedPos === pos
+                    ? 'bg-blue-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {pos}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
+        {/* List Header */}
+        <div className="grid grid-cols-12 gap-2 p-3 bg-slate-800/80 border-b border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <div className="col-span-4 sm:col-span-5 pl-8">Spieler</div>
+          <div className="col-span-2">OVR / POS</div>
+          <div className="col-span-3 sm:col-span-2">Tier Override</div>
+          <div className="col-span-3">Custom Tags</div>
+        </div>
+
+        {/* List Body */}
+        <div className="max-h-[650px] overflow-y-auto custom-scrollbar">
+          {displayPlayers.map((player, index) => {
+            const isFirst = index === 0;
+            const isLast = index === displayPlayers.length - 1;
+
+            return (
+              <div
+                key={player.id}
+                draggable
+                onDragStart={(e) => handleDragStart(e, player.id)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, player.id)}
+                className={`grid grid-cols-12 gap-2 p-3 items-center border-b border-slate-800/50 bg-slate-950/80 transition-colors ${
+                  draggedId === player.id ? 'opacity-50 scale-[0.99] bg-slate-800' : 'hover:bg-slate-900'
+                }`}
+              >
+                <div className="col-span-4 sm:col-span-5 flex items-center gap-2">
+                  <div className="flex flex-col items-center gap-0.5 mr-1">
+                    <button 
+                      onClick={() => !isFirst && onMovePlayer(player.id, 'up', selectedPos)}
+                      disabled={isFirst}
+                      className={`p-0.5 rounded ${isFirst ? 'text-slate-700' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title="Hoch verschieben"
+                    >
+                      <ArrowUp className="w-3 h-3" />
+                    </button>
+                    <div className="cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-400 p-0.5" title="Drag & Drop">
+                      <GripVertical className="w-3.5 h-3.5" />
+                    </div>
+                    <button 
+                      onClick={() => !isLast && onMovePlayer(player.id, 'down', selectedPos)}
+                      disabled={isLast}
+                      className={`p-0.5 rounded ${isLast ? 'text-slate-700' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title="Runter verschieben"
+                    >
+                      <ArrowDown className="w-3 h-3" />
+                    </button>
+                  </div>
+                  
+                  <div>
+                    <div className="font-bold text-slate-200 text-sm">{player.name}</div>
+                    <div className="text-xs text-slate-500">{player.team}</div>
+                  </div>
+                </div>
+
+                <div className="col-span-2 flex flex-col justify-center">
+                  <div className="text-xs font-bold text-slate-300">OVR #{player.ovrRank}</div>
+                  <div className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold w-max mt-0.5 border border-transparent ${getPosBadgeClass(player.pos)}`}>
+                    {player.posRank}
+                  </div>
+                </div>
+
+                <div className="col-span-3 sm:col-span-2 flex items-center">
+                  <select
+                    value={player.tierNumber || 99}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value, 10);
+                      onUpdatePlayer(player.id, { 
+                        tierNumber: val, 
+                        tier: val === 99 ? 'Kein Tier' : `Tier ${val}` 
+                      });
+                    }}
+                    className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => (
+                      <option key={t} value={t}>Tier {t}</option>
+                    ))}
+                    <option value={99}>Kein Tier</option>
+                  </select>
+                </div>
+
+                <div className="col-span-3 flex items-center flex-wrap gap-1">
+                  <button
+                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Sleeper' ? null : 'Sleeper' })}
+                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
+                      player.customTag === 'Sleeper' ? getTagBadgeClass('Sleeper') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-blue-500/50 hover:text-slate-300'
+                    }`}
+                  >
+                    <Zap className="w-3 h-3" /> Sleeper
+                  </button>
+                  <button
+                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Target' ? null : 'Target' })}
+                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
+                      player.customTag === 'Target' ? getTagBadgeClass('Target') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-green-500/50 hover:text-slate-300'
+                    }`}
+                  >
+                    <Target className="w-3 h-3" /> Target
+                  </button>
+                  <button
+                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Avoid' ? null : 'Avoid' })}
+                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
+                      player.customTag === 'Avoid' ? getTagBadgeClass('Avoid') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-rose-500/50 hover:text-slate-300'
+                    }`}
+                  >
+                    <ShieldAlert className="w-3 h-3" /> Avoid
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+          
+          {displayPlayers.length === 0 && (
+            <div className="p-8 text-center text-slate-500 italic text-sm">
+              Keine Spieler gefunden.
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};

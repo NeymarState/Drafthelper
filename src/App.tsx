@@ -16,10 +16,10 @@ import { MasterBoardTab } from './components/MasterBoardTab';
 import { MyTeamTab } from './components/MyTeamTab';
 import { SleepersHandcuffsTab } from './components/SleepersHandcuffsTab';
 import { TiersTab } from './components/TiersTab';
-import { AnalyticsTab } from './components/AnalyticsTab';
+import { CustomizationTab } from './components/CustomizationTab';
 import { ExportModal } from './components/ExportModal';
 
-import { LayoutDashboard, Table, Layers, BarChart3, Shield, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Table, Layers, SlidersHorizontal, Shield, Sparkles } from 'lucide-react';
 
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
@@ -59,7 +59,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'board' | 'myteam' | 'sleepers' | 'tiers' | 'analytics'
+    'dashboard' | 'board' | 'myteam' | 'sleepers' | 'tiers' | 'customization'
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
@@ -145,6 +145,68 @@ export default function App() {
       setPlayers(INITIAL_PLAYERS);
       setSettings((prev) => ({ ...prev, currentOverallPick: 1 }));
     }
+  };
+
+  const handleUpdatePlayer = (playerId: string, updates: Partial<Player>) => {
+    setPlayers((prev) => prev.map((p) => (p.id === playerId ? { ...p, ...updates } : p)));
+  };
+
+  const recomputeRanks = (list: Player[]) => {
+    const sorted = [...list];
+    const posCounts: Record<string, number> = {};
+    return sorted.map((p, idx) => {
+      const pos = p.pos;
+      posCounts[pos] = (posCounts[pos] || 0) + 1;
+      return {
+        ...p,
+        ovrRank: idx + 1,
+        posRank: `${pos}${posCounts[pos]}`
+      };
+    });
+  };
+
+  const handleReorderPlayers = (draggedId: string, targetId: string) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === draggedId);
+      const targetIndex = prev.findIndex(p => p.id === targetId);
+      if (draggedIndex === -1 || targetIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
+  const handleMovePlayer = (playerId: string, direction: 'up' | 'down', currentFilter: string = 'ALL') => {
+    setPlayers(prev => {
+      const idx = prev.findIndex(p => p.id === playerId);
+      if (idx === -1) return prev;
+      
+      let swapIdx = -1;
+      if (direction === 'up') {
+        for (let i = idx - 1; i >= 0; i--) {
+          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
+            swapIdx = i;
+            break;
+          }
+        }
+      } else {
+        for (let i = idx + 1; i < prev.length; i++) {
+          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
+            swapIdx = i;
+            break;
+          }
+        }
+      }
+
+      if (swapIdx === -1) return prev;
+      
+      const newList = [...prev];
+      const [movedItem] = newList.splice(idx, 1);
+      newList.splice(swapIdx, 0, movedItem);
+      return recomputeRanks(newList);
+    });
   };
 
   const handleUpdateSettings = (newSettings: Partial<DraftSettings>) => {
@@ -237,16 +299,16 @@ export default function App() {
           </button>
 
           <button
-            id="tab-analytics"
-            onClick={() => setActiveTab('analytics')}
+            id="tab-customization"
+            onClick={() => setActiveTab('customization')}
             className={`flex-1 min-w-[140px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
-              activeTab === 'analytics'
+              activeTab === 'customization'
                 ? 'border-blue-500 bg-blue-500/10 text-white rounded-t'
                 : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-t'
             }`}
           >
-            <BarChart3 className="w-3.5 h-3.5 text-blue-400" />
-            <span>Advanced Analytics</span>
+            <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" />
+            <span>Spieler Anpassen</span>
           </button>
         </nav>
 
@@ -302,8 +364,13 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'analytics' && (
-          <AnalyticsTab players={players} settings={settings} />
+        {activeTab === 'customization' && (
+          <CustomizationTab 
+            players={players} 
+            onUpdatePlayer={handleUpdatePlayer}
+            onReorderPlayers={handleReorderPlayers}
+            onMovePlayer={handleMovePlayer}
+          />
         )}
       </main>
 

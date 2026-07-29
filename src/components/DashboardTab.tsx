@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Player, DraftSettings, RosterState, AlertItem, Position } from '../types';
 import { getAdjustedProjection, calculateVORP, getFormattedPick } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
-import { Zap, PlusCircle, Award, Target, TrendingUp, Search, RotateCcw } from 'lucide-react';
+import { Zap, PlusCircle, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert } from 'lucide-react';
 
 interface DashboardTabProps {
   players: Player[];
@@ -393,8 +393,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   >
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5">
-                        <span className={`font-bold text-xs ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
+                        <span className={`font-bold text-xs flex items-center gap-1 ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
                           {player.name}
+                          {player.customTag === 'Sleeper' && <Zap className="w-3 h-3 text-blue-400" title="Sleeper" />}
+                          {player.customTag === 'Target' && <Target className="w-3 h-3 text-green-400" title="Target" />}
+                          {player.customTag === 'Avoid' && <ShieldAlert className="w-3 h-3 text-rose-400" title="Avoid" />}
                         </span>
                         <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
                           {player.posRank}

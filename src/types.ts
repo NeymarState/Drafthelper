@@ -24,6 +24,7 @@ export interface Player {
   age?: number;
   dynastyTier?: string;
   profile: string;     // Fantasy Footballers notes & upside
+  customTag?: 'Sleeper' | 'Target' | 'Avoid' | null;
 }
 
 export interface DraftSettings {
