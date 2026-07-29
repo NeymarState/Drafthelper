@@ -212,9 +212,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </h3>
             <div className="grid grid-cols-4 gap-4">
               {(['QB', 'RB', 'WR', 'TE'] as const).map((pos) => {
+                const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'Verfügbar');
                 const totalAvailable = players.filter((p) => p.pos === pos).length;
-                const totalDrafted = players.filter((p) => p.pos === pos && p.status !== 'Verfügbar').length;
+                const totalDrafted = totalAvailable - availablePlayers.length;
                 const fillPercent = Math.min((totalDrafted / Math.max(1, totalAvailable)) * 100, 100);
+                
+                const highestTier = availablePlayers.length > 0 
+                  ? Math.min(...availablePlayers.map((p) => p.tierNumber || 99)) 
+                  : null;
                 
                 // League threshold for QB and TE (typically 1 per team)
                 const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
@@ -230,7 +235,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 return (
                   <div key={pos} className="space-y-1.5 relative">
                     <div className="flex justify-between items-end">
-                      <span className="font-bold text-[11px] text-slate-300">{pos}</span>
+                      <span className="font-bold text-[11px] text-slate-300 flex items-center gap-1.5">
+                        {pos}
+                        {highestTier && highestTier < 99 && (
+                          <span className={`text-[9px] font-mono px-1 py-0.5 rounded text-white ${posColors[pos]} opacity-80`}>
+                            Tier {highestTier}
+                          </span>
+                        )}
+                      </span>
                       <span className="font-mono text-[10px] text-slate-500">
                         {totalDrafted}/{totalAvailable}
                       </span>
