@@ -228,6 +228,19 @@ export default function App() {
     });
   };
 
+  const handleImportRankings = (importedPlayers: Player[]) => {
+    setPlayers(prev => {
+       const merged = [...importedPlayers];
+       // Add any new players that exist in INITIAL_PLAYERS but not in the imported backup
+       INITIAL_PLAYERS.forEach(systemPlayer => {
+          if (!merged.find(p => p.id === systemPlayer.id)) {
+             merged.push(systemPlayer);
+          }
+       });
+       return recomputeRanks(merged);
+    });
+  };
+
   const handleUpdateSettings = (newSettings: Partial<DraftSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
@@ -390,6 +403,7 @@ export default function App() {
             onReorderPlayers={handleReorderPlayers}
             onMovePlayer={handleMovePlayer}
             onMoveToRank={handleMoveToRank}
+            onImportRankings={handleImportRankings}
           />
         )}
       </main>

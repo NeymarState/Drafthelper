@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Player, Position } from '../types';
-import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical } from 'lucide-react';
+import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload } from 'lucide-react';
 
 interface CustomizationTabProps {
   players: Player[];
@@ -8,6 +8,7 @@ interface CustomizationTabProps {
   onReorderPlayers: (draggedId: string, targetId: string) => void;
   onMovePlayer: (playerId: string, direction: 'up' | 'down', currentFilter: Position | 'ALL') => void;
   onMoveToRank: (playerId: string, targetRank: number) => void;
+  onImportRankings: (players: Player[]) => void;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
@@ -16,6 +17,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   onReorderPlayers,
   onMovePlayer,
   onMoveToRank,
+  onImportRankings,
 }) => {
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,6 +25,39 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'OVR' | 'TIER'>('OVR');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportBackup = () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(players));
+    const el = document.createElement("a");
+    el.setAttribute("href", dataStr);
+    el.setAttribute("download", "ff_draft_rankings_backup.json");
+    document.body.appendChild(el);
+    el.click();
+    el.remove();
+  };
+
+  const handleImportBackup = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const fileReader = new FileReader();
+    fileReader.readAsText(file, "UTF-8");
+    fileReader.onload = (e) => {
+      try {
+        const importedPlayers = JSON.parse(e.target?.result as string);
+        if (Array.isArray(importedPlayers) && importedPlayers.length > 0 && importedPlayers[0].id) {
+          onImportRankings(importedPlayers);
+          alert('Backup erfolgreich geladen!');
+        } else {
+          alert('Ungültiges Backup-Format.');
+        }
+      } catch (err) {
+        alert("Fehler beim Lesen der Backup-Datei.");
+      }
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    };
+  };
 
   // Filter and sort players
   const displayPlayers = players
@@ -108,9 +143,20 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   return (
     <div className="space-y-4">
       <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 shadow-xl">
-        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2 mb-2">
-          Spieler Anpassen & Eigene Rankings
-        </h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+            Spieler Anpassen & Eigene Rankings
+          </h2>
+          <div className="flex flex-wrap items-center gap-2">
+            <button onClick={handleExportBackup} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-emerald-600 hover:bg-emerald-500 text-white rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
+              <Download className="w-3 h-3" /> Backup (JSON)
+            </button>
+            <button onClick={() => fileInputRef.current?.click()} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
+              <Upload className="w-3 h-3" /> Laden (JSON)
+            </button>
+            <input type="file" accept=".json" ref={fileInputRef} onChange={handleImportBackup} className="hidden" />
+          </div>
+        </div>
         <p className="text-xs text-slate-400 leading-relaxed mb-4">
           Hier kannst du die Reihenfolge der Spieler manuell überschreiben, ihre Tiers anpassen und persönliche Tags (Sleeper, Target, Avoid) vergeben. 
           Greife einen Spieler am Griff-Symbol links, um ihn per Drag & Drop zu verschieben, oder nutze die Pfeile.
