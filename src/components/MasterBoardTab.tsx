@@ -168,16 +168,35 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                     <tr className={	ransition-colors }>
                       <td className="p-2 text-center font-mono font-bold text-slate-300">{String(player.ovrRank).padStart(2, '0')}</td>
                       <td className="p-2 font-bold">
-                        <div className="flex items-center gap-1.5">
-                          <button onClick={() => toggleExpand(player.id)} className="text-slate-400 hover:text-blue-400 transition-colors cursor-pointer" title="Ballers Profile Toggle">
-                            {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-blue-400" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                          </button>
-                          <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'Verfügbar' ? 'text-blue-400 font-bold flex items-center gap-1.5' : 'line-through flex items-center gap-1.5'}>
-                            {player.name}
-                            {player.customTag === 'Sleeper' && <Zap className="w-3.5 h-3.5 text-blue-400" title="Sleeper" />}
-                            {player.customTag === 'Target' && <Target className="w-3.5 h-3.5 text-green-400" title="Target" />}
-                            {player.customTag === 'Avoid' && <ShieldAlert className="w-3.5 h-3.5 text-rose-400" title="Avoid" />}
-                          </span>
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-1.5">
+                            <button onClick={() => toggleExpand(player.id)} className="text-slate-400 hover:text-blue-400 transition-colors cursor-pointer" title="Ballers Profile Toggle">
+                              {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-blue-400" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                            </button>
+                            <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'Verfügbar' ? 'text-blue-400 font-bold flex items-center gap-1.5' : 'line-through flex items-center gap-1.5'}>
+                              {player.name}
+                              {player.customTag === 'Sleeper' && <Zap className="w-3.5 h-3.5 text-blue-400" title="Sleeper" />}
+                              {player.customTag === 'Target' && <Target className="w-3.5 h-3.5 text-green-400" title="Target" />}
+                              {player.customTag === 'Avoid' && <ShieldAlert className="w-3.5 h-3.5 text-rose-400" title="Avoid" />}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1 pl-5">
+                            {player.rbRole && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                {player.rbRole}
+                              </span>
+                            )}
+                            {player.wrRole && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                {player.wrRole}
+                              </span>
+                            )}
+                            {player.playerArchetype && (
+                              <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
+                                {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </td>
                       {!isMulti && (

@@ -424,9 +424,27 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                             </span>
                           )}
                         </span>
-                        <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
-                          {player.posRank}
-                        </span>
+                        
+                        <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                          <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
+                            {player.posRank}
+                          </span>
+                          {player.rbRole && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                              {player.rbRole}
+                            </span>
+                          )}
+                          {player.wrRole && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                              {player.wrRole}
+                            </span>
+                          )}
+                          {player.playerArchetype && (
+                            <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
+                              {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div className="text-[11px] text-slate-400 flex items-center gap-2 font-mono">

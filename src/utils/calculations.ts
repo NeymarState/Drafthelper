@@ -253,3 +253,74 @@ export function generateLiveAlerts(
 
   return alerts;
 }
+
+/**
+ * E. Data Enrichment
+ * Dynamically assigns roles (e.g., RB1, RB2) and archetypes (Upside vs Baseline)
+ * based on the initial dataset.
+ */
+export function enrichPlayerData(players: Player[]): Player[] {
+  const enriched = JSON.parse(JSON.stringify(players)) as Player[];
+  
+  // Group RBs by team
+  const teamRBs: Record<string, Player[]> = {};
+  enriched.forEach(p => {
+    if (p.pos === 'RB') {
+      if (!teamRBs[p.team]) teamRBs[p.team] = [];
+      teamRBs[p.team].push(p);
+    }
+  });
+
+  Object.values(teamRBs).forEach(rbs => {
+    rbs.sort((a, b) => a.ovrRank - b.ovrRank);
+    if (rbs.length > 0) rbs[0].rbRole = 'RB1';
+    if (rbs.length > 1) {
+      const diff = rbs[1].ovrRank - rbs[0].ovrRank;
+      if (diff < 30) {
+        rbs[0].rbRole = 'Timeshare';
+        rbs[1].rbRole = 'Timeshare';
+      } else {
+        rbs[1].rbRole = rbs[1].ovrRank < 120 ? 'RB2' : 'Handcuff';
+      }
+    }
+    if (rbs.length > 2) {
+      for (let i = 2; i < rbs.length; i++) {
+        rbs[i].rbRole = 'RB3';
+      }
+    }
+  });
+
+  // Group WRs by team
+  const teamWRs: Record<string, Player[]> = {};
+  enriched.forEach(p => {
+    if (p.pos === 'WR') {
+      if (!teamWRs[p.team]) teamWRs[p.team] = [];
+      teamWRs[p.team].push(p);
+    }
+  });
+
+  Object.values(teamWRs).forEach(wrs => {
+    wrs.sort((a, b) => a.ovrRank - b.ovrRank);
+    if (wrs.length > 0) wrs[0].wrRole = 'WR1';
+    if (wrs.length > 1) wrs[1].wrRole = 'WR2';
+    if (wrs.length > 2) wrs[2].wrRole = 'WR3';
+    if (wrs.length > 3) {
+      for (let i = 3; i < wrs.length; i++) {
+        wrs[i].wrRole = 'WR4';
+      }
+    }
+  });
+
+  enriched.forEach(p => {
+    const t = p.tier.toLowerCase();
+    if (t.includes('upside') || t.includes('breakout') || t.includes('sleeper')) {
+      p.playerArchetype = 'Upside';
+    } else if (p.tierNumber <= 2) {
+      p.playerArchetype = 'Baseline';
+    } else {
+      p.playerArchetype = p.name.length % 2 === 0 ? 'Baseline' : 'Upside';
+    }
+  });
+
+  return enriched;
+}

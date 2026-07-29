@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Player, DraftSettings } from './types';
 import { INITIAL_PLAYERS } from './data/initialPlayers';
 import { getUpdatedPlayers } from './data/updateRankings';
-import { calculateRosterSlots, generateLiveAlerts } from './utils/calculations';
+import { calculateRosterSlots, generateLiveAlerts, enrichPlayerData } from './utils/calculations';
 
 // Components
 import { Header } from './components/Header';
@@ -24,7 +24,7 @@ import { LayoutDashboard, Table, Layers, SlidersHorizontal, Shield, Sparkles } f
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version';
-const CURRENT_DATA_VERSION = 'v8-updated-kickers';
+const CURRENT_DATA_VERSION = 'v9-enriched-roles';
 
 export default function App() {
   // 1. Initial State with LocalStorage persistence
@@ -32,12 +32,12 @@ export default function App() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
       if (saved) {
-        return JSON.parse(saved);
+        return enrichPlayerData(JSON.parse(saved));
       }
     } catch (e) {
       console.error('Failed to load saved players from localStorage', e);
     }
-    return INITIAL_PLAYERS;
+    return enrichPlayerData(INITIAL_PLAYERS);
   });
 
   const [settings, setSettings] = useState<DraftSettings>(() => {
@@ -89,7 +89,7 @@ export default function App() {
           return fresh;
         });
         
-        setPlayers(mergedPlayers);
+        setPlayers(enrichPlayerData(mergedPlayers));
         localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
       }
     } catch (e) {
