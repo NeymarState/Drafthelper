@@ -26,33 +26,49 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   onRemoveFromTeam,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
+  const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [showDrafted, setShowDrafted] = useState(false);
   
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
       case 'RB':
-        return 'bg-blue-500/20 text-blue-400';
-      case 'WR':
         return 'bg-green-500/20 text-green-400';
+      case 'WR':
+        return 'bg-blue-500/20 text-blue-400';
       case 'TE':
-        return 'bg-red-500/20 text-red-400';
-      case 'QB':
-        return 'bg-purple-500/20 text-purple-400';
-      case 'K':
         return 'bg-orange-500/20 text-orange-400';
+      case 'QB':
+        return 'bg-red-500/20 text-red-400';
+      case 'K':
+        return 'bg-purple-500/20 text-purple-400';
       case 'DST':
         return 'bg-yellow-500/20 text-yellow-400';
       default:
         return 'bg-slate-500/20 text-slate-400';
     }
   };
+  // Stack target logic
+  const myQbTeams = userTeam.filter(p => p.pos === 'QB').map(p => p.team);
+  const myFlexTeams = userTeam.filter(p => ['WR', 'RB', 'TE'].includes(p.pos)).map(p => p.team);
+
+  const isStackTarget = (player: Player) => {
+    if (['WR', 'RB', 'TE'].includes(player.pos) && myQbTeams.includes(player.team)) return true;
+    if (player.pos === 'QB' && myFlexTeams.includes(player.team)) return true;
+    return false;
+  };
+
   // Filter and sort players for the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch = !q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q);
-      const matchesPos = selectedPos === 'ALL' || p.pos === selectedPos;
+      
+      const matchesPos = selectedPos === 'ALL' 
+        ? true 
+        : selectedPos === 'FLEX' 
+          ? ['RB', 'WR', 'TE'].includes(p.pos)
+          : p.pos === selectedPos;
+          
       const matchesStatus = showDrafted ? true : p.status === 'Verfügbar';
       
       return matchesSearch && matchesPos && matchesStatus;
@@ -177,10 +193,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </h3>
             <div className="grid grid-cols-4 gap-4">
               {[
-                { pos: 'QB', target: 1, current: userTeam.filter((p) => p.pos === 'QB').length, color: 'bg-purple-500' },
-                { pos: 'RB', target: 5, current: userTeam.filter((p) => p.pos === 'RB').length, color: 'bg-blue-500' },
-                { pos: 'WR', target: 5, current: userTeam.filter((p) => p.pos === 'WR').length, color: 'bg-green-500' },
-                { pos: 'TE', target: 1, current: userTeam.filter((p) => p.pos === 'TE').length, color: 'bg-red-500' },
+                { pos: 'QB', target: 1, current: userTeam.filter((p) => p.pos === 'QB').length, color: 'bg-red-500' },
+                { pos: 'RB', target: 5, current: userTeam.filter((p) => p.pos === 'RB').length, color: 'bg-green-500' },
+                { pos: 'WR', target: 5, current: userTeam.filter((p) => p.pos === 'WR').length, color: 'bg-blue-500' },
+                { pos: 'TE', target: 1, current: userTeam.filter((p) => p.pos === 'TE').length, color: 'bg-orange-500' },
               ].map((need) => {
                 const fillPercent = Math.min((need.current / need.target) * 100, 100);
                 const isComplete = need.current >= need.target;
@@ -220,16 +236,20 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 const highestTier = availablePlayers.length > 0 
                   ? Math.min(...availablePlayers.map((p) => p.tierNumber || 99)) 
                   : null;
+                  
+                const playersInHighestTier = highestTier && highestTier < 99
+                  ? availablePlayers.filter((p) => p.tierNumber === highestTier).length
+                  : 0;
                 
                 // League threshold for QB and TE (typically 1 per team)
                 const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
                 const thresholdPercent = threshold ? Math.min((threshold / totalAvailable) * 100, 100) : null;
                 
                 const posColors: Record<string, string> = {
-                  QB: 'bg-purple-500',
-                  RB: 'bg-blue-500',
-                  WR: 'bg-green-500',
-                  TE: 'bg-red-500'
+                  QB: 'bg-red-500',
+                  RB: 'bg-green-500',
+                  WR: 'bg-blue-500',
+                  TE: 'bg-orange-500'
                 };
                 
                 return (
@@ -239,7 +259,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         {pos}
                         {highestTier && highestTier < 99 && (
                           <span className={`text-[9px] font-mono px-1 py-0.5 rounded text-white ${posColors[pos]} opacity-80`}>
-                            Tier {highestTier}
+                            Tier {highestTier} ({playersInHighestTier}x)
                           </span>
                         )}
                       </span>
@@ -363,7 +383,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 </div>
                 
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
-                  {(['ALL', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
+                  {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
                     <button
                       key={pos}
                       onClick={() => setSelectedPos(pos)}
@@ -394,10 +414,15 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5">
                         <span className={`font-bold text-xs flex items-center gap-1 ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
-                          {player.name}
+                          {player.name} <span className="text-[10px] text-slate-500 font-normal">({player.team})</span>
                           {player.customTag === 'Sleeper' && <Zap className="w-3 h-3 text-blue-400" title="Sleeper" />}
                           {player.customTag === 'Target' && <Target className="w-3 h-3 text-green-400" title="Target" />}
                           {player.customTag === 'Avoid' && <ShieldAlert className="w-3 h-3 text-rose-400" title="Avoid" />}
+                          {isStackTarget(player) && (
+                            <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-0.5">
+                              <Zap className="w-2.5 h-2.5" /> STACK
+                            </span>
+                          )}
                         </span>
                         <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
                           {player.posRank}
