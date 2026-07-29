@@ -1,4 +1,4 @@
-import { Player, ScoringFormat, RosterState, AlertItem, StackCombo, Position } from '../types';
+import { Player, ScoringFormat, RosterState, AlertItem, Position } from '../types';
 
 /**
  * A. Dynamische ADP- & Pick-Berechnung

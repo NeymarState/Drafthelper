@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Player, DraftSettings, RosterState, AlertItem, Position } from '../types';
 import { getAdjustedProjection, calculateVORP, getFormattedPick } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
-import { Zap, PlusCircle, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert } from 'lucide-react';
+import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert } from 'lucide-react';
 
 interface DashboardTabProps {
   players: Player[];
@@ -447,6 +447,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                           {player.isRookie && (
                             <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
                               🌱 ROOKIE
+                            </span>
+                          )}
+                          {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
+                              💎 STEAL
                             </span>
                           )}
                         </div>

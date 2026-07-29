@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
-import { Search, Filter, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
+import { Search, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
 
 interface MasterBoardTabProps {
   players: Player[];
@@ -199,6 +199,11 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                             {player.isRookie && (
                               <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
                                 🌱 ROOKIE
+                              </span>
+                            )}
+                            {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
+                                💎 STEAL
                               </span>
                             )}
                           </div>
