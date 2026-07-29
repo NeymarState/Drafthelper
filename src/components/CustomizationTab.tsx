@@ -18,13 +18,32 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'OVR' | 'TIER'>('OVR');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-  // Filter players
-  const displayPlayers = players.filter((p) => {
-    const matchesPos = selectedPos === 'ALL' || p.pos === selectedPos;
-    const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesPos && matchesSearch;
-  });
+  // Filter and sort players
+  const displayPlayers = players
+    .filter((p) => {
+      const matchesPos = selectedPos === 'ALL' || p.pos === selectedPos;
+      const matchesSearch = !searchQuery || p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesPos && matchesSearch;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'OVR') {
+        return sortOrder === 'asc' ? a.ovrRank - b.ovrRank : b.ovrRank - a.ovrRank;
+      }
+      if (sortBy === 'TIER') {
+        const tierA = a.tierNumber || 99;
+        const tierB = b.tierNumber || 99;
+        if (tierA !== tierB) {
+          return sortOrder === 'asc' ? tierA - tierB : tierB - tierA;
+        }
+        return a.ovrRank - b.ovrRank;
+      }
+      return 0;
+    });
+
+  const isDefaultSort = sortBy === 'OVR' && sortOrder === 'asc';
 
   const handleDragStart = (e: React.DragEvent, id: string) => {
     setDraggedId(id);
@@ -40,6 +59,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
+    if (!isDefaultSort) return;
     if (draggedId && draggedId !== targetId) {
       onReorderPlayers(draggedId, targetId);
     }
@@ -107,14 +127,37 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             ))}
           </div>
         </div>
+        
+        {!isDefaultSort && (
+          <div className="bg-amber-900/30 border border-amber-500/50 text-amber-200 p-2.5 rounded text-xs flex items-center gap-2">
+            <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>Du verwendest eine benutzerdefinierte Sortierung. Drag & Drop und die Pfeiltasten sind temporär deaktiviert, bis du wieder nach "OVR / POS" aufsteigend sortierst.</span>
+          </div>
+        )}
       </div>
 
       <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
         {/* List Header */}
-        <div className="grid grid-cols-12 gap-2 p-3 bg-slate-800/80 border-b border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider">
+        <div className="grid grid-cols-12 gap-2 p-3 bg-slate-800/80 border-b border-slate-700 text-xs font-bold text-slate-400 uppercase tracking-wider select-none">
           <div className="col-span-4 sm:col-span-5 pl-8">Spieler</div>
-          <div className="col-span-2">OVR / POS</div>
-          <div className="col-span-3 sm:col-span-2">Tier Override</div>
+          <div 
+            className="col-span-2 cursor-pointer hover:text-blue-400 flex items-center gap-1 transition-colors"
+            onClick={() => {
+              if (sortBy === 'OVR') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              else { setSortBy('OVR'); setSortOrder('asc'); }
+            }}
+          >
+            OVR / POS {sortBy === 'OVR' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </div>
+          <div 
+            className="col-span-3 sm:col-span-2 cursor-pointer hover:text-blue-400 flex items-center gap-1 transition-colors"
+            onClick={() => {
+              if (sortBy === 'TIER') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              else { setSortBy('TIER'); setSortOrder('asc'); }
+            }}
+          >
+            Tier Override {sortBy === 'TIER' && (sortOrder === 'asc' ? '↑' : '↓')}
+          </div>
           <div className="col-span-3">Custom Tags</div>
         </div>
 
@@ -127,10 +170,10 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             return (
               <div
                 key={player.id}
-                draggable
-                onDragStart={(e) => handleDragStart(e, player.id)}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, player.id)}
+                draggable={isDefaultSort}
+                onDragStart={(e) => isDefaultSort && handleDragStart(e, player.id)}
+                onDragOver={(e) => isDefaultSort && handleDragOver(e)}
+                onDrop={(e) => isDefaultSort && handleDrop(e, player.id)}
                 className={`grid grid-cols-12 gap-2 p-3 items-center border-b border-slate-800/50 bg-slate-950/80 transition-colors ${
                   draggedId === player.id ? 'opacity-50 scale-[0.99] bg-slate-800' : 'hover:bg-slate-900'
                 }`}
@@ -138,21 +181,21 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 <div className="col-span-4 sm:col-span-5 flex items-center gap-2">
                   <div className="flex flex-col items-center gap-0.5 mr-1">
                     <button 
-                      onClick={() => !isFirst && onMovePlayer(player.id, 'up', selectedPos)}
-                      disabled={isFirst}
-                      className={`p-0.5 rounded ${isFirst ? 'text-slate-700' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
-                      title="Hoch verschieben"
+                      onClick={() => !isFirst && isDefaultSort && onMovePlayer(player.id, 'up', selectedPos)}
+                      disabled={isFirst || !isDefaultSort}
+                      className={`p-0.5 rounded ${isFirst || !isDefaultSort ? 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title={isDefaultSort ? "Hoch verschieben" : "Verschieben deaktiviert"}
                     >
                       <ArrowUp className="w-3 h-3" />
                     </button>
-                    <div className="cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-400 p-0.5" title="Drag & Drop">
+                    <div className={`p-0.5 ${isDefaultSort ? 'cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-400' : 'cursor-not-allowed text-slate-800'}`} title={isDefaultSort ? "Drag & Drop" : "Drag & Drop deaktiviert"}>
                       <GripVertical className="w-3.5 h-3.5" />
                     </div>
                     <button 
-                      onClick={() => !isLast && onMovePlayer(player.id, 'down', selectedPos)}
-                      disabled={isLast}
-                      className={`p-0.5 rounded ${isLast ? 'text-slate-700' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
-                      title="Runter verschieben"
+                      onClick={() => !isLast && isDefaultSort && onMovePlayer(player.id, 'down', selectedPos)}
+                      disabled={isLast || !isDefaultSort}
+                      className={`p-0.5 rounded ${isLast || !isDefaultSort ? 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title={isDefaultSort ? "Runter verschieben" : "Verschieben deaktiviert"}
                     >
                       <ArrowDown className="w-3 h-3" />
                     </button>
