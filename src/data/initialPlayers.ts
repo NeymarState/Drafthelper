@@ -1,4 +1,4 @@
-﻿import { Player } from '../types';
+import { Player } from '../types';
 
 export const INITIAL_PLAYERS: Player[] = [
   // --- QB TIERS ---
@@ -5626,7 +5626,124 @@ export const INITIAL_PLAYERS: Player[] = [
     basePointsHalfPpr: 80.0,
     profile: 'Depth player added from full list.'
   },
-
-
-
+  {
+    id: 'qb-goff',
+    name: 'Jared Goff',
+    pos: 'QB',
+    team: 'DET',
+    bye: 5,
+    tier: 'Tier 3: Baseline QB',
+    tierNumber: 3,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 285.0,
+    profile: 'Sehr verlässlicher System-QB in Detroit. Hoher Floor.'
+  },
+  {
+    id: 'qb-stafford',
+    name: 'Matthew Stafford',
+    pos: 'QB',
+    team: 'LAR',
+    bye: 6,
+    tier: 'Tier 3: Baseline QB',
+    tierNumber: 3,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 275.0,
+    profile: 'Veteran mit exzellenten Waffen (Puka, Kupp). Upside durch Passvolumen.'
+  },
+  {
+    id: 'qb-cousins',
+    name: 'Kirk Cousins',
+    pos: 'QB',
+    team: 'ATL',
+    bye: 12,
+    tier: 'Tier 4: QB2',
+    tierNumber: 4,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 260.0,
+    profile: 'In einer neuen Offense mit Bijan, London und Pitts.'
+  },
+  {
+    id: 'qb-herbert',
+    name: 'Justin Herbert',
+    pos: 'QB',
+    team: 'LAC',
+    bye: 5,
+    tier: 'Tier 4: QB2',
+    tierNumber: 4,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 255.0,
+    profile: 'Unter Harbaugh evtl. run-heavy, aber Herbert hat immenses Talent.'
+  },
+  {
+    id: 'qb-mayfield',
+    name: 'Baker Mayfield',
+    pos: 'QB',
+    team: 'TB',
+    bye: 11,
+    tier: 'Tier 4: QB2',
+    tierNumber: 4,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 250.0,
+    profile: 'Starkes Comeback. Solider QB2 mit Evans und Godwin.'
+  },
+  {
+    id: 'qb-rodgers',
+    name: 'Aaron Rodgers',
+    pos: 'QB',
+    team: 'NYJ',
+    bye: 12,
+    tier: 'Tier 4: QB2',
+    tierNumber: 4,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 245.0,
+    profile: 'Zurück von der Verletzung. Risiko, aber hohes Potenzial.'
+  },
+  {
+    id: 'qb-tua',
+    name: 'Tua Tagovailoa',
+    pos: 'QB',
+    team: 'MIA',
+    bye: 6,
+    tier: 'Tier 3: Baseline QB',
+    tierNumber: 3,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 270.0,
+    profile: 'Profitiert extrem von Tyreek und Waddle, verletzungsanfällig.'
+  },
+  {
+    id: 'qb-lawrence',
+    name: 'Trevor Lawrence',
+    pos: 'QB',
+    team: 'JAX',
+    bye: 12,
+    tier: 'Tier 4: QB2',
+    tierNumber: 4,
+    status: 'Verfügbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 265.0,
+    profile: 'Muss den nächsten Schritt machen. Gute Waffen vorhanden.'
+  }
 ];

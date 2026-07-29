@@ -209,6 +209,25 @@ export default function App() {
     });
   };
 
+  const handleMoveToRank = (playerId: string, targetRank: number) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === playerId);
+      if (draggedIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      
+      // Calculate target index (1-based to 0-based index)
+      // Cap the target index within the array bounds
+      let targetIndex = targetRank - 1;
+      if (targetIndex < 0) targetIndex = 0;
+      if (targetIndex > newList.length) targetIndex = newList.length;
+      
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
   const handleUpdateSettings = (newSettings: Partial<DraftSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
@@ -370,6 +389,7 @@ export default function App() {
             onUpdatePlayer={handleUpdatePlayer}
             onReorderPlayers={handleReorderPlayers}
             onMovePlayer={handleMovePlayer}
+            onMoveToRank={handleMoveToRank}
           />
         )}
       </main>

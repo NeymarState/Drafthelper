@@ -7,6 +7,7 @@ interface CustomizationTabProps {
   onUpdatePlayer: (playerId: string, updates: Partial<Player>) => void;
   onReorderPlayers: (draggedId: string, targetId: string) => void;
   onMovePlayer: (playerId: string, direction: 'up' | 'down', currentFilter: Position | 'ALL') => void;
+  onMoveToRank: (playerId: string, targetRank: number) => void;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
@@ -14,10 +15,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   onUpdatePlayer,
   onReorderPlayers,
   onMovePlayer,
+  onMoveToRank,
 }) => {
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<'OVR' | 'TIER'>('OVR');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
@@ -52,13 +55,24 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     e.dataTransfer.setData('text/plain', id);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, id: string) => {
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
+    if (dragOverId !== id) {
+      setDragOverId(id);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent, id: string) => {
+    // Only clear if we are leaving the element completely (not just entering a child)
+    if (dragOverId === id) {
+      setDragOverId(null);
+    }
   };
 
   const handleDrop = (e: React.DragEvent, targetId: string) => {
     e.preventDefault();
+    setDragOverId(null);
     if (!isDefaultSort) return;
     if (draggedId && draggedId !== targetId) {
       onReorderPlayers(draggedId, targetId);
@@ -172,11 +186,12 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 key={player.id}
                 draggable={isDefaultSort}
                 onDragStart={(e) => isDefaultSort && handleDragStart(e, player.id)}
-                onDragOver={(e) => isDefaultSort && handleDragOver(e)}
+                onDragOver={(e) => isDefaultSort && handleDragOver(e, player.id)}
+                onDragLeave={(e) => isDefaultSort && handleDragLeave(e, player.id)}
                 onDrop={(e) => isDefaultSort && handleDrop(e, player.id)}
-                className={`grid grid-cols-12 gap-2 p-3 items-center border-b border-slate-800/50 bg-slate-950/80 transition-colors ${
+                className={`grid grid-cols-12 gap-2 p-3 items-center bg-slate-950/80 transition-colors ${
                   draggedId === player.id ? 'opacity-50 scale-[0.99] bg-slate-800' : 'hover:bg-slate-900'
-                }`}
+                } ${dragOverId === player.id ? 'border-t-2 border-t-blue-500 border-b border-b-slate-800/50' : 'border-b border-slate-800/50'}`}
               >
                 <div className="col-span-4 sm:col-span-5 flex items-center gap-2">
                   <div className="flex flex-col items-center gap-0.5 mr-1">
@@ -208,7 +223,27 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 </div>
 
                 <div className="col-span-2 flex flex-col justify-center">
-                  <div className="text-xs font-bold text-slate-300">OVR #{player.ovrRank}</div>
+                  <div className="flex items-center gap-1 text-xs font-bold text-slate-300">
+                    OVR #
+                    <input 
+                      type="number" 
+                      defaultValue={player.ovrRank}
+                      onBlur={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (!isNaN(val) && val > 0 && val !== player.ovrRank) {
+                          onMoveToRank(player.id, val);
+                        } else {
+                          e.target.value = String(player.ovrRank);
+                        }
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.currentTarget.blur();
+                        }
+                      }}
+                      className="w-12 bg-slate-900 border border-slate-700 rounded px-1 py-0.5 text-[11px] text-center focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
                   <div className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold w-max mt-0.5 border border-transparent ${getPosBadgeClass(player.pos)}`}>
                     {player.posRank}
                   </div>
