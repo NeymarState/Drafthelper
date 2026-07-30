@@ -1,0 +1,227 @@
+import { useState, useEffect } from 'react';
+import { Player } from '../types';
+import { INITIAL_PLAYERS } from '../data/initialPlayers';
+import { getUpdatedPlayers } from '../data/updateRankings';
+import { enrichPlayerData } from '../utils/calculations';
+
+const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
+const DATA_VERSION_KEY = 'ff_command_center_data_version';
+const CURRENT_DATA_VERSION = 'v10-data-reset';
+
+const deduplicatePlayers = (list: Player[]) => {
+  const seen = new Set();
+  return list.filter(p => {
+    const name = p.name.toLowerCase().trim();
+    if (seen.has(name)) return false;
+    seen.add(name);
+    return true;
+  });
+};
+
+const recomputeRanks = (list: Player[]) => {
+  const sorted = [...list];
+  const posCounts: Record<string, number> = {};
+  return sorted.map((p, idx) => {
+    const pos = p.pos;
+    posCounts[pos] = (posCounts[pos] || 0) + 1;
+    return {
+      ...p,
+      ovrRank: idx + 1,
+      posRank: `${pos}${posCounts[pos]}`
+    };
+  });
+};
+
+export const usePlayers = () => {
+  const [players, setPlayers] = useState<Player[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
+      if (saved) {
+        return enrichPlayerData(deduplicatePlayers(JSON.parse(saved)));
+      }
+    } catch (e) {
+      console.error('Failed to load saved players from localStorage', e);
+    }
+    return enrichPlayerData(deduplicatePlayers(INITIAL_PLAYERS));
+  });
+
+  // Save to LocalStorage on changes
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(players));
+    } catch (e) {
+      console.error('Failed to save players', e);
+    }
+  }, [players]);
+
+  // Data update merge logic
+  useEffect(() => {
+    try {
+      const storedVersion = localStorage.getItem(DATA_VERSION_KEY);
+      if (storedVersion !== CURRENT_DATA_VERSION) {
+        console.log(`Upgrading data from ${storedVersion} to ${CURRENT_DATA_VERSION}`);
+        
+        // Because CURRENT_DATA_VERSION changed, we want to bring in new generic players
+        // from INITIAL_PLAYERS but preserve user statuses and tags
+        const freshPlayers = INITIAL_PLAYERS;
+        
+        // Merge existing status and tags
+        const mergedPlayers = freshPlayers.map(fresh => {
+          const existing = players.find(p => p.name.toLowerCase().trim() === fresh.name.toLowerCase().trim());
+          if (existing) {
+            return { 
+              ...fresh, 
+              status: existing.status !== 'Verfügbar' ? existing.status : fresh.status,
+              customTag: existing.customTag || fresh.customTag
+            };
+          }
+          return fresh;
+        });
+        
+        setPlayers(enrichPlayerData(deduplicatePlayers(mergedPlayers)));
+        localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
+      }
+    } catch (e) {
+      console.error('Failed to apply data update', e);
+    }
+  }, [players]);
+
+  const handleDraftForMe = (player: Player) => {
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === player.id ? { ...p, status: 'Mein Team' } : p))
+    );
+  };
+
+  const handleDraftForOpponent = (player: Player) => {
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === player.id ? { ...p, status: 'Gedraftet (Gegner)' } : p))
+    );
+  };
+
+  const handleResetStatus = (player: Player) => {
+    setPlayers((prev) =>
+      prev.map((p) => (p.id === player.id ? { ...p, status: 'Verfügbar' } : p))
+    );
+  };
+
+  const handleResetDraft = () => {
+    setPlayers(INITIAL_PLAYERS);
+  };
+
+  const handleUpdatePlayer = (playerId: string, updates: Partial<Player>) => {
+    setPlayers((prev) => prev.map((p) => (p.id === playerId ? { ...p, ...updates } : p)));
+  };
+
+  const handleReorderPlayers = (draggedId: string, targetId: string) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === draggedId);
+      const targetIndex = prev.findIndex(p => p.id === targetId);
+      if (draggedIndex === -1 || targetIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
+  const handleMovePlayer = (playerId: string, direction: 'up' | 'down', currentFilter: string = 'ALL') => {
+    setPlayers(prev => {
+      const idx = prev.findIndex(p => p.id === playerId);
+      if (idx === -1) return prev;
+      
+      let swapIdx = -1;
+      if (direction === 'up') {
+        for (let i = idx - 1; i >= 0; i--) {
+          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
+            swapIdx = i;
+            break;
+          }
+        }
+      } else {
+        for (let i = idx + 1; i < prev.length; i++) {
+          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
+            swapIdx = i;
+            break;
+          }
+        }
+      }
+
+      if (swapIdx === -1) return prev;
+      
+      const newList = [...prev];
+      const [movedItem] = newList.splice(idx, 1);
+      newList.splice(swapIdx, 0, movedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
+  const handleMoveToRank = (playerId: string, targetRank: number) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === playerId);
+      if (draggedIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      
+      let targetIndex = targetRank - 1;
+      if (targetIndex < 0) targetIndex = 0;
+      if (targetIndex > newList.length) targetIndex = newList.length;
+      
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
+  const handleMoveToPosRank = (playerId: string, targetPosRank: number, pos: string) => {
+    setPlayers(prev => {
+      const draggedIndex = prev.findIndex(p => p.id === playerId);
+      if (draggedIndex === -1) return prev;
+      
+      const newList = [...prev];
+      const [draggedItem] = newList.splice(draggedIndex, 1);
+      
+      let posCount = 0;
+      let targetIndex = newList.length;
+      
+      for (let i = 0; i < newList.length; i++) {
+        if (newList[i].pos === pos) {
+          posCount++;
+          if (posCount === targetPosRank) {
+            targetIndex = i;
+            break;
+          }
+        }
+      }
+      
+      newList.splice(targetIndex, 0, draggedItem);
+      return recomputeRanks(newList);
+    });
+  };
+
+  const handleImportRankings = (importedPlayers: Player[]) => {
+    setPlayers(prev => {
+       const merged = [...importedPlayers];
+       INITIAL_PLAYERS.forEach(systemPlayer => {
+          if (!merged.find(p => p.name.toLowerCase().trim() === systemPlayer.name.toLowerCase().trim())) {
+             merged.push(systemPlayer);
+          }
+       });
+       return recomputeRanks(deduplicatePlayers(merged));
+    });
+  };
+
+  return {
+    players,
+    handleDraftForMe,
+    handleDraftForOpponent,
+    handleResetStatus,
+    handleResetDraft,
+    handleUpdatePlayer,
+    handleReorderPlayers,
+    handleMovePlayer,
+    handleMoveToRank,
+    handleMoveToPosRank,
+    handleImportRankings
+  };
+};

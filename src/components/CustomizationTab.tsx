@@ -318,51 +318,40 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                   </div>
                 </div>
 
-                <div className="col-span-3 sm:col-span-2 flex items-center">
-                  <select
-                    value={player.tierNumber || 99}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value, 10);
-                      onUpdatePlayer(player.id, { 
-                        tierNumber: val, 
-                        tier: val === 99 ? 'Kein Tier' : `Tier ${val}` 
-                      });
-                    }}
-                    className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => (
-                      <option key={t} value={t}>Tier {t}</option>
-                    ))}
-                    <option value={99}>Kein Tier</option>
-                  </select>
-                </div>
+                  <div className="col-span-4 sm:col-span-4 flex items-center gap-2">
+                    <select
+                      value={player.tierNumber || 99}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        onUpdatePlayer(player.id, { 
+                          tierNumber: val, 
+                          tier: val === 99 ? 'Kein Tier' : `Tier ${val}` 
+                        });
+                      }}
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(t => (
+                        <option key={t} value={t}>Tier {t}</option>
+                      ))}
+                      <option value={99}>Kein Tier</option>
+                    </select>
 
-                <div className="col-span-3 flex items-center flex-wrap gap-1">
-                  <button
-                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Sleeper' ? null : 'Sleeper' })}
-                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
-                      player.customTag === 'Sleeper' ? getTagBadgeClass('Sleeper') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-blue-500/50 hover:text-slate-300'
-                    }`}
-                  >
-                    <Zap className="w-3 h-3" /> Sleeper
-                  </button>
-                  <button
-                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Target' ? null : 'Target' })}
-                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
-                      player.customTag === 'Target' ? getTagBadgeClass('Target') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-green-500/50 hover:text-slate-300'
-                    }`}
-                  >
-                    <Target className="w-3 h-3" /> Target
-                  </button>
-                  <button
-                    onClick={() => onUpdatePlayer(player.id, { customTag: player.customTag === 'Avoid' ? null : 'Avoid' })}
-                    className={`px-2 py-1 rounded text-[10px] font-bold border transition-colors cursor-pointer flex items-center gap-1 ${
-                      player.customTag === 'Avoid' ? getTagBadgeClass('Avoid') : 'bg-slate-900 text-slate-500 border-slate-800 hover:border-rose-500/50 hover:text-slate-300'
-                    }`}
-                  >
-                    <ShieldAlert className="w-3 h-3" /> Avoid
-                  </button>
-                </div>
+                    <select
+                      value={player.customTag || ''}
+                      onChange={(e) => {
+                        const val = e.target.value as 'Sleeper' | 'Target' | 'Avoid' | 'Fade' | 'Value' | '';
+                        onUpdatePlayer(player.id, { customTag: val === '' ? undefined : val });
+                      }}
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
+                    >
+                      <option value="">Kein Label</option>
+                      <option value="Sleeper">Sleeper</option>
+                      <option value="Target">Target</option>
+                      <option value="Avoid">Avoid</option>
+                      <option value="Fade">Fade</option>
+                      <option value="Value">Value</option>
+                    </select>
+                  </div>
               </div>
             );
           })}

@@ -7,7 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { Player, DraftSettings } from './types';
 import { INITIAL_PLAYERS } from './data/initialPlayers';
 import { getUpdatedPlayers } from './data/updateRankings';
-import { calculateRosterSlots, generateLiveAlerts, enrichPlayerData } from './utils/calculations';
+import { calculateRosterSlots, generateLiveAlerts } from './utils/calculations';
+import { usePlayers } from './hooks/usePlayers';
 
 // Components
 import { Header } from './components/Header';
@@ -21,34 +22,22 @@ import { ExportModal } from './components/ExportModal';
 
 import { LayoutDashboard, Table, Layers, SlidersHorizontal, Shield, Sparkles } from 'lucide-react';
 
-const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
-const DATA_VERSION_KEY = 'ff_command_center_data_version';
-const CURRENT_DATA_VERSION = 'v9-enriched-roles';
-
-const deduplicatePlayers = (list: Player[]) => {
-  const seen = new Set();
-  return list.filter(p => {
-    const name = p.name.toLowerCase().trim();
-    if (seen.has(name)) return false;
-    seen.add(name);
-    return true;
-  });
-};
 
 export default function App() {
-  // 1. Initial State with LocalStorage persistence
-  const [players, setPlayers] = useState<Player[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
-      if (saved) {
-        return enrichPlayerData(deduplicatePlayers(JSON.parse(saved)));
-      }
-    } catch (e) {
-      console.error('Failed to load saved players from localStorage', e);
-    }
-    return enrichPlayerData(deduplicatePlayers(INITIAL_PLAYERS));
-  });
+  const {
+    players,
+    handleDraftForMe,
+    handleDraftForOpponent,
+    handleResetStatus,
+    handleResetDraft,
+    handleUpdatePlayer,
+    handleReorderPlayers,
+    handleMovePlayer,
+    handleMoveToRank,
+    handleMoveToPosRank,
+    handleImportRankings
+  } = usePlayers();
 
   const [settings, setSettings] = useState<DraftSettings>(() => {
     try {
@@ -74,38 +63,6 @@ export default function App() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   // Save to LocalStorage on changes
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_PLAYERS, JSON.stringify(players));
-    } catch (e) {
-      console.error('Failed to save players', e);
-    }
-  }, [players]);
-
-  // Data update merge logic
-  useEffect(() => {
-    try {
-      const storedVersion = localStorage.getItem(DATA_VERSION_KEY);
-      if (storedVersion !== CURRENT_DATA_VERSION) {
-        console.log(`Upgrading data from ${storedVersion} to ${CURRENT_DATA_VERSION}`);
-        const freshPlayers = getUpdatedPlayers();
-        
-        // Merge existing status
-        const mergedPlayers = freshPlayers.map(fresh => {
-          const existing = players.find(p => p.name.toLowerCase().trim() === fresh.name.toLowerCase().trim());
-          if (existing && existing.status !== 'Verfügbar') {
-            return { ...fresh, status: existing.status };
-          }
-          return fresh;
-        });
-        
-        setPlayers(enrichPlayerData(deduplicatePlayers(mergedPlayers)));
-        localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
-      }
-    } catch (e) {
-      console.error('Failed to apply data update', e);
-    }
-  }, [players]);
 
   useEffect(() => {
     try {
@@ -123,159 +80,28 @@ export default function App() {
   const roster = calculateRosterSlots(userTeam, settings.scoringFormat);
   const alerts = generateLiveAlerts(players, userTeam, settings.scoringFormat);
 
-  // Handlers for Draft Actions
-  const handleDraftForMe = (player: Player) => {
-    setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Mein Team' } : p))
-    );
+  // Handlers for Draft Actions that also update settings
+  const onDraftForMeWrapper = (player: Player) => {
+    handleDraftForMe(player);
     setSettings((prev) => ({
       ...prev,
       currentOverallPick: prev.currentOverallPick + 1,
     }));
   };
 
-  const handleDraftForOpponent = (player: Player) => {
-    setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Gedraftet (Gegner)' } : p))
-    );
+  const onDraftForOpponentWrapper = (player: Player) => {
+    handleDraftForOpponent(player);
     setSettings((prev) => ({
       ...prev,
       currentOverallPick: prev.currentOverallPick + 1,
     }));
   };
 
-  const handleResetStatus = (player: Player) => {
-    setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Verfügbar' } : p))
-    );
-  };
-
-  const handleResetDraft = () => {
+  const onResetDraftWrapper = () => {
     if (window.confirm('Möchtest Du wirklich den gesamten Draft zurücksetzen? Alle Picks werden entfernt.')) {
-      setPlayers(INITIAL_PLAYERS);
+      handleResetDraft();
       setSettings((prev) => ({ ...prev, currentOverallPick: 1 }));
     }
-  };
-
-  const handleUpdatePlayer = (playerId: string, updates: Partial<Player>) => {
-    setPlayers((prev) => prev.map((p) => (p.id === playerId ? { ...p, ...updates } : p)));
-  };
-
-  const recomputeRanks = (list: Player[]) => {
-    const sorted = [...list];
-    const posCounts: Record<string, number> = {};
-    return sorted.map((p, idx) => {
-      const pos = p.pos;
-      posCounts[pos] = (posCounts[pos] || 0) + 1;
-      return {
-        ...p,
-        ovrRank: idx + 1,
-        posRank: `${pos}${posCounts[pos]}`
-      };
-    });
-  };
-
-  const handleReorderPlayers = (draggedId: string, targetId: string) => {
-    setPlayers(prev => {
-      const draggedIndex = prev.findIndex(p => p.id === draggedId);
-      const targetIndex = prev.findIndex(p => p.id === targetId);
-      if (draggedIndex === -1 || targetIndex === -1) return prev;
-      
-      const newList = [...prev];
-      const [draggedItem] = newList.splice(draggedIndex, 1);
-      newList.splice(targetIndex, 0, draggedItem);
-      return recomputeRanks(newList);
-    });
-  };
-
-  const handleMovePlayer = (playerId: string, direction: 'up' | 'down', currentFilter: string = 'ALL') => {
-    setPlayers(prev => {
-      const idx = prev.findIndex(p => p.id === playerId);
-      if (idx === -1) return prev;
-      
-      let swapIdx = -1;
-      if (direction === 'up') {
-        for (let i = idx - 1; i >= 0; i--) {
-          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
-            swapIdx = i;
-            break;
-          }
-        }
-      } else {
-        for (let i = idx + 1; i < prev.length; i++) {
-          if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
-            swapIdx = i;
-            break;
-          }
-        }
-      }
-
-      if (swapIdx === -1) return prev;
-      
-      const newList = [...prev];
-      const [movedItem] = newList.splice(idx, 1);
-      newList.splice(swapIdx, 0, movedItem);
-      return recomputeRanks(newList);
-    });
-  };
-
-  const handleMoveToRank = (playerId: string, targetRank: number) => {
-    setPlayers(prev => {
-      const draggedIndex = prev.findIndex(p => p.id === playerId);
-      if (draggedIndex === -1) return prev;
-      
-      const newList = [...prev];
-      const [draggedItem] = newList.splice(draggedIndex, 1);
-      
-      // Calculate target index (1-based to 0-based index)
-      // Cap the target index within the array bounds
-      let targetIndex = targetRank - 1;
-      if (targetIndex < 0) targetIndex = 0;
-      if (targetIndex > newList.length) targetIndex = newList.length;
-      
-      newList.splice(targetIndex, 0, draggedItem);
-      return recomputeRanks(newList);
-    });
-  };
-
-  const handleMoveToPosRank = (playerId: string, targetPosRank: number, pos: string) => {
-    setPlayers(prev => {
-      const draggedIndex = prev.findIndex(p => p.id === playerId);
-      if (draggedIndex === -1) return prev;
-      
-      const newList = [...prev];
-      const [draggedItem] = newList.splice(draggedIndex, 1);
-      
-      let posCount = 0;
-      let targetIndex = newList.length;
-      
-      for (let i = 0; i < newList.length; i++) {
-        if (newList[i].pos === pos) {
-          posCount++;
-          if (posCount === targetPosRank) {
-            targetIndex = i;
-            break;
-          }
-        }
-      }
-      
-      newList.splice(targetIndex, 0, draggedItem);
-      return recomputeRanks(newList);
-    });
-  };
-
-  const handleImportRankings = (importedPlayers: Player[]) => {
-    setPlayers(prev => {
-       const merged = [...importedPlayers];
-       // Add any new players that exist in INITIAL_PLAYERS but not in the imported backup
-       // MATCH BY NAME TO AVOID DUPLICATES IF IDs CHANGED
-       INITIAL_PLAYERS.forEach(systemPlayer => {
-          if (!merged.find(p => p.name.toLowerCase().trim() === systemPlayer.name.toLowerCase().trim())) {
-             merged.push(systemPlayer);
-          }
-       });
-       return recomputeRanks(deduplicatePlayers(merged));
-    });
   };
 
   const handleUpdateSettings = (newSettings: Partial<DraftSettings>) => {
@@ -288,7 +114,7 @@ export default function App() {
       <Header
         settings={settings}
         onUpdateSettings={handleUpdateSettings}
-        onResetDraft={handleResetDraft}
+        onResetDraft={onResetDraftWrapper}
         onOpenExportModal={() => setIsExportModalOpen(true)}
         totalDraftedCount={totalDraftedCount}
       />
@@ -389,8 +215,8 @@ export default function App() {
             roster={roster}
             settings={settings}
             alerts={alerts}
-            onDraftForMe={handleDraftForMe}
-            onDraftForOpponent={handleDraftForOpponent}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
             onRemoveFromTeam={handleResetStatus}
           />
         )}
@@ -399,8 +225,8 @@ export default function App() {
           <MasterBoardTab
             players={players}
             settings={settings}
-            onDraftForMe={handleDraftForMe}
-            onDraftForOpponent={handleDraftForOpponent}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
             onResetStatus={handleResetStatus}
           />
         )}
@@ -419,8 +245,8 @@ export default function App() {
             players={players}
             userTeam={userTeam}
             settings={settings}
-            onDraftForMe={handleDraftForMe}
-            onDraftForOpponent={handleDraftForOpponent}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
           />
         )}
 
@@ -428,8 +254,8 @@ export default function App() {
           <TiersTab
             players={players}
             settings={settings}
-            onDraftForMe={handleDraftForMe}
-            onDraftForOpponent={handleDraftForOpponent}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
           />
         )}
 
