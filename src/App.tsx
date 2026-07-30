@@ -16,6 +16,7 @@ import { DashboardTab } from './components/DashboardTab';
 import { MasterBoardTab } from './components/MasterBoardTab';
 import { MyTeamTab } from './components/MyTeamTab';
 import { SleepersHandcuffsTab } from './components/SleepersHandcuffsTab';
+import { ValuePlayersTab } from './components/ValuePlayersTab';
 import { TiersTab } from './components/TiersTab';
 import { CustomizationTab } from './components/CustomizationTab';
 import { ExportModal } from './components/ExportModal';
@@ -62,7 +63,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'board' | 'myteam' | 'sleepers' | 'tiers' | 'customization'
+    'dashboard' | 'board' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
@@ -185,6 +186,19 @@ export default function App() {
           </button>
 
           <button
+            id="tab-value"
+            onClick={() => setActiveTab('value')}
+            className={`flex-1 min-w-[150px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
+              activeTab === 'value'
+                ? 'border-emerald-500 bg-emerald-500/10 text-white rounded-t'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-t'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Value Analyse</span>
+          </button>
+
+          <button
             id="tab-tiers"
             onClick={() => setActiveTab('tiers')}
             className={`flex-1 min-w-[130px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
@@ -248,6 +262,15 @@ export default function App() {
           <SleepersHandcuffsTab
             players={players}
             userTeam={userTeam}
+            settings={settings}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
+          />
+        )}
+
+        {activeTab === 'value' && (
+          <ValuePlayersTab
+            players={players}
             settings={settings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
