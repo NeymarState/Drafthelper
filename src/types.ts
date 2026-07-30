@@ -29,6 +29,7 @@ export interface Player {
   wrRole?: 'WR1' | 'WR2' | 'WR3' | 'WR4';
   playerArchetype?: 'Upside' | 'Baseline';
   isRookie?: boolean;
+  adp?: number;
 }
 
 export interface DraftSettings {

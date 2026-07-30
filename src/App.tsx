@@ -36,7 +36,10 @@ export default function App() {
     handleMovePlayer,
     handleMoveToRank,
     handleMoveToPosRank,
-    handleImportRankings
+    handleImportRankings,
+    leagueSize,
+    setLeagueSize,
+    syncAdp
   } = usePlayers();
 
   const [settings, setSettings] = useState<DraftSettings>(() => {
@@ -268,6 +271,9 @@ export default function App() {
             onMoveToRank={handleMoveToRank}
             onMoveToPosRank={handleMoveToPosRank}
             onImportRankings={handleImportRankings}
+            leagueSize={leagueSize}
+            onLeagueSizeChange={setLeagueSize}
+            onSyncAdp={syncAdp}
           />
         )}
       </main>

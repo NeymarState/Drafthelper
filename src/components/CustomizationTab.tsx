@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Player, Position } from '../types';
 import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload } from 'lucide-react';
+import { getFormattedPick } from '../utils/calculations';
 
 interface CustomizationTabProps {
   players: Player[];
@@ -10,6 +11,9 @@ interface CustomizationTabProps {
   onMoveToRank: (playerId: string, targetRank: number) => void;
   onMoveToPosRank: (playerId: string, targetPosRank: number, pos: string) => void;
   onImportRankings: (players: Player[]) => void;
+  leagueSize?: number;
+  onLeagueSizeChange?: (size: number) => void;
+  onSyncAdp?: () => void;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
@@ -20,6 +24,9 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   onMoveToRank,
   onMoveToPosRank,
   onImportRankings,
+  leagueSize = 12,
+  onLeagueSizeChange,
+  onSyncAdp,
 }) => {
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -164,6 +171,29 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           Greife einen Spieler am Griff-Symbol links, um ihn per Drag & Drop zu verschieben, oder nutze die Pfeile.
         </p>
         
+        <div className="flex flex-wrap items-center gap-3 mb-4 p-3 bg-slate-950/50 rounded border border-slate-800">
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ligagröße:</label>
+              <select
+                value={leagueSize}
+                onChange={(e) => onLeagueSizeChange?.(Number(e.target.value))}
+                className="bg-slate-800 text-slate-200 border border-slate-700 text-xs rounded px-2 py-1 outline-none focus:border-emerald-500"
+              >
+                {[8, 10, 12, 14, 16].map(size => (
+                  <option key={size} value={size}>{size} Teams</option>
+                ))}
+              </select>
+            </div>
+            
+            <button
+              onClick={() => onSyncAdp?.()}
+              className="px-3 py-1.5 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1.5 shadow ml-auto"
+            >
+              <Zap className="w-3.5 h-3.5" />
+              Sleeper ADP Sync
+            </button>
+          </div>
+
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-4">
           <input
@@ -263,10 +293,16 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       <ArrowDown className="w-3 h-3" />
                     </button>
                   </div>
-                  
                   <div>
                     <div className="font-bold text-slate-200 text-sm">{player.name}</div>
-                    <div className="text-xs text-slate-500">{player.team}</div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-slate-500">{player.team}</span>
+                      {player.adp !== undefined && (
+                        <span className="text-[10px] text-blue-400/80 font-mono">
+                          ADP: {getFormattedPick(player.adp, leagueSize).formattedString}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
 

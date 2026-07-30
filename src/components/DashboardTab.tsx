@@ -457,12 +457,20 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         </div>
                       </div>
 
-                      <div className="text-[11px] text-slate-400 flex items-center gap-2 font-mono">
+                      <div className="text-[11px] text-slate-400 flex flex-wrap items-center gap-2 font-mono">
                         <span className={player.vorp > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
                           {player.vorp > 0 ? '+' : ''}{player.vorp} VORP
                         </span>
                         <span>•</span>
                         <span>OVR #{player.ovrRank}</span>
+                        {player.adp !== undefined && (
+                          <>
+                            <span>•</span>
+                            <span className="text-blue-400">
+                              ADP {getFormattedPick(player.adp, settings.leagueSize).formattedString}
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
 

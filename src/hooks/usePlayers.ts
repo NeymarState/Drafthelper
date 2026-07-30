@@ -5,6 +5,7 @@ import { getUpdatedPlayers } from '../data/updateRankings';
 import { enrichPlayerData } from '../utils/calculations';
 
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
+const STORAGE_KEY_LEAGUE_SIZE = 'ff_command_center_league_size_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version';
 const CURRENT_DATA_VERSION = 'v10-data-reset';
 
@@ -44,6 +45,20 @@ export const usePlayers = () => {
     }
     return enrichPlayerData(deduplicatePlayers(INITIAL_PLAYERS));
   });
+
+  const [leagueSize, setLeagueSize] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_LEAGUE_SIZE);
+      if (saved) return parseInt(saved, 10);
+    } catch (e) {
+      // ignore
+    }
+    return 12;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_LEAGUE_SIZE, leagueSize.toString());
+  }, [leagueSize]);
 
   // Save to LocalStorage on changes
   useEffect(() => {
@@ -211,6 +226,25 @@ export const usePlayers = () => {
     });
   };
 
+  const syncAdp = async () => {
+    try {
+      const res = await fetch('/api/adp');
+      if (!res.ok) throw new Error('Failed to fetch ADP data');
+      const adpMap = await res.json();
+      
+      setPlayers(prev => prev.map(p => {
+        const adp = adpMap[p.name];
+        if (adp !== undefined) {
+          return { ...p, adp };
+        }
+        return p;
+      }));
+    } catch (error) {
+      console.error('Error syncing ADP:', error);
+      alert('Fehler beim Synchronisieren der ADP Daten. ' + (error instanceof Error ? error.message : ''));
+    }
+  };
+
   return {
     players,
     handleDraftForMe,
@@ -222,6 +256,9 @@ export const usePlayers = () => {
     handleMovePlayer,
     handleMoveToRank,
     handleMoveToPosRank,
-    handleImportRankings
+    handleImportRankings,
+    leagueSize,
+    setLeagueSize,
+    syncAdp
   };
 };
