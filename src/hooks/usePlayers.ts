@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Player } from '../types';
 import { INITIAL_PLAYERS } from '../data/initialPlayers';
 import { getUpdatedPlayers } from '../data/updateRankings';
@@ -38,7 +38,15 @@ export const usePlayers = () => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY_PLAYERS);
       if (saved) {
-        return enrichPlayerData(deduplicatePlayers(JSON.parse(saved)));
+        let parsedPlayers: Player[] = JSON.parse(saved);
+        // Fix any encoding issues from previous versions
+        parsedPlayers = parsedPlayers.map(p => {
+          if (typeof p.status === 'string' && /^Verf.*gbar$/.test(p.status)) {
+            p.status = 'Verfügbar';
+          }
+          return p;
+        });
+        return enrichPlayerData(deduplicatePlayers(parsedPlayers));
       }
     } catch (e) {
       console.error('Failed to load saved players from localStorage', e);
@@ -81,17 +89,17 @@ export const usePlayers = () => {
         const freshPlayers = INITIAL_PLAYERS;
         
         // Merge existing status and tags
-        const mergedPlayers = freshPlayers.map(fresh => {
-          const existing = players.find(p => p.name.toLowerCase().trim() === fresh.name.toLowerCase().trim());
-          if (existing) {
-            return { 
-              ...fresh, 
-              status: existing.status !== 'Verfügbar' ? existing.status : fresh.status,
-              customTag: existing.customTag || fresh.customTag
-            };
-          }
-          return fresh;
-        });
+          const mergedPlayers = freshPlayers.map(fresh => {
+            const existing = players.find(p => p.name.toLowerCase().trim() === fresh.name.toLowerCase().trim());
+            if (existing) {
+              return { 
+                ...fresh, 
+                status: (existing.status && /^Verf.*gbar$/.test(existing.status)) ? fresh.status : existing.status,
+                customTag: existing.customTag || fresh.customTag
+              };
+            }
+            return fresh;
+          });
         
         setPlayers(enrichPlayerData(deduplicatePlayers(mergedPlayers)));
         localStorage.setItem(DATA_VERSION_KEY, CURRENT_DATA_VERSION);
