@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, DraftSettings, RosterState, AlertItem, Position } from '../types';
 import { getAdjustedProjection, calculateVORP, getFormattedPick } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
@@ -466,6 +466,16 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                           {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
                             <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
                               💎 STEAL
+                            </span>
+                          )}
+                          {player.adp !== undefined && player.adp - player.ovrRank >= 12 && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30" title={`ADP: ${player.adp} | Rank: ${player.ovrRank}`}>
+                              📈 UNDERVALUED
+                            </span>
+                          )}
+                          {player.adp !== undefined && player.ovrRank - player.adp >= 12 && (
+                            <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-red-500/20 text-red-400 font-bold border border-red-500/30" title={`ADP: ${player.adp} | Rank: ${player.ovrRank}`}>
+                              📉 OVERVALUED
                             </span>
                           )}
                         </div>
