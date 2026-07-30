@@ -1,7 +1,9 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Search, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
+
+type SortField = 'RK' | 'POS' | 'ADP' | 'VORP' | 'TIER' | null;
 
 interface MasterBoardTabProps {
   players: Player[];
@@ -26,6 +28,8 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
   const [selectedVorpRange, setSelectedVorpRange] = useState<'ALL' | 'HIGH' | 'POSITIVE' | 'NEGATIVE'>('ALL');
   const [selectedTeam, setSelectedTeam] = useState<string>('ALL');
   const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortAsc, setSortAsc] = useState<boolean>(true);
 
   // Unique lists for dropdown options
   const teams = Array.from(new Set(players.map((p) => p.team))).sort();
@@ -72,7 +76,36 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
       else if (selectedVorpRange === 'NEGATIVE') matchesVorp = vorp <= 0;
 
       return matchesSearch && matchesPos && matchesStatus && matchesBye && matchesTier && matchesTeam && matchesVorp;
-    }).sort((a, b) => a.ovrRank - b.ovrRank);
+    });
+
+    if (sortField) {
+      filtered.sort((a, b) => {
+        if (sortField === 'POS') {
+          return sortAsc 
+            ? a.posRank.localeCompare(b.posRank, undefined, { numeric: true })
+            : b.posRank.localeCompare(a.posRank, undefined, { numeric: true });
+        }
+        
+        let valA: any = 0;
+        let valB: any = 0;
+        
+        if (sortField === 'RK') { valA = a.ovrRank; valB = b.ovrRank; }
+        else if (sortField === 'ADP') { valA = a.adpHalfPpr || 999; valB = b.adpHalfPpr || 999; }
+        else if (sortField === 'VORP') { 
+          valA = calculateVORP(a, players, settings.scoringFormat, settings.leagueSize);
+          valB = calculateVORP(b, players, settings.scoringFormat, settings.leagueSize);
+        }
+        else if (sortField === 'TIER') { valA = a.tierNumber; valB = b.tierNumber; }
+        
+        if (valA < valB) return sortAsc ? -1 : 1;
+        if (valA > valB) return sortAsc ? 1 : -1;
+        return 0;
+      });
+    } else {
+      filtered.sort((a, b) => a.ovrRank - b.ovrRank);
+    }
+    
+    return filtered;
   };
 
   const resetAllFilters = () => {
@@ -96,6 +129,25 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
 
   const toggleExpand = (id: string) => {
     setExpandedPlayerId(expandedPlayerId === id ? null : id);
+  };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (!sortAsc) {
+        setSortField(null);
+        setSortAsc(true);
+      } else {
+        setSortAsc(false);
+      }
+    } else {
+      setSortField(field);
+      setSortAsc(true);
+    }
+  };
+
+  const renderSortIcon = (field: SortField) => {
+    if (sortField !== field) return <span className="inline-block w-3 opacity-0 group-hover:opacity-30 ml-1"><ChevronUp size={12} /></span>;
+    return <span className="inline-block w-3 text-emerald-400 ml-1">{sortAsc ? <ChevronUp size={12} /> : <ChevronDown size={12} />}</span>;
   };
 
   const getPosBadgeClass = (pos: Position) => {
@@ -136,23 +188,35 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead className="bg-slate-950 text-slate-400 border-b border-slate-700 font-mono uppercase text-[10px]">
-              <tr>
-                <th className="p-2 w-10 text-center">RK</th>
-                <th className="p-2">NAME</th>
-                {!isMulti && <th className="p-2">POS</th>}
-                <th className="p-2">TEAM</th>
-                {!isMulti && <th className="p-2">BYE</th>}
-                <th className="p-2">ADP</th>
-                <th className="p-2 text-right">PROJ</th>
-                <th className="p-2 text-right">VORP</th>
-                <th className="p-2">TIER</th>
-                <th className="p-2 text-center">STATUS</th>
-                <th className="p-2 text-center">AKTION</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800 font-sans">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead className="bg-slate-950 text-slate-400 border-b border-slate-700 font-mono uppercase text-[10px] select-none">
+                <tr>
+                  <th className="p-2 w-10 text-center cursor-pointer hover:text-slate-200 transition-colors group" onClick={() => handleSort('RK')}>
+                    <div className="flex items-center justify-center">RK{renderSortIcon('RK')}</div>
+                  </th>
+                  <th className="p-2">NAME</th>
+                  {!isMulti && (
+                    <th className="p-2 cursor-pointer hover:text-slate-200 transition-colors group" onClick={() => handleSort('POS')}>
+                      <div className="flex items-center">POS{renderSortIcon('POS')}</div>
+                    </th>
+                  )}
+                  <th className="p-2">TEAM</th>
+                  {!isMulti && <th className="p-2">BYE</th>}
+                  <th className="p-2 cursor-pointer hover:text-slate-200 transition-colors group" onClick={() => handleSort('ADP')}>
+                    <div className="flex items-center">ADP{renderSortIcon('ADP')}</div>
+                  </th>
+                  <th className="p-2 text-right">PROJ</th>
+                  <th className="p-2 text-right cursor-pointer hover:text-slate-200 transition-colors group" onClick={() => handleSort('VORP')}>
+                    <div className="flex items-center justify-end">VORP{renderSortIcon('VORP')}</div>
+                  </th>
+                  <th className="p-2 cursor-pointer hover:text-slate-200 transition-colors group" onClick={() => handleSort('TIER')}>
+                    <div className="flex items-center">TIER{renderSortIcon('TIER')}</div>
+                  </th>
+                  <th className="p-2 text-center">STATUS</th>
+                  <th className="p-2 text-center">AKTION</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800 font-sans">
               {tablePlayers.map((player) => {
                 const pickInfo = getFormattedPick(player.ovrRank, settings.leagueSize);
                 const vorp = calculateVORP(player, players, settings.scoringFormat, settings.leagueSize);
