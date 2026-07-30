@@ -250,11 +250,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
                 const thresholdPercent = threshold ? Math.min((threshold / totalAvailable) * 100, 100) : null;
                 
-                const posColors: Record<string, string> = {
-                  QB: 'bg-red-500',
-                  RB: 'bg-green-500',
-                  WR: 'bg-blue-500',
-                  TE: 'bg-orange-500'
+                const posStyles: Record<string, { fill: string, badge: string }> = {
+                  QB: { fill: 'bg-red-500', badge: 'bg-red-500/20 text-red-400 border border-red-500/30' },
+                  RB: { fill: 'bg-green-500', badge: 'bg-green-500/20 text-green-400 border border-green-500/30' },
+                  WR: { fill: 'bg-blue-500', badge: 'bg-blue-500/20 text-blue-400 border border-blue-500/30' },
+                  TE: { fill: 'bg-orange-500', badge: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' }
                 };
                 
                 return (
@@ -263,7 +263,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       <span className="font-bold text-[11px] text-slate-300 flex items-center gap-1.5">
                         {pos}
                         {highestTier && highestTier < 99 && (
-                          <span className={`text-[9px] font-mono px-1 py-0.5 rounded text-white ${posColors[pos]} opacity-80`}>
+                          <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${posStyles[pos].badge}`}>
                             Tier {highestTier} ({playersInHighestTier}x)
                           </span>
                         )}
@@ -274,7 +274,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                     </div>
                     <div className="relative h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
                       <div
-                        className={`h-full transition-all duration-500 ${posColors[pos]}`}
+                        className={`h-full transition-all duration-500 ${posStyles[pos].fill}`}
                         style={{ width: `${fillPercent}%` }}
                       />
                       {thresholdPercent !== null && (
