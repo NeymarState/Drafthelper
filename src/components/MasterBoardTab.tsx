@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Search, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';

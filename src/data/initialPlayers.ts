@@ -6414,3 +6414,4 @@ const RAW_INITIAL_PLAYERS: Player[] = [
 
 export const INITIAL_PLAYERS = RAW_INITIAL_PLAYERS.sort((a,b) => b.basePointsHalfPpr - a.basePointsHalfPpr).map((p, i) => ({ ...p, ovrRank: i + 1 }));
 
+

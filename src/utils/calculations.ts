@@ -11,10 +11,11 @@ export function getFormattedPick(ovrRank: number, leagueSize: number): {
   pickInRound: number;
   formattedString: string;
 } {
-  const round = Math.floor((ovrRank - 1) / leagueSize) + 1;
-  const pickInRound = ((ovrRank - 1) % leagueSize) + 1;
+  const rank = Math.round(ovrRank);
+  const round = Math.floor((rank - 1) / leagueSize) + 1;
+  const pickInRound = ((rank - 1) % leagueSize) + 1;
   const formattedPick = String(pickInRound).padStart(2, '0');
-  const formattedString = `Rd ${round} (${round}.${formattedPick})`;
+  const formattedString = `Rd ${round}, Pick ${formattedPick} (OVR ${rank})`;
 
   return { round, pickInRound, formattedString };
 }

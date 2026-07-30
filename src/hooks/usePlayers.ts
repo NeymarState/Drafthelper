@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Player } from '../types';
 import { INITIAL_PLAYERS } from '../data/initialPlayers';
 import { getUpdatedPlayers } from '../data/updateRankings';
@@ -301,3 +301,4 @@ export const usePlayers = () => {
     autoAssignRoles
   };
 };
+

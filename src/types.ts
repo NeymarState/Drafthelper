@@ -1,6 +1,6 @@
-﻿export type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'DST' | 'K';
+export type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'DST' | 'K';
 
-export type PlayerStatus = 'VerfÃ¼gbar' | 'Mein Team' | 'Gedraftet (Gegner)';
+export type PlayerStatus = 'Verfügbar' | 'Mein Team' | 'Gedraftet (Gegner)';
 
 export type ScoringFormat = 'Half-PPR' | 'Full-PPR' | 'Standard';
 
@@ -67,3 +67,4 @@ export interface StackCombo {
   passCatchers: Player[];
   team: string;
 }
+

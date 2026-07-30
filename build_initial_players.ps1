@@ -1,4 +1,4 @@
-$ErrorActionPreference = "Stop"
+﻿$ErrorActionPreference = "Stop"
 
 $workspace = "C:\Users\felix\antigravity\Fantasy-Football-Command-Center-2026-2026-07-29-eb277"
 $updateRankingsPath = "$workspace\src\data\updateRankings.ts"
@@ -222,6 +222,7 @@ $output += "];`n`nexport const INITIAL_PLAYERS = RAW_INITIAL_PLAYERS.sort((a,b) 
 
 Set-Content -Path $initialPlayersPath -Value $output -Encoding UTF8
 Write-Host "Done! Generated $($players.Count) players."
+
 
 
 
