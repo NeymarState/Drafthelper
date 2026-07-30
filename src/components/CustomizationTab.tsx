@@ -37,6 +37,20 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   const [sortBy, setSortBy] = useState<'OVR' | 'TIER'>('OVR');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [adpLastSync, setAdpLastSync] = useState<string | null>(localStorage.getItem('adpLastSync'));
+
+  const handleSyncAdp = async (provider: 'sleeper' | 'espn') => {
+    if (onSyncAdp) {
+      try {
+        await onSyncAdp(provider);
+        const dateStr = new Date().toLocaleString('de-DE');
+        localStorage.setItem('adpLastSync', dateStr);
+        setAdpLastSync(dateStr);
+      } catch (err) {
+        // error handled in usePlayers
+      }
+    }
+  };
 
   const handleExportBackup = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(players));
@@ -194,23 +208,27 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 Auto-Assign Roles
               </button>
               
-              <div className="flex gap-2">
-                <button
-                  onClick={() => onSyncAdp?.('sleeper')}
-                  className="px-3 py-1.5 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  Sleeper ADP Sync
-                </button>
-                <button
-                  onClick={() => onSyncAdp?.('espn')}
-                  className="px-3 py-1.5 text-[10px] font-bold uppercase bg-red-600 hover:bg-red-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  ESPN ADP Sync
-                </button>
+              <div className="flex flex-col gap-1.5 items-end">
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleSyncAdp('sleeper')}
+                    className="px-3 py-1.5 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    Sleeper ADP Sync
+                  </button>
+                  <button
+                    onClick={() => handleSyncAdp('espn')}
+                    className="px-3 py-1.5 text-[10px] font-bold uppercase bg-red-600 hover:bg-red-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    ESPN ADP Sync
+                  </button>
+                </div>
+                {adpLastSync && (
+                  <span className="text-[10px] text-slate-400 font-mono">Letzter Sync: {adpLastSync}</span>
+                )}
               </div>
-            </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-4">

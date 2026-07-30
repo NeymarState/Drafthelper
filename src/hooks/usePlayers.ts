@@ -266,6 +266,7 @@ export const usePlayers = () => {
     } catch (error) {
       console.error('Error syncing ADP:', error);
       alert('Fehler beim Synchronisieren der ADP Daten. ' + (error instanceof Error ? error.message : ''));
+      throw error;
     }
   };
 

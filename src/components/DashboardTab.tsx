@@ -28,6 +28,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [showDrafted, setShowDrafted] = useState(false);
+  const [hideQB, setHideQB] = useState(false);
+  const [hideTE, setHideTE] = useState(false);
   
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -70,6 +72,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           : p.pos === selectedPos;
           
       const matchesStatus = showDrafted ? true : p.status === 'Verfügbar';
+
+      if (hideQB && p.pos === 'QB') return false;
+      if (hideTE && p.pos === 'TE') return false;
       
       return matchesSearch && matchesPos && matchesStatus;
     })
@@ -382,7 +387,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   />
                 </div>
                 
-                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
+                <div className="flex bg-slate-900 border border-slate-700 rounded p-0.5">
                   {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
                     <button
                       key={pos}
@@ -396,6 +401,26 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       {pos}
                     </button>
                   ))}
+                </div>
+                <div className="flex gap-1.5 ml-2">
+                  <button
+                    onClick={() => setHideQB(!hideQB)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors border ${
+                      hideQB ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-900 text-slate-500 border-slate-700 hover:text-slate-400 hover:border-slate-600'
+                    }`}
+                    title="Quarterbacks ausblenden"
+                  >
+                    NO QB
+                  </button>
+                  <button
+                    onClick={() => setHideTE(!hideTE)}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors border ${
+                      hideTE ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-900 text-slate-500 border-slate-700 hover:text-slate-400 hover:border-slate-600'
+                    }`}
+                    title="Tight Ends ausblenden"
+                  >
+                    NO TE
+                  </button>
                 </div>
               </div>
             </div>
