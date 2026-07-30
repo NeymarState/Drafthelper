@@ -19,6 +19,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
   const [activeFilter, setActiveFilter] = useState<'ALL' | 'UNDERVALUED' | 'OVERVALUED'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<'DIFF' | 'RANK'>('DIFF');
 
   const toggleExpand = (id: string) => {
     setExpandedPlayerId(expandedPlayerId === id ? null : id);
@@ -45,8 +46,9 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
       const q = searchQuery.toLowerCase();
       const matchesSearch = !q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q) || p.pos.toLowerCase().includes(q);
 
-      const isUndervalued = p.adp - p.ovrRank >= 12;
-      const isOvervalued = p.ovrRank - p.adp >= 12;
+      const roundedAdp = Math.round(p.adp);
+      const isUndervalued = roundedAdp - p.ovrRank >= 12;
+      const isOvervalued = p.ovrRank - roundedAdp >= 12;
 
       let matchesFilter = false;
       if (activeFilter === 'ALL') matchesFilter = isUndervalued || isOvervalued;
@@ -56,21 +58,26 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
       return matchesSearch && matchesFilter;
     });
 
-    // Sort by largest value difference
+    // Sort by largest value difference or overall rank
     filtered.sort((a, b) => {
-      const diffA = Math.abs((a.adp || 0) - a.ovrRank);
-      const diffB = Math.abs((b.adp || 0) - b.ovrRank);
-      return diffB - diffA; // Largest difference first
+      if (sortBy === 'DIFF') {
+        const diffA = Math.abs(Math.round(a.adp || 0) - a.ovrRank);
+        const diffB = Math.abs(Math.round(b.adp || 0) - b.ovrRank);
+        return diffB - diffA; // Largest difference first
+      } else {
+        return a.ovrRank - b.ovrRank;
+      }
     });
 
     return filtered;
-  }, [players, activeFilter, searchQuery]);
+  }, [players, activeFilter, searchQuery, sortBy]);
 
   const renderPlayerCard = (player: Player) => {
     const isExpanded = expandedPlayerId === player.id;
     const isDrafted = player.status !== 'Verfügbar';
-    const isUndervalued = player.adp !== undefined && player.adp - player.ovrRank >= 12;
-    const valueDiff = player.adp !== undefined ? Math.abs(player.adp - player.ovrRank) : 0;
+    const roundedAdp = player.adp !== undefined ? Math.round(player.adp) : 0;
+    const isUndervalued = player.adp !== undefined && roundedAdp - player.ovrRank >= 12;
+    const valueDiff = player.adp !== undefined ? Math.abs(roundedAdp - player.ovrRank) : 0;
     
     return (
       <div
@@ -219,6 +226,18 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
           >
             <TrendingDown className="w-3.5 h-3.5" /> OVERVALUED (AVOID)
           </button>
+        </div>
+
+        <div className="ml-auto flex items-center gap-2 mt-2 sm:mt-0 font-mono text-xs">
+          <span className="text-slate-500 font-bold">SORTIEREN:</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'DIFF' | 'RANK')}
+            className="bg-slate-800 text-slate-200 text-xs rounded border border-slate-700 px-2 py-1.5 focus:outline-none focus:border-blue-500"
+          >
+            <option value="DIFF">Nach Abweichung</option>
+            <option value="RANK">Nach Gesamtrang</option>
+          </select>
         </div>
       </div>
 
