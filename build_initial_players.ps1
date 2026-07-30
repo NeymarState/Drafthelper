@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
 $workspace = "C:\Users\felix\antigravity\Fantasy-Football-Command-Center-2026-2026-07-29-eb277"
 $updateRankingsPath = "$workspace\src\data\updateRankings.ts"
@@ -177,8 +177,41 @@ foreach ($p in $players) {
 }
 $players = $uniquePlayers
 
-# Sort by basePoints
-$players = $players | Sort-Object -Property basePoints -Descending
+# Fetch Sleeper ADP to re-rank QBs and TEs
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+$response = Invoke-RestMethod -Uri "https://api.sleeper.app/projections/nfl/2026?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp"
+$adpMap = @{}
+foreach ($p in $response) {
+    if ($p.player -and $p.player.first_name -and $p.player.last_name -and $p.stats -and $p.stats.adp_half_ppr) {
+        $name = "$($p.player.first_name) $($p.player.last_name)" -replace "[^a-zA-Z0-9 ]", ""
+        $name = $name.ToLower().Trim()
+        $adpMap[$name] = $p.stats.adp_half_ppr
+    }
+}
+
+# Sort temporarily to get the baseline basePoints distribution
+$tempSorted = $players | Sort-Object -Property { [double]$_.basePoints } -Descending
+$baselinePoints = @()
+foreach ($p in $tempSorted) { $baselinePoints += [double]$p.basePoints }
+
+# Adjust QB and TE basePoints based on their ADP
+foreach ($p in $players) {
+    if ($p.pos -eq "QB" -or $p.pos -eq "TE") {
+        $cleanName = $p.name -replace "[^a-zA-Z0-9 ]", ""
+        $cleanName = $cleanName.ToLower().Trim()
+        
+        if ($adpMap.ContainsKey($cleanName) -and $adpMap[$cleanName] -lt 999) {
+            $adp = $adpMap[$cleanName]
+            $targetIndex = [math]::Max(0, [math]::Min($baselinePoints.Count - 1, [math]::Floor($adp) - 1))
+            # Assign the base points of that rank, plus a tiny fraction to break ties (lower ADP = higher fraction)
+            $fraction = 1.0 - ($adp - [math]::Floor($adp))
+            $p.basePoints = $baselinePoints[$targetIndex] + ($fraction * 0.9)
+        }
+    }
+}
+
+# Final Sort by updated basePoints
+$players = $players | Sort-Object -Property { [double]$_.basePoints } -Descending
 
 $output = "import { Player } from '../types';`n`nconst RAW_INITIAL_PLAYERS: Player[] = [`n"
 $ovrRank = 1
