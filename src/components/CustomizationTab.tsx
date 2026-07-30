@@ -229,6 +229,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                   <span className="text-[10px] text-slate-400 font-mono">Letzter Sync: {adpLastSync}</span>
                 )}
               </div>
+            </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-4">
