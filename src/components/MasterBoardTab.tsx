@@ -52,7 +52,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
   };
 
   const getFilteredPlayers = (posFilter: Position | 'ALL') => {
-    return players.filter((p) => {
+    let filtered = players.filter((p) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !q ||
@@ -90,7 +90,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
         let valB: any = 0;
         
         if (sortField === 'RK') { valA = a.ovrRank; valB = b.ovrRank; }
-        else if (sortField === 'ADP') { valA = a.adpHalfPpr || 999; valB = b.adpHalfPpr || 999; }
+        else if (sortField === 'ADP') { valA = a.ovrRank; valB = b.ovrRank; }
         else if (sortField === 'VORP') { 
           valA = calculateVORP(a, players, settings.scoringFormat, settings.leagueSize);
           valB = calculateVORP(b, players, settings.scoringFormat, settings.leagueSize);
@@ -141,7 +141,9 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
       }
     } else {
       setSortField(field);
-      setSortAsc(true);
+      // Default to descending on first click so the user sees an immediate change
+      // (since the default table order is already ascending for most fields)
+      setSortAsc(field === 'POS'); 
     }
   };
 
