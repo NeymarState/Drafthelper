@@ -48,25 +48,38 @@ for ($b = 0; $b -lt $blocks.Count; $b++) {
             $tierNumber = 5
             
             if ($pos -eq "QB") {
-                if ($rank -le 3) { $tier = "Tier 1: Elite QBs"; $tierNumber = 1 }
+                if ($rank -le 3) { $tier = "Tier 1: Elite"; $tierNumber = 1 }
                 elseif ($rank -le 7) { $tier = "Tier 2: High-End QB1"; $tierNumber = 2 }
                 elseif ($rank -le 12) { $tier = "Tier 3: Solid QB1"; $tierNumber = 3 }
-                elseif ($rank -le 18) { $tier = "Tier 4: High-End QB2"; $tierNumber = 4 }
+                elseif ($rank -le 18) { $tier = "Tier 4: Streamers"; $tierNumber = 4 }
+                else { $tier = "Tier 5: Depth/Superflex"; $tierNumber = 5 }
             } elseif ($pos -eq "RB") {
-                if ($rank -le 4) { $tier = "Tier 1: Legendary Bellcows"; $tierNumber = 1 }
+                if ($rank -le 4) { $tier = "Tier 1: Legendary"; $tierNumber = 1 }
                 elseif ($rank -le 12) { $tier = "Tier 2: High-Volume RB1s"; $tierNumber = 2 }
-                elseif ($rank -le 24) { $tier = "Tier 3: Solid RB2s"; $tierNumber = 3 }
-                elseif ($rank -le 36) { $tier = "Tier 4: Flex Options / Handcuffs"; $tierNumber = 4 }
+                elseif ($rank -le 20) { $tier = "Tier 3: Solid RB2s"; $tierNumber = 3 }
+                elseif ($rank -le 28) { $tier = "Tier 4: Upside RB2/3"; $tierNumber = 4 }
+                elseif ($rank -le 36) { $tier = "Tier 5: Flex Options"; $tierNumber = 5 }
+                elseif ($rank -le 46) { $tier = "Tier 6: Premium Handcuffs"; $tierNumber = 6 }
+                elseif ($rank -le 56) { $tier = "Tier 7: Committee Backs"; $tierNumber = 7 }
+                elseif ($rank -le 66) { $tier = "Tier 8: Lottery Tickets"; $tierNumber = 8 }
+                else { $tier = "Tier 9: Deep Flyers"; $tierNumber = 9 }
             } elseif ($pos -eq "WR") {
-                if ($rank -le 5) { $tier = "Tier 1: Alpha Target Monsters"; $tierNumber = 1 }
-                elseif ($rank -le 16) { $tier = "Tier 2: Elite WR1s"; $tierNumber = 2 }
-                elseif ($rank -le 28) { $tier = "Tier 3: Solid WR2s"; $tierNumber = 3 }
-                elseif ($rank -le 48) { $tier = "Tier 4: Flex WRs"; $tierNumber = 4 }
+                if ($rank -le 5) { $tier = "Tier 1: Alpha Targets"; $tierNumber = 1 }
+                elseif ($rank -le 12) { $tier = "Tier 2: Elite WR1s"; $tierNumber = 2 }
+                elseif ($rank -le 20) { $tier = "Tier 3: High-End WR2s"; $tierNumber = 3 }
+                elseif ($rank -le 28) { $tier = "Tier 4: Solid WR2s"; $tierNumber = 4 }
+                elseif ($rank -le 36) { $tier = "Tier 5: Upside WR3s"; $tierNumber = 5 }
+                elseif ($rank -le 44) { $tier = "Tier 6: Flex Options"; $tierNumber = 6 }
+                elseif ($rank -le 54) { $tier = "Tier 7: Bye Week Fillers"; $tierNumber = 7 }
+                elseif ($rank -le 64) { $tier = "Tier 8: Boom/Bust"; $tierNumber = 8 }
+                elseif ($rank -le 76) { $tier = "Tier 9: Deep Sleepers"; $tierNumber = 9 }
+                else { $tier = "Tier 10: Dart Throws"; $tierNumber = 10 }
             } elseif ($pos -eq "TE") {
                 if ($rank -le 3) { $tier = "Tier 1: Elite TEs"; $tierNumber = 1 }
                 elseif ($rank -le 8) { $tier = "Tier 2: High-End TE1s"; $tierNumber = 2 }
                 elseif ($rank -le 14) { $tier = "Tier 3: Solid TE1s"; $tierNumber = 3 }
-                elseif ($rank -le 24) { $tier = "Tier 4: Upside TE2s"; $tierNumber = 4 }
+                elseif ($rank -le 22) { $tier = "Tier 4: Upside TE2s"; $tierNumber = 4 }
+                else { $tier = "Tier 5: Streamers"; $tierNumber = 5 }
             }
             
             # Synthesize base points
