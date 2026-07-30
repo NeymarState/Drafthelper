@@ -1,6 +1,6 @@
-export type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'DST' | 'K';
+﻿export type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'DST' | 'K';
 
-export type PlayerStatus = 'Verfügbar' | 'Mein Team' | 'Gedraftet (Gegner)';
+export type PlayerStatus = 'VerfÃ¼gbar' | 'Mein Team' | 'Gedraftet (Gegner)';
 
 export type ScoringFormat = 'Half-PPR' | 'Full-PPR' | 'Standard';
 
@@ -24,7 +24,7 @@ export interface Player {
   age?: number;
   dynastyTier?: string;
   profile: string;     // Fantasy Footballers notes & upside
-  customTag?: 'Sleeper' | 'Target' | 'Avoid' | null;
+  customTag?: 'Sleeper' | 'Target' | 'Avoid' | 'Fade' | 'Value' | null | '';
   rbRole?: 'RB1' | 'RB2' | 'Timeshare' | 'Handcuff' | 'RB3';
   wrRole?: 'WR1' | 'WR2' | 'WR3' | 'WR4';
   playerArchetype?: 'Upside' | 'Baseline';

@@ -191,6 +191,20 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                                 {player.wrRole}
                               </span>
                             )}
+                            {player.customTag && player.customTag !== '' && (
+                                <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border 
+                                  ${player.customTag === 'Sleeper' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 
+                                    player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
+                                    player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
+                                    player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                    'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
+                                  {player.customTag === 'Sleeper' ? '💤 Sleeper' : 
+                                   player.customTag === 'Target' ? '🎯 Target' : 
+                                   player.customTag === 'Avoid' ? '⛔ Avoid' : 
+                                   player.customTag === 'Fade' ? '📉 Fade' : 
+                                   '💎 Value'}
+                                </span>
+                              )}
                             {player.playerArchetype && (
                               <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
                                 {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}

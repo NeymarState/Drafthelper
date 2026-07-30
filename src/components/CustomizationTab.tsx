@@ -13,7 +13,8 @@ interface CustomizationTabProps {
   onImportRankings: (players: Player[]) => void;
   leagueSize?: number;
   onLeagueSizeChange?: (size: number) => void;
-  onSyncAdp?: () => void;
+  onSyncAdp?: (provider: 'sleeper' | 'espn') => void;
+  onAutoAssignRoles?: () => void;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
@@ -27,6 +28,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   leagueSize = 12,
   onLeagueSizeChange,
   onSyncAdp,
+  onAutoAssignRoles,
 }) => {
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -184,15 +186,31 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 ))}
               </select>
             </div>
-            
-            <button
-              onClick={() => onSyncAdp?.()}
-              className="px-3 py-1.5 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1.5 shadow ml-auto"
-            >
-              <Zap className="w-3.5 h-3.5" />
-              Sleeper ADP Sync
-            </button>
-          </div>
+                        <button
+                onClick={() => onAutoAssignRoles?.()}
+                className="px-3 py-1.5 text-[10px] font-bold uppercase bg-amber-600 hover:bg-amber-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                Auto-Assign Roles
+              </button>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => onSyncAdp?.('sleeper')}
+                  className="px-3 py-1.5 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  Sleeper ADP Sync
+                </button>
+                <button
+                  onClick={() => onSyncAdp?.('espn')}
+                  className="px-3 py-1.5 text-[10px] font-bold uppercase bg-red-600 hover:bg-red-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  ESPN ADP Sync
+                </button>
+              </div>
+            </div>
 
         {/* Filters */}
         <div className="flex flex-wrap gap-3 mb-4">

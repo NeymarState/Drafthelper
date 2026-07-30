@@ -1,4 +1,4 @@
-﻿$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Stop"
 
 $workspace = "C:\Users\felix\antigravity\Fantasy-Football-Command-Center-2026-2026-07-29-eb277"
 $updateRankingsPath = "$workspace\src\data\updateRankings.ts"
@@ -93,9 +93,44 @@ for ($b = 0; $b -lt $blocks.Count; $b++) {
 
 # Add K and DST manually
 $kdst = @(
-  @{ name="Justin Tucker"; pos="K"; team="BAL"; bye=14; rank=1; tier="Tier 1"; tierNumber=1; basePoints=140 },
-  @{ name="Brandon Aubrey"; pos="K"; team="DAL"; bye=7; rank=2; tier="Tier 1"; tierNumber=1; basePoints=138 },
-  @{ name="Jake Elliott"; pos="K"; team="PHI"; bye=5; rank=3; tier="Tier 1"; tierNumber=1; basePoints=135 },
+  @{ name="Brandon Aubrey"; pos="K"; team="DAL"; bye=7; rank=1; tier="Tier 1"; tierNumber=1; basePoints=143.5 },
+  @{ name="Ka'imi Fairbairn"; pos="K"; team="HOU"; bye=8; rank=2; tier="Tier 1"; tierNumber=1; basePoints=142.0 },
+  @{ name="Cameron Dicker"; pos="K"; team="LAC"; bye=7; rank=3; tier="Tier 1"; tierNumber=1; basePoints=140.5 },
+  @{ name="Jason Myers"; pos="K"; team="SEA"; bye=11; rank=4; tier="Tier 2"; tierNumber=2; basePoints=139.0 },
+  @{ name="Cam Little"; pos="K"; team="JAC"; bye=7; rank=5; tier="Tier 2"; tierNumber=2; basePoints=137.5 },
+  @{ name="Tyler Loop"; pos="K"; team="BAL"; bye=13; rank=6; tier="Tier 2"; tierNumber=2; basePoints=136.0 },
+  @{ name="Eddy Pineiro"; pos="K"; team="SF"; bye=8; rank=7; tier="Tier 2"; tierNumber=2; basePoints=134.5 },
+  @{ name="Cairo Santos"; pos="K"; team="CHI"; bye=10; rank=8; tier="Tier 3"; tierNumber=3; basePoints=133.0 },
+  @{ name="Evan McPherson"; pos="K"; team="CIN"; bye=6; rank=9; tier="Tier 3"; tierNumber=3; basePoints=131.5 },
+  @{ name="Jake Bates"; pos="K"; team="DET"; bye=6; rank=10; tier="Tier 3"; tierNumber=3; basePoints=130.0 },
+  @{ name="Harrison Mevis"; pos="K"; team="LAR"; bye=11; rank=11; tier="Tier 3"; tierNumber=3; basePoints=128.5 },
+  @{ name="Andy Borregales"; pos="K"; team="NE"; bye=11; rank=12; tier="Tier 3"; tierNumber=3; basePoints=127.0 },
+  @{ name="Chris Boswell"; pos="K"; team="PIT"; bye=9; rank=13; tier="Tier 3"; tierNumber=3; basePoints=125.5 },
+  @{ name="Harrison Butker"; pos="K"; team="KC"; bye=5; rank=14; tier="Tier 3"; tierNumber=3; basePoints=124.0 },
+  @{ name="Chase McLaughlin"; pos="K"; team="TB"; bye=10; rank=15; tier="Tier 3"; tierNumber=3; basePoints=122.5 },
+  @{ name="Wil Lutz"; pos="K"; team="DEN"; bye=10; rank=16; tier="Tier 3"; tierNumber=3; basePoints=121.0 },
+  @{ name="Will Reichard"; pos="K"; team="MIN"; bye=6; rank=17; tier="Tier 3"; tierNumber=3; basePoints=119.5 },
+  @{ name="Jake Elliott"; pos="K"; team="PHI"; bye=10; rank=18; tier="Tier 4"; tierNumber=4; basePoints=118.0 },
+  @{ name="Charlie Smyth"; pos="K"; team="NO"; bye=8; rank=19; tier="Tier 4"; tierNumber=4; basePoints=116.5 },
+  @{ name="Blake Grupe"; pos="K"; team="IND"; bye=13; rank=20; tier="Tier 4"; tierNumber=4; basePoints=115.0 },
+  @{ name="Chad Ryland"; pos="K"; team="ARI"; bye=14; rank=21; tier="Tier 4"; tierNumber=4; basePoints=113.5 },
+  @{ name="Nick Folk"; pos="K"; team="ATL"; bye=11; rank=22; tier="Tier 4"; tierNumber=4; basePoints=112.0 },
+  @{ name="Joey Slye"; pos="K"; team="TEN"; bye=9; rank=23; tier="Tier 4"; tierNumber=4; basePoints=110.5 },
+  @{ name="Tyler Bass"; pos="K"; team="BUF"; bye=7; rank=24; tier="Tier 4"; tierNumber=4; basePoints=109.0 },
+  @{ name="Zane Gonzalez"; pos="K"; team="MIA"; bye=6; rank=25; tier="Tier 4"; tierNumber=4; basePoints=107.5 },
+  @{ name="Ryan Fitzgerald"; pos="K"; team="CAR"; bye=5; rank=26; tier="Tier 4"; tierNumber=4; basePoints=106.0 },
+  @{ name="Trey Smack"; pos="K"; team="GB"; bye=11; rank=27; tier="Tier 5"; tierNumber=5; basePoints=104.5 },
+  @{ name="Daniel Carlson"; pos="K"; team="LV"; bye=13; rank=28; tier="Tier 5"; tierNumber=5; basePoints=103.0 },
+  @{ name="Ben Sauls"; pos="K"; team="NYG"; bye=8; rank=29; tier="Tier 5"; tierNumber=5; basePoints=101.5 },
+  @{ name="Jake Moody"; pos="K"; team="WAS"; bye=7; rank=30; tier="Tier 5"; tierNumber=5; basePoints=100.0 },
+  @{ name="Brandon McManus"; pos="K"; team="FA"; bye=0; rank=31; tier="Tier 5"; tierNumber=5; basePoints=98.5 },
+  @{ name="Jason Sanders"; pos="K"; team="NYJ"; bye=13; rank=32; tier="Tier 6"; tierNumber=6; basePoints=97.0 },
+  @{ name="Spencer Shrader"; pos="K"; team="IND"; bye=13; rank=33; tier="Tier 6"; tierNumber=6; basePoints=95.5 },
+  @{ name="Andre Szmyt"; pos="K"; team="CLE"; bye=11; rank=34; tier="Tier 6"; tierNumber=6; basePoints=94.0 },
+  @{ name="Matt Gay"; pos="K"; team="LV"; bye=13; rank=35; tier="Tier 6"; tierNumber=6; basePoints=92.5 },
+  @{ name="Cade York"; pos="K"; team="NYJ"; bye=13; rank=36; tier="Tier 6"; tierNumber=6; basePoints=91.0 },
+  @{ name="Riley Patterson"; pos="K"; team="MIA"; bye=6; rank=37; tier="Tier 6"; tierNumber=6; basePoints=89.5 },
+  @{ name="B.T. Potter"; pos="K"; team="TB"; bye=10; rank=38; tier="Tier 6"; tierNumber=6; basePoints=88.0 },
   @{ name="Texans DST"; pos="DST"; team="HOU"; bye=8; rank=1; tier="Tier 1"; tierNumber=1; basePoints=130 },
   @{ name="Broncos DST"; pos="DST"; team="DEN"; bye=10; rank=2; tier="Tier 1"; tierNumber=1; basePoints=129.5 },
   @{ name="Seahawks DST"; pos="DST"; team="SEA"; bye=11; rank=3; tier="Tier 1"; tierNumber=1; basePoints=129 },

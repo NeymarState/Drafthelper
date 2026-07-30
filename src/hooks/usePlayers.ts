@@ -226,23 +226,61 @@ export const usePlayers = () => {
     });
   };
 
-  const syncAdp = async () => {
+  const syncAdp = async (provider: 'sleeper' | 'espn' = 'sleeper') => {
     try {
-      const res = await fetch('/api/adp');
+      const res = await fetch(`/api/adp?provider=${provider}`);
       if (!res.ok) throw new Error('Failed to fetch ADP data');
       const adpMap = await res.json();
       
+      const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z]/g, '').replace(/jr$/, '').replace(/sr$/, '').replace(/iii$/, '').replace(/ii$/, '');
+      
       setPlayers(prev => prev.map(p => {
-        const adp = adpMap[p.name];
+        const normName = normalizeName(p.name);
+        const adp = adpMap[normName];
         if (adp !== undefined) {
           return { ...p, adp };
         }
         return p;
       }));
+      alert(`Erfolgreich ADP Daten von ${provider === 'espn' ? 'ESPN' : 'Sleeper'} synchronisiert!`);
     } catch (error) {
       console.error('Error syncing ADP:', error);
       alert('Fehler beim Synchronisieren der ADP Daten. ' + (error instanceof Error ? error.message : ''));
     }
+  };
+
+  const autoAssignRoles = () => {
+    setPlayers(prev => {
+      // Create a copy and sort by ovrRank to ensure we assign highest rank first
+      const sorted = [...prev].sort((a, b) => a.ovrRank - b.ovrRank);
+      
+      const teamCounts: Record<string, { rb: number, wr: number }> = {};
+      
+      const mapped = sorted.map(p => {
+        if (!teamCounts[p.team]) teamCounts[p.team] = { rb: 0, wr: 0 };
+        
+        let newP = { ...p };
+        if (p.pos === 'RB') {
+          teamCounts[p.team].rb += 1;
+          const count = teamCounts[p.team].rb;
+          if (count === 1) newP.rbRole = 'RB1';
+          else if (count === 2) newP.rbRole = 'RB2';
+          else if (count === 3) newP.rbRole = 'RB3';
+          else if (count === 4) newP.rbRole = 'Handcuff';
+        } else if (p.pos === 'WR') {
+          teamCounts[p.team].wr += 1;
+          const count = teamCounts[p.team].wr;
+          if (count === 1) newP.wrRole = 'WR1';
+          else if (count === 2) newP.wrRole = 'WR2';
+          else if (count === 3) newP.wrRole = 'WR3';
+          else if (count >= 4) newP.wrRole = 'WR4';
+        }
+        return newP;
+      });
+      
+      alert('Depth Chart Rollen wurden basierend auf der aktuellen Rangliste zugewiesen!');
+      return mapped.sort((a, b) => a.ovrRank - b.ovrRank);
+    });
   };
 
   return {
@@ -259,6 +297,7 @@ export const usePlayers = () => {
     handleImportRankings,
     leagueSize,
     setLeagueSize,
-    syncAdp
+    syncAdp,
+    autoAssignRoles
   };
 };

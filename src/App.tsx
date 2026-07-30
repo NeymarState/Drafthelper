@@ -39,7 +39,8 @@ export default function App() {
     handleImportRankings,
     leagueSize,
     setLeagueSize,
-    syncAdp
+    syncAdp,
+    autoAssignRoles
   } = usePlayers();
 
   const [settings, setSettings] = useState<DraftSettings>(() => {
@@ -274,6 +275,7 @@ export default function App() {
             leagueSize={leagueSize}
             onLeagueSizeChange={setLeagueSize}
             onSyncAdp={syncAdp}
+            onAutoAssignRoles={autoAssignRoles}
           />
         )}
       </main>
