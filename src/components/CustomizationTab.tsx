@@ -424,6 +424,19 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       <option value="Fade">Fade</option>
                       <option value="Value">Value</option>
                     </select>
+
+                    <select
+                      value={player.playerArchetype || ''}
+                      onChange={(e) => {
+                        const val = e.target.value as 'Upside' | 'Baseline' | '';
+                        onUpdatePlayer(player.id, { playerArchetype: val === '' ? undefined : val });
+                      }}
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
+                    >
+                      <option value="">Typ (Offen)</option>
+                      <option value="Upside">Upside</option>
+                      <option value="Baseline">Baseline</option>
+                    </select>
                   </div>
               </div>
             );
