@@ -319,57 +319,121 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                 const isDrafted = player.status !== 'Verfügbar';
                 
                 return (
-                  <div key={player.id} className={`flex items-center justify-between bg-slate-950 border rounded p-2 transition-colors ${isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-800 hover:border-slate-700'}`}>
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 flex flex-col items-center">
-                        <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold ${getPosBadgeClass(player.pos)}`}>
-                          {player.pos}
-                        </span>
-                        <span className="text-[10px] text-slate-500 mt-0.5">#{player.ovrRank}</span>
+                  <div key={player.id} className={`flex flex-col bg-slate-950 border rounded-lg p-2 transition-colors gap-2 ${isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-800 hover:border-slate-700'}`}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`font-bold text-xs flex items-center gap-1 ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100'} transition-colors`}>
+                            {player.name} <span className="text-[10px] text-slate-500 font-normal">({player.team})</span>
+                            {player.customTag === 'Sleeper' && <Zap className="w-3 h-3 text-blue-400" title="Sleeper" />}
+                            {player.customTag === 'Target' && <Target className="w-3 h-3 text-green-400" title="Target" />}
+                            {player.customTag === 'Avoid' && <ShieldAlert className="w-3 h-3 text-rose-400" title="Avoid" />}
+                            {isStackTarget(player) && (
+                              <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-0.5">
+                                <Zap className="w-2.5 h-2.5" /> STACK
+                              </span>
+                            )}
+                          </span>
+                          
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                            <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
+                              {player.posRank}
+                            </span>
+                            {player.rbRole && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                {player.rbRole}
+                              </span>
+                            )}
+                            {player.wrRole && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                {player.wrRole}
+                              </span>
+                            )}
+                            {player.customTag && player.customTag !== '' && (
+                              <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border 
+                                ${player.customTag === 'Sleeper' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 
+                                  player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
+                                  player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
+                                  player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                  'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
+                                {player.customTag === 'Sleeper' ? '💤 Sleeper' : 
+                                 player.customTag === 'Target' ? '🎯 Target' : 
+                                 player.customTag === 'Avoid' ? '⛔ Avoid' : 
+                                 player.customTag === 'Fade' ? '📉 Fade' : 
+                                 '💎 Value'}
+                              </span>
+                            )}
+                            {player.playerArchetype && (
+                              <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
+                                {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
+                              </span>
+                            )}
+                            {player.isRookie && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                                🌱 ROOKIE
+                              </span>
+                            )}
+                            {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
+                                💎 STEAL
+                              </span>
+                            )}
+                            {player.adp !== undefined && player.adp - player.ovrRank >= 12 && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30" title={`ADP: ${player.adp} | Rank: ${player.ovrRank}`}>
+                                📈 UNDERVALUED
+                              </span>
+                            )}
+                            {player.adp !== undefined && player.ovrRank - player.adp >= 12 && (
+                              <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-red-500/20 text-red-400 font-bold border border-red-500/30" title={`ADP: ${player.adp} | Rank: ${player.ovrRank}`}>
+                                📉 OVERVALUED
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="text-[11px] text-slate-400 flex flex-wrap items-center gap-2 font-mono mt-1.5">
+                          <span className={player.vorp > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
+                            {player.vorp > 0 ? '+' : ''}{player.vorp} VORP
+                          </span>
+                          <span>•</span>
+                          <span>OVR #{player.ovrRank}</span>
+                          {player.adp !== undefined && (
+                            <>
+                              <span>•</span>
+                              <span className="text-blue-400">
+                                ADP {getFormattedPick(player.adp, settings.leagueSize).formattedString.split('(')[0].trim()}
+                              </span>
+                            </>
+                          )}
+                          <span>•</span>
+                          <span className="text-slate-300">Tier {player.tier}</span>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-bold text-sm text-slate-200 flex items-center gap-1.5">
-                          {player.name}
-                          {isStackTarget(player) && (
-                            <span className="text-[9px] font-mono font-bold px-1 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                              STACK
-                            </span>
-                          )}
-                          {player.customTag === 'Sleeper' && <span className="text-[10px] text-blue-400">⚡</span>}
-                          {player.customTag === 'Target' && <span className="text-[10px] text-green-400">🎯</span>}
-                          {player.customTag === 'Avoid' && <span className="text-[10px] text-rose-400">🛑</span>}
-                        </div>
-                        <div className="text-[11px] text-slate-400 flex items-center gap-2">
-                          <span>{player.team} • Bye {player.bye}</span>
-                          {!isDrafted && (
-                            <span className={`px-1.5 rounded-sm text-[9px] font-bold ${prob.colorClass}`}>
-                              {prob.percent}% Chance bis Pick {predictorTargetPick} (Gegner-ADP: {expectedPick})
-                            </span>
-                          )}
-                          {isDrafted && (
-                            <span className="px-1.5 rounded-sm text-[9px] font-bold text-slate-500 bg-slate-900">
-                              Bereits gepickt
-                            </span>
-                          )}
-                        </div>
+
+                      <div className="flex gap-1 shrink-0 flex-col items-end">
+                        {!isDrafted && (
+                          <div className={`px-1.5 py-0.5 rounded-sm text-[9px] font-bold mb-1 ${prob.colorClass}`}>
+                            {prob.percent}% Chance bis Pick {predictorTargetPick}
+                          </div>
+                        )}
+                        {!isDrafted && (
+                          <div className="flex gap-1 mt-1">
+                            <button
+                              onClick={() => onDraftForMe(player)}
+                              className="px-2 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold rounded shadow transition-colors"
+                            >
+                              + Team
+                            </button>
+                            <button
+                              onClick={() => onDraftForOpponent(player)}
+                              className="px-2 py-1 bg-slate-700 hover:bg-slate-600 text-white text-[10px] font-bold rounded shadow transition-colors"
+                            >
+                              Gegner
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    {!isDrafted && (
-                      <div className="flex gap-1.5">
-                        <button
-                          onClick={() => onDraftForMe(player)}
-                          className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded shadow transition-colors"
-                        >
-                          DRAFT (ME)
-                        </button>
-                        <button
-                          onClick={() => onDraftForOpponent(player)}
-                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded shadow transition-colors"
-                        >
-                          GEGNER
-                        </button>
-                      </div>
-                    )}
                   </div>
                 );
               })}
