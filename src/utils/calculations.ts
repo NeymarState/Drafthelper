@@ -330,3 +330,140 @@ export function enrichPlayerData(players: Player[]): Player[] {
 
   return enriched;
 }
+
+/**
+ * F. Pick Predictor & Opponent Analysis
+ */
+export function calculateNextPick(currentOverallPick: number, userPickSlot: number, leagueSize: number): number {
+  let round = Math.ceil(currentOverallPick / leagueSize);
+  let nextPick = -1;
+  
+  // Try to find the next time the user picks
+  while (nextPick < currentOverallPick && round <= 30) {
+    if (round % 2 === 1) {
+      nextPick = (round - 1) * leagueSize + userPickSlot;
+    } else {
+      nextPick = (round - 1) * leagueSize + (leagueSize - userPickSlot + 1);
+    }
+    if (nextPick < currentOverallPick) {
+      round++;
+    }
+  }
+  return nextPick;
+}
+
+export interface OpponentNeed {
+  team: number;
+  pickSlot: number;
+  needsQB: boolean;
+  needsTE: boolean;
+  needsRB: boolean;
+  needsWR: boolean;
+  zeroRB: boolean;
+  zeroWR: boolean;
+  needsK: boolean;
+  needsDST: boolean;
+}
+
+export function analyzeOpponentNeeds(currentOverallPick: number, leagueSize: number, players: Player[]): OpponentNeed[] {
+  const upcomingNeeds: OpponentNeed[] = [];
+  const currentRound = Math.ceil(currentOverallPick / leagueSize);
+  
+  // Find the next 5 picks
+  for (let offset = 0; offset < 5; offset++) {
+    const pick = currentOverallPick + offset;
+    const round = Math.ceil(pick / leagueSize);
+    let teamSlot = 0;
+    if (round % 2 === 1) {
+      teamSlot = ((pick - 1) % leagueSize) + 1;
+    } else {
+      teamSlot = leagueSize - ((pick - 1) % leagueSize);
+    }
+    
+    // Determine what this team has drafted so far
+    const teamDraftedPlayers = players.filter(p => p.draftedAtPick !== undefined && p.draftedAtPick > 0 && p.status === 'Gedraftet (Gegner)' || p.status === 'Mein Team');
+    const thisTeamPlayers = players.filter(p => {
+      if (!p.draftedAtPick) return false;
+      const pRound = Math.ceil(p.draftedAtPick / leagueSize);
+      let pTeamSlot = 0;
+      if (pRound % 2 === 1) {
+        pTeamSlot = ((p.draftedAtPick - 1) % leagueSize) + 1;
+      } else {
+        pTeamSlot = leagueSize - ((p.draftedAtPick - 1) % leagueSize);
+      }
+      return pTeamSlot === teamSlot;
+    });
+
+    const qbs = thisTeamPlayers.filter(p => p.pos === 'QB').length;
+    const tes = thisTeamPlayers.filter(p => p.pos === 'TE').length;
+    const rbs = thisTeamPlayers.filter(p => p.pos === 'RB').length;
+    const wrs = thisTeamPlayers.filter(p => p.pos === 'WR').length;
+    const ks = thisTeamPlayers.filter(p => p.pos === 'K').length;
+    const dsts = thisTeamPlayers.filter(p => p.pos === 'DST').length;
+
+    upcomingNeeds.push({
+      team: teamSlot,
+      pickSlot: pick,
+      needsQB: currentRound >= 3 && qbs === 0,
+      needsTE: currentRound >= 3 && tes === 0,
+      needsRB: rbs < 2,
+      needsWR: wrs < 2,
+      zeroRB: rbs === 0,
+      zeroWR: wrs === 0,
+      needsK: currentRound >= 12 && ks === 0,
+      needsDST: currentRound >= 12 && dsts === 0,
+    });
+  }
+
+  return upcomingNeeds;
+}
+
+export function calculatePickProbability(
+  player: Player,
+  currentOverallPick: number,
+  nextUserPick: number,
+  upcomingNeeds: OpponentNeed[]
+): { percent: number; label: string; colorClass: string } {
+  if (nextUserPick === -1 || nextUserPick <= currentOverallPick) {
+    return { percent: 100, label: 'Jetzt', colorClass: 'text-blue-400 bg-blue-500/20' };
+  }
+
+  const expectedPick = player.adp && player.adp > 0 ? player.adp : player.ovrRank;
+  let diff = expectedPick - nextUserPick;
+
+  // Boost probabilities if upcoming opponents do not need QB/TE
+  if (player.pos === 'QB') {
+    const opponentsNeedingQB = upcomingNeeds.filter(n => n.needsQB).length;
+    if (opponentsNeedingQB === 0) diff += 4; // Boost probability since no one urgently needs a QB
+    else if (opponentsNeedingQB > 1) diff -= 4;
+  }
+  if (player.pos === 'TE') {
+    const opponentsNeedingTE = upcomingNeeds.filter(n => n.needsTE).length;
+    if (opponentsNeedingTE === 0) diff += 4;
+    else if (opponentsNeedingTE > 1) diff -= 4;
+  }
+
+  let percent = 50;
+  let label = 'Mittel';
+  let colorClass = 'text-yellow-400 bg-yellow-500/20 border border-yellow-500/30';
+
+  if (diff < -6) {
+    percent = Math.max(1, 10 + diff); // 1-10%
+    label = 'Sehr gering';
+    colorClass = 'text-red-400 bg-red-500/20 border border-red-500/30';
+  } else if (diff < 0) {
+    percent = 25 + diff * 2; // 15-35%
+    label = 'Niedrig';
+    colorClass = 'text-orange-400 bg-orange-500/20 border border-orange-500/30';
+  } else if (diff < 8) {
+    percent = 50 + diff * 3; // 40-70%
+    label = 'Mittel';
+    colorClass = 'text-yellow-400 bg-yellow-500/20 border border-yellow-500/30';
+  } else {
+    percent = Math.min(99, 80 + diff); // 80-99%
+    label = 'Hoch';
+    colorClass = 'text-green-400 bg-green-500/20 border border-green-500/30';
+  }
+
+  return { percent: Math.round(percent), label, colorClass };
+}

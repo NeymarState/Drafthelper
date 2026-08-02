@@ -277,6 +277,7 @@ export default function App() {
           <GridBoardTab
             players={players}
             settings={settings}
+            alerts={alerts}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
             onResetStatus={onResetStatusWrapper}
