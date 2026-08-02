@@ -24,6 +24,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
 
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -76,7 +77,14 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
           : p.pos === selectedPos;
       return matchesSearch && matchesPos && p.status === 'Verfügbar';
     })
-    .sort((a, b) => a.ovrRank - b.ovrRank)
+    .sort((a, b) => {
+      if (sortBy === 'ADP') {
+        const adpA = a.adp && a.adp > 0 ? a.adp : 999;
+        const adpB = b.adp && b.adp > 0 ? b.adp : 999;
+        return adpA - adpB;
+      }
+      return a.ovrRank - b.ovrRank;
+    })
     .slice(0, 50);
 
   const containerClass = isFullscreen
@@ -147,8 +155,11 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                           title={draftedPlayer && pickNum === settings.currentOverallPick - 1 ? 'Klicken, um diesen Pick rückgängig zu machen' : ''}
                         >
                           <div className="flex justify-between items-start mb-0.5 leading-none">
-                            <span className="text-[9px] text-slate-500 font-mono">
-                              {getFormattedPick(pickNum, leagueSize).formattedString.split('(')[0].trim().replace('Rd', 'R')}
+                            <span className="text-[9px] text-slate-500 font-mono" title={`Pick ${pickNum}`}>
+                              {(() => {
+                                const formatted = getFormattedPick(pickNum, leagueSize);
+                                return `${formatted.round}.${String(formatted.pickInRound).padStart(2, '0')} (${pickNum}.)`;
+                              })()}
                             </span>
                             {draftedPlayer && (
                               <span className={`text-[8px] font-mono px-1 rounded font-bold ${getPosBadgeClass(draftedPlayer.pos)}`}>
@@ -180,7 +191,27 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
           {/* Live Draft Pool */}
           <div className="h-64 shrink-0 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 flex flex-col">
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Live Draft Pool</h3>
+              <div className="flex items-center gap-3">
+                <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Live Draft Pool</h3>
+                <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
+                  <button
+                    onClick={() => setSortBy('OVR')}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                      sortBy === 'OVR' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    OVR
+                  </button>
+                  <button
+                    onClick={() => setSortBy('ADP')}
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                      sortBy === 'ADP' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    ADP
+                  </button>
+                </div>
+              </div>
               <div className="flex gap-2">
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-2.5 top-1.5 text-slate-500" />
