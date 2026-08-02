@@ -98,6 +98,25 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
           GRID BOARD
           {isFullscreen && <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30">VOLLBILD</span>}
         </h2>
+
+        {isFullscreen && (
+          <div className="flex items-center gap-3 text-[10px] font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700">
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400">AKTUELLER PICK:</span>
+              <span className="text-blue-400 font-bold">
+                #{settings.currentOverallPick} ({getFormattedPick(settings.currentOverallPick, leagueSize).formattedString.split('(')[0].trim()})
+              </span>
+            </div>
+            <span className="text-slate-600">|</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-slate-400">NÄCHSTER PICK IN:</span>
+              <span className="text-orange-400 font-bold">
+                {nextUserPick === -1 ? 'N/A' : nextUserPick === settings.currentOverallPick ? 'DU BIST DRAN!' : `${nextUserPick - settings.currentOverallPick} Picks`}
+              </span>
+            </div>
+          </div>
+        )}
+
         <button
           onClick={() => setIsFullscreen(!isFullscreen)}
           className="flex items-center gap-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-slate-300 text-xs font-bold transition-colors"
@@ -113,7 +132,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
           {/* Grid Area */}
           <div className="flex-1 overflow-auto custom-scrollbar bg-slate-900 border border-slate-700 rounded-lg shadow-xl relative">
             <div className="min-w-max p-4">
-              <div className="flex sticky top-0 bg-slate-900 z-10 pb-2 border-b border-slate-700 mb-2">
+              <div className="flex gap-2 sticky top-0 bg-slate-900 z-10 pb-2 border-b border-slate-700 mb-2">
                 <div className="w-8 shrink-0 flex items-end pb-2 font-bold text-slate-500 text-[10px] text-center justify-center">Rnd</div>
                 {teams.map(col => (
                   <div key={col} className={`w-24 shrink-0 px-1 text-center pb-2 text-[10px] font-bold uppercase tracking-wider ${col === settings.userPickSlot ? 'text-emerald-400' : 'text-slate-400'}`}>
