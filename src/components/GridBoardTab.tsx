@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
-import { Search, Maximize2, Minimize2 } from 'lucide-react';
+import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
 
