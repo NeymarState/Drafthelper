@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Player, DraftSettings } from './types';
 import { INITIAL_PLAYERS } from './data/initialPlayers';
 import { getUpdatedPlayers } from './data/updateRankings';
-import { calculateRosterSlots, generateLiveAlerts } from './utils/calculations';
+import { calculateRosterSlots, generateLiveAlerts, findNextUserPickSlot, findNextOpponentPickSlot } from './utils/calculations';
 import { usePlayers } from './hooks/usePlayers';
 
 // Components
@@ -86,20 +86,21 @@ export default function App() {
   const roster = calculateRosterSlots(userTeam, settings.scoringFormat);
   const alerts = generateLiveAlerts(players, userTeam, settings.scoringFormat);
 
-  // Handlers for Draft Actions that also update settings
   const onDraftForMeWrapper = (player: Player) => {
-    handleDraftForMe(player, settings.currentOverallPick);
+    const assignedSlot = findNextUserPickSlot(players, settings.userPickSlot, settings.leagueSize);
+    handleDraftForMe(player, assignedSlot);
     setSettings((prev) => ({
       ...prev,
-      currentOverallPick: prev.currentOverallPick + 1,
+      currentOverallPick: Math.max(prev.currentOverallPick, assignedSlot + 1),
     }));
   };
 
   const onDraftForOpponentWrapper = (player: Player) => {
-    handleDraftForOpponent(player, settings.currentOverallPick);
+    const assignedSlot = findNextOpponentPickSlot(players, settings.userPickSlot, settings.leagueSize);
+    handleDraftForOpponent(player, assignedSlot);
     setSettings((prev) => ({
       ...prev,
-      currentOverallPick: prev.currentOverallPick + 1,
+      currentOverallPick: Math.max(prev.currentOverallPick, assignedSlot + 1),
     }));
   };
 

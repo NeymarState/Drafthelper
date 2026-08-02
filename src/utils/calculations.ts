@@ -334,6 +334,37 @@ export function enrichPlayerData(players: Player[]): Player[] {
 /**
  * F. Pick Predictor & Opponent Analysis
  */
+export function isUserPickSlot(pick: number, userPickSlot: number, leagueSize: number): boolean {
+  const round = Math.ceil(pick / leagueSize);
+  let slotOwner = 0;
+  if (round % 2 === 1) {
+    slotOwner = ((pick - 1) % leagueSize) + 1;
+  } else {
+    slotOwner = leagueSize - ((pick - 1) % leagueSize);
+  }
+  return slotOwner === userPickSlot;
+}
+
+export function findNextUserPickSlot(players: Player[], userPickSlot: number, leagueSize: number): number {
+  for (let pick = 1; pick <= 500; pick++) {
+    if (isUserPickSlot(pick, userPickSlot, leagueSize)) {
+      const isOccupied = players.some(p => p.draftedAtPick === pick);
+      if (!isOccupied) return pick;
+    }
+  }
+  return 1;
+}
+
+export function findNextOpponentPickSlot(players: Player[], userPickSlot: number, leagueSize: number): number {
+  for (let pick = 1; pick <= 500; pick++) {
+    if (!isUserPickSlot(pick, userPickSlot, leagueSize)) {
+      const isOccupied = players.some(p => p.draftedAtPick === pick);
+      if (!isOccupied) return pick;
+    }
+  }
+  return 1;
+}
+
 export function calculateNextPick(currentOverallPick: number, userPickSlot: number, leagueSize: number): number {
   let round = Math.ceil(currentOverallPick / leagueSize);
   let nextPick = -1;

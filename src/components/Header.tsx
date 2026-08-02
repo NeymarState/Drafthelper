@@ -1,7 +1,7 @@
 import React from 'react';
 import { Trophy, RefreshCw, Download, Layers, Users, Award, Zap } from 'lucide-react';
 import { DraftSettings } from '../types';
-import { getFormattedPick } from '../utils/calculations';
+import { getFormattedPick, calculateNextPick } from '../utils/calculations';
 
 interface HeaderProps {
   settings: DraftSettings;
@@ -42,9 +42,40 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Live Pick Counter Widget & Summary */}
         <div className="flex items-center gap-3 text-xs font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700">
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">PICK:</span>
+            <span className="text-slate-400">MEIN PICK-SLOT:</span>
+            {totalDraftedCount === 0 ? (
+              <select
+                value={settings.userPickSlot}
+                onChange={(e) => onUpdateSettings({ userPickSlot: Number(e.target.value) })}
+                className="bg-slate-950 border border-slate-700 text-emerald-400 font-bold rounded px-1 py-0.5 outline-none focus:border-emerald-500 cursor-pointer"
+              >
+                {Array.from({ length: settings.leagueSize }, (_, i) => i + 1).map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            ) : (
+              <span className="text-emerald-400 font-bold px-1.5 py-0.5 bg-emerald-950/30 border border-emerald-900/50 rounded">
+                {settings.userPickSlot} 🔒
+              </span>
+            )}
+          </div>
+          <span className="text-slate-600">|</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400">AKTUELLER PICK:</span>
             <span className="text-blue-400 font-bold">
-              #{settings.currentOverallPick} ({currentPickInfo.formattedString})
+              #{settings.currentOverallPick} ({currentPickInfo.formattedString.split('(')[0].trim()})
+            </span>
+          </div>
+          <span className="text-slate-600">|</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400">NÄCHSTER PICK IN:</span>
+            <span className="text-orange-400 font-bold">
+              {(() => {
+                const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize);
+                if (nextUserPick === -1) return 'N/A';
+                if (nextUserPick === settings.currentOverallPick) return 'DU BIST DRAN!';
+                return `${nextUserPick - settings.currentOverallPick} Picks`;
+              })()}
             </span>
           </div>
           <span className="text-slate-600">|</span>
