@@ -23,7 +23,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <header id="main-header" className="bg-slate-900/90 border-b border-slate-700 text-slate-100 shadow-xl sticky top-0 z-40 backdrop-blur-md">
       {/* Top Banner */}
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 h-14 flex flex-wrap items-center justify-between gap-4">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 min-h-[3.5rem] py-2 flex flex-wrap items-center justify-between gap-4">
         {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-white shadow-md shadow-blue-600/30 shrink-0">
@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Live Pick Counter Widget & Summary */}
-        <div className="flex items-center gap-3 text-xs font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700 mx-auto">
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">MEIN PICK-SLOT:</span>
             {totalDraftedCount === 0 ? (
