@@ -6,6 +6,7 @@ import { AlertsBanner } from './AlertsBanner';
 
 interface GridBoardTabProps {
   players: Player[];
+  userTeam: Player[];
   settings: DraftSettings;
   alerts: AlertItem[];
   onDraftForMe: (player: Player) => void;
@@ -15,6 +16,7 @@ interface GridBoardTabProps {
 
 export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   players,
+  userTeam,
   settings,
   alerts,
   onDraftForMe,
@@ -25,6 +27,19 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
+  const [hideQB, setHideQB] = useState(false);
+  const [hideTE, setHideTE] = useState(false);
+  const [showDrafted, setShowDrafted] = useState(false);
+
+  // Stack logic
+  const myQbTeams = userTeam.filter(p => p.pos === 'QB').map(p => p.team);
+  const myFlexTeams = userTeam.filter(p => ['WR', 'RB', 'TE'].includes(p.pos)).map(p => p.team);
+
+  const isStackTarget = (player: Player) => {
+    if (['WR', 'RB', 'TE'].includes(player.pos) && myQbTeams.includes(player.team)) return true;
+    if (player.pos === 'QB' && myFlexTeams.includes(player.team)) return true;
+    return false;
+  };
 
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -75,7 +90,13 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
         : selectedPos === 'FLEX' 
           ? ['RB', 'WR', 'TE'].includes(p.pos)
           : p.pos === selectedPos;
-      return matchesSearch && matchesPos && p.status === 'Verfügbar';
+      const isDrafted = p.status !== 'Verfügbar';
+      
+      if (hideQB && p.pos === 'QB') return false;
+      if (hideTE && p.pos === 'TE') return false;
+      if (!showDrafted && isDrafted) return false;
+      
+      return matchesSearch && matchesPos;
     })
     .sort((a, b) => {
       if (sortBy === 'ADP') {
@@ -231,7 +252,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                   </button>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-2.5 top-1.5 text-slate-500" />
                   <input
@@ -239,7 +260,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                     placeholder="Suche..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 bg-slate-950 border border-slate-700 text-slate-100 rounded px-3 py-1 text-xs focus:outline-none focus:border-blue-500"
+                    className="pl-8 w-32 bg-slate-950 border border-slate-700 text-slate-100 rounded px-3 py-1 text-xs focus:outline-none focus:border-blue-500"
                   />
                 </div>
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
@@ -257,6 +278,32 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                     </button>
                   ))}
                 </div>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setHideQB(!hideQB)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideQB ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO QB
+                  </button>
+                  <button
+                    onClick={() => setHideTE(!hideTE)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideTE ? 'bg-orange-900/50 text-orange-400 border-orange-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO TE
+                  </button>
+                  <button
+                    onClick={() => setShowDrafted(!showDrafted)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      showDrafted ? 'bg-slate-700 text-slate-200 border-slate-500' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    ALL
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -269,8 +316,10 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                 const prob = calculatePickProbability(player, settings.currentOverallPick, predictorTargetPick, upcomingNeeds);
                 const expectedPick = player.adp && player.adp > 0 ? player.adp : player.ovrRank;
                 
+                const isDrafted = player.status !== 'Verfügbar';
+                
                 return (
-                  <div key={player.id} className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded p-2 hover:border-slate-700 transition-colors">
+                  <div key={player.id} className={`flex items-center justify-between bg-slate-950 border rounded p-2 transition-colors ${isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-800 hover:border-slate-700'}`}>
                     <div className="flex items-center gap-3">
                       <div className="w-8 flex flex-col items-center">
                         <span className={`text-[10px] font-mono px-1 py-0.5 rounded font-bold ${getPosBadgeClass(player.pos)}`}>
@@ -279,29 +328,48 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                         <span className="text-[10px] text-slate-500 mt-0.5">#{player.ovrRank}</span>
                       </div>
                       <div>
-                        <div className="font-bold text-sm text-slate-200">{player.name}</div>
+                        <div className="font-bold text-sm text-slate-200 flex items-center gap-1.5">
+                          {player.name}
+                          {isStackTarget(player) && (
+                            <span className="text-[9px] font-mono font-bold px-1 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
+                              STACK
+                            </span>
+                          )}
+                          {player.customTag === 'Sleeper' && <span className="text-[10px] text-blue-400">⚡</span>}
+                          {player.customTag === 'Target' && <span className="text-[10px] text-green-400">🎯</span>}
+                          {player.customTag === 'Avoid' && <span className="text-[10px] text-rose-400">🛑</span>}
+                        </div>
                         <div className="text-[11px] text-slate-400 flex items-center gap-2">
                           <span>{player.team} • Bye {player.bye}</span>
-                          <span className={`px-1.5 rounded-sm text-[9px] font-bold ${prob.colorClass}`}>
-                            {prob.percent}% Chance bis Pick {predictorTargetPick} (Gegner-ADP: {expectedPick})
-                          </span>
+                          {!isDrafted && (
+                            <span className={`px-1.5 rounded-sm text-[9px] font-bold ${prob.colorClass}`}>
+                              {prob.percent}% Chance bis Pick {predictorTargetPick} (Gegner-ADP: {expectedPick})
+                            </span>
+                          )}
+                          {isDrafted && (
+                            <span className="px-1.5 rounded-sm text-[9px] font-bold text-slate-500 bg-slate-900">
+                              Bereits gepickt
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="flex gap-1.5">
-                      <button
-                        onClick={() => onDraftForMe(player)}
-                        className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded shadow transition-colors"
-                      >
-                        DRAFT (ME)
-                      </button>
-                      <button
-                        onClick={() => onDraftForOpponent(player)}
-                        className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded shadow transition-colors"
-                      >
-                        GEGNER
-                      </button>
-                    </div>
+                    {!isDrafted && (
+                      <div className="flex gap-1.5">
+                        <button
+                          onClick={() => onDraftForMe(player)}
+                          className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded shadow transition-colors"
+                        >
+                          DRAFT (ME)
+                        </button>
+                        <button
+                          onClick={() => onDraftForOpponent(player)}
+                          className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold rounded shadow transition-colors"
+                        >
+                          GEGNER
+                        </button>
+                      </div>
+                    )}
                   </div>
                 );
               })}

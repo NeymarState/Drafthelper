@@ -277,6 +277,7 @@ export default function App() {
         {activeTab === 'grid' && (
           <GridBoardTab
             players={players}
+            userTeam={userTeam}
             settings={settings}
             alerts={alerts}
             onDraftForMe={onDraftForMeWrapper}
