@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
 import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
@@ -26,10 +26,22 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
+  const [sortBy, setSortBy] = useState<'OVR' | 'ADP' | 'VORP'>('OVR');
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
   const [showDrafted, setShowDrafted] = useState(false);
+  
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to the current pick when it changes
+  useEffect(() => {
+    if (gridContainerRef.current) {
+      const currentPickElement = gridContainerRef.current.querySelector(`#grid-pick-${settings.currentOverallPick}`);
+      if (currentPickElement) {
+        currentPickElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    }
+  }, [settings.currentOverallPick]);
 
   // Stack logic
   const myQbTeams = userTeam.filter(p => p.pos === 'QB').map(p => p.team);
@@ -155,7 +167,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
         {/* Left Column: Grid + Live Draft Pool */}
         <div className="flex-1 flex flex-col gap-4 overflow-hidden">
           {/* Grid Area */}
-          <div className="flex-1 overflow-auto custom-scrollbar bg-slate-900 border border-slate-700 rounded-lg shadow-xl relative">
+          <div ref={gridContainerRef} className="flex-1 overflow-auto custom-scrollbar bg-slate-900 border border-slate-700 rounded-lg shadow-xl relative">
             <div className="min-w-max p-4">
               <div className="flex gap-2 sticky top-0 bg-slate-900 z-10 pb-2 border-b border-slate-700 mb-2">
                 <div className="w-8 shrink-0 flex items-end pb-2 font-bold text-slate-500 text-[10px] text-center justify-center">Rnd</div>
@@ -182,6 +194,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                       return (
                         <div 
                           key={col} 
+                          id={`grid-pick-${pickNum}`}
                           onClick={() => {
                             if (draftedPlayer && pickNum === settings.currentOverallPick - 1) {
                               onResetStatus(draftedPlayer);
