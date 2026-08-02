@@ -30,6 +30,7 @@ export interface Player {
   playerArchetype?: 'Upside' | 'Baseline';
   isRookie?: boolean;
   adp?: number;
+  draftedAtPick?: number;
 }
 
 export interface DraftSettings {

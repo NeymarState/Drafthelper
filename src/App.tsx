@@ -19,9 +19,10 @@ import { SleepersHandcuffsTab } from './components/SleepersHandcuffsTab';
 import { ValuePlayersTab } from './components/ValuePlayersTab';
 import { TiersTab } from './components/TiersTab';
 import { CustomizationTab } from './components/CustomizationTab';
+import { GridBoardTab } from './components/GridBoardTab';
 import { ExportModal } from './components/ExportModal';
 
-import { LayoutDashboard, Table, Layers, SlidersHorizontal, Shield, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Table, Grid, Layers, SlidersHorizontal, Shield, Sparkles } from 'lucide-react';
 
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 
@@ -63,7 +64,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'board' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
+    'dashboard' | 'board' | 'grid' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
@@ -87,7 +88,7 @@ export default function App() {
 
   // Handlers for Draft Actions that also update settings
   const onDraftForMeWrapper = (player: Player) => {
-    handleDraftForMe(player);
+    handleDraftForMe(player, settings.currentOverallPick);
     setSettings((prev) => ({
       ...prev,
       currentOverallPick: prev.currentOverallPick + 1,
@@ -95,11 +96,21 @@ export default function App() {
   };
 
   const onDraftForOpponentWrapper = (player: Player) => {
-    handleDraftForOpponent(player);
+    handleDraftForOpponent(player, settings.currentOverallPick);
     setSettings((prev) => ({
       ...prev,
       currentOverallPick: prev.currentOverallPick + 1,
     }));
+  };
+
+  const onResetStatusWrapper = (player: Player) => {
+    handleResetStatus(player);
+    if (player.draftedAtPick === settings.currentOverallPick - 1) {
+      setSettings((prev) => ({
+        ...prev,
+        currentOverallPick: Math.max(1, prev.currentOverallPick - 1),
+      }));
+    }
   };
 
   const onResetDraftWrapper = () => {
@@ -151,7 +162,20 @@ export default function App() {
             }`}
           >
             <Table className="w-3.5 h-3.5 text-blue-400" />
-            <span>Master Draft Board</span>
+            MASTER DRAFT BOARD
+          </button>
+
+          <button
+            id="tab-grid"
+            onClick={() => setActiveTab('grid')}
+            className={`flex-1 min-w-[140px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
+              activeTab === 'grid'
+                ? 'border-blue-500 bg-blue-500/10 text-white rounded-t'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-t'
+            }`}
+          >
+            <Grid className="w-3.5 h-3.5 text-blue-400" />
+            GRID BOARD
           </button>
 
           <button
@@ -235,7 +259,7 @@ export default function App() {
             alerts={alerts}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
-            onRemoveFromTeam={handleResetStatus}
+            onRemoveFromTeam={onResetStatusWrapper}
           />
         )}
 
@@ -245,7 +269,17 @@ export default function App() {
             settings={settings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
-            onResetStatus={handleResetStatus}
+            onResetStatus={onResetStatusWrapper}
+          />
+        )}
+
+        {activeTab === 'grid' && (
+          <GridBoardTab
+            players={players}
+            settings={settings}
+            onDraftForMe={onDraftForMeWrapper}
+            onDraftForOpponent={onDraftForOpponentWrapper}
+            onResetStatus={onResetStatusWrapper}
           />
         )}
 
@@ -254,7 +288,7 @@ export default function App() {
             userTeam={userTeam}
             roster={roster}
             settings={settings}
-            onRemoveFromTeam={handleResetStatus}
+            onRemoveFromTeam={onResetStatusWrapper}
           />
         )}
 

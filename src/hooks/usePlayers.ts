@@ -109,21 +109,27 @@ export const usePlayers = () => {
     }
   }, [players]);
 
-  const handleDraftForMe = (player: Player) => {
+  const handleDraftForMe = (player: Player, pickNumber: number) => {
     setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Mein Team' } : p))
+      prev.map((p) => (p.id === player.id ? { ...p, status: 'Mein Team', draftedAtPick: pickNumber } : p))
     );
   };
 
-  const handleDraftForOpponent = (player: Player) => {
+  const handleDraftForOpponent = (player: Player, pickNumber: number) => {
     setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Gedraftet (Gegner)' } : p))
+      prev.map((p) => (p.id === player.id ? { ...p, status: 'Gedraftet (Gegner)', draftedAtPick: pickNumber } : p))
     );
   };
 
   const handleResetStatus = (player: Player) => {
     setPlayers((prev) =>
-      prev.map((p) => (p.id === player.id ? { ...p, status: 'Verfügbar' } : p))
+      prev.map((p) => {
+        if (p.id === player.id) {
+          const { draftedAtPick, ...rest } = p;
+          return { ...rest, status: 'Verfügbar' };
+        }
+        return p;
+      })
     );
   };
 
