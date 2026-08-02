@@ -262,7 +262,11 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
 
             <div className="flex-1 overflow-auto custom-scrollbar pr-2 space-y-1.5">
               {displayPlayers.map(player => {
-                const prob = calculatePickProbability(player, settings.currentOverallPick, nextUserPick, upcomingNeeds);
+                const predictorTargetPick = nextUserPick === settings.currentOverallPick
+                  ? calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, leagueSize)
+                  : nextUserPick;
+                  
+                const prob = calculatePickProbability(player, settings.currentOverallPick, predictorTargetPick, upcomingNeeds);
                 const expectedPick = player.adp && player.adp > 0 ? player.adp : player.ovrRank;
                 
                 return (
@@ -279,7 +283,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                         <div className="text-[11px] text-slate-400 flex items-center gap-2">
                           <span>{player.team} • Bye {player.bye}</span>
                           <span className={`px-1.5 rounded-sm text-[9px] font-bold ${prob.colorClass}`}>
-                            {prob.percent}% Chance bis Pick {nextUserPick} (Gegner-ADP: {expectedPick})
+                            {prob.percent}% Chance bis Pick {predictorTargetPick} (Gegner-ADP: {expectedPick})
                           </span>
                         </div>
                       </div>
