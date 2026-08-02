@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
 import { Search, Maximize2, Minimize2 } from 'lucide-react';
-import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability } from '../utils/calculations';
+import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
 
 interface GridBoardTabProps {
@@ -98,6 +98,10 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
       
       return matchesSearch && matchesPos;
     })
+    .map((p) => ({
+      ...p,
+      vorp: calculateVORP(p, players, settings.scoringFormat, settings.leagueSize),
+    }))
     .sort((a, b) => {
       if (sortBy === 'ADP') {
         const adpA = a.adp && a.adp > 0 ? a.adp : 999;
