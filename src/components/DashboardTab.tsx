@@ -30,6 +30,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [showDrafted, setShowDrafted] = useState(false);
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
+  const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
   
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -59,6 +60,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     return false;
   };
 
+  const isOverlapWarning = (player: Player) => {
+    // Wenn es sich um einen Skill-Player handelt und wir bereits einen Skill-Player von demselben Team haben
+    if (['WR', 'RB', 'TE'].includes(player.pos) && myFlexTeams.includes(player.team)) {
+      return true;
+    }
+    return false;
+  };
+
   // Filter and sort players for the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
@@ -84,7 +93,14 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       adjustedProj: getAdjustedProjection(p, settings.scoringFormat),
       pickInfo: getFormattedPick(p.ovrRank, settings.leagueSize),
     }))
-    .sort((a, b) => a.ovrRank - b.ovrRank)
+    .sort((a, b) => {
+      if (sortBy === 'ADP') {
+        const adpA = a.adp && a.adp > 0 ? a.adp : 999;
+        const adpB = b.adp && b.adp > 0 ? b.adp : 999;
+        return adpA - adpB;
+      }
+      return a.ovrRank - b.ovrRank;
+    })
     .slice(0, 15); // Show top 15 in Dashboard
 
   // Total Projected Points for Starter Lineup
@@ -333,9 +349,37 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       <div>
                         <div className="font-bold text-slate-200 flex items-center gap-1.5">
                           <span>{player.name}</span>
-                          <span className="text-[10px] px-1 bg-slate-800 text-blue-400 rounded font-mono">{player.posRank}</span>
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono font-bold border border-transparent ${getPosBadgeClass(player.pos)}`}>
+                            {player.posRank}
+                          </span>
                         </div>
-                        <div className="text-[10px] font-mono text-slate-400">{player.team} • Bye {player.bye}</div>
+                        <div className="text-[10px] font-mono text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
+                          <span>{player.team} • Bye {player.bye}</span>
+                          <span>•</span>
+                          <span className="text-slate-300">{player.tier}</span>
+                          {player.customTag && player.customTag !== '' && (
+                            <span className={`text-[8px] font-mono px-1 rounded font-bold border flex items-center gap-0.5
+                              ${player.customTag === 'Sleeper' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 
+                                player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
+                                player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
+                                player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
+                              {player.customTag === 'Sleeper' && <Zap className="w-2 h-2" />}
+                              {player.customTag === 'Target' && <Target className="w-2 h-2" />}
+                              {player.customTag === 'Avoid' && <ShieldAlert className="w-2 h-2" />}
+                              {player.customTag === 'Sleeper' ? 'Sleeper' : 
+                               player.customTag === 'Target' ? 'Target' : 
+                               player.customTag === 'Avoid' ? 'Avoid' : 
+                               player.customTag === 'Fade' ? 'Fade' : 
+                               'Value'}
+                            </span>
+                          )}
+                          {player.playerArchetype && (
+                            <span className={`text-[8px] font-mono px-1 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
+                              {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
+                            </span>
+                          )}
+                        </div>
                       </div>
                       <button
                         onClick={() => onRemoveFromTeam(player)}
@@ -402,7 +446,25 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                     </button>
                   ))}
                 </div>
-                <div className="flex gap-1.5 ml-2">
+                <div className="flex gap-1.5 ml-auto">
+                  <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700 mr-2">
+                    <button
+                      onClick={() => setSortBy('OVR')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                        sortBy === 'OVR' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      OVR
+                    </button>
+                    <button
+                      onClick={() => setSortBy('ADP')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                        sortBy === 'ADP' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      ADP
+                    </button>
+                  </div>
                   <button
                     onClick={() => setHideQB(!hideQB)}
                     className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors border ${
@@ -446,6 +508,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                           {isStackTarget(player) && (
                             <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-0.5">
                               <Zap className="w-2.5 h-2.5" /> STACK
+                            </span>
+                          )}
+                          {isOverlapWarning(player) && (
+                            <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center gap-0.5" title="Du hast bereits einen WR, RB oder TE von diesem Team!">
+                              ⚠️ OVERLAP
                             </span>
                           )}
                         </span>

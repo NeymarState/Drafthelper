@@ -53,6 +53,11 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
     return false;
   };
 
+  const isOverlapWarning = (player: Player) => {
+    if (['WR', 'RB', 'TE'].includes(player.pos) && myFlexTeams.includes(player.team)) return true;
+    return false;
+  };
+
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
       case 'RB': return 'bg-green-500/20 text-green-400 border border-green-500/30';
@@ -348,6 +353,11 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                             {isStackTarget(player) && (
                               <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-0.5">
                                 <Zap className="w-2.5 h-2.5" /> STACK
+                              </span>
+                            )}
+                            {isOverlapWarning(player) && (
+                              <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 flex items-center gap-0.5" title="Du hast bereits einen WR, RB oder TE von diesem Team!">
+                                ⚠️ OVERLAP
                               </span>
                             )}
                           </span>

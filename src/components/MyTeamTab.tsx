@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Player, RosterState, DraftSettings } from '../types';
 import { getAdjustedProjection, calculateVORP } from '../utils/calculations';
-import { Shield, Award, Zap, Calendar, UserX, Sparkles, ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { Shield, Award, Zap, Calendar, UserX, Sparkles, ChevronDown, ChevronUp, FileText, Target, ShieldAlert } from 'lucide-react';
 
 interface MyTeamTabProps {
   userTeam: Player[];
@@ -142,6 +142,43 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
                               {isStack && (
                                 <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
                                   <Zap className="w-3 h-3 text-blue-400" /> QB STACK
+                                </span>
+                              )}
+                              {player.rbRole && (
+                                <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                  {player.rbRole}
+                                </span>
+                              )}
+                              {player.wrRole && (
+                                <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-slate-800 text-slate-300 font-bold border border-slate-700">
+                                  {player.wrRole}
+                                </span>
+                              )}
+                              {player.customTag && player.customTag !== '' && (
+                                <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border flex items-center gap-1
+                                  ${player.customTag === 'Sleeper' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' : 
+                                    player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
+                                    player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
+                                    player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                    'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
+                                  {player.customTag === 'Sleeper' && <Zap className="w-2.5 h-2.5" />}
+                                  {player.customTag === 'Target' && <Target className="w-2.5 h-2.5" />}
+                                  {player.customTag === 'Avoid' && <ShieldAlert className="w-2.5 h-2.5" />}
+                                  {player.customTag === 'Sleeper' ? 'Sleeper' : 
+                                   player.customTag === 'Target' ? 'Target' : 
+                                   player.customTag === 'Avoid' ? 'Avoid' : 
+                                   player.customTag === 'Fade' ? 'Fade' : 
+                                   'Value'}
+                                </span>
+                              )}
+                              {player.playerArchetype && (
+                                <span className={`text-[9px] font-mono px-1 py-0.5 rounded font-bold border ${player.playerArchetype === 'Upside' ? 'bg-amber-500/20 text-amber-400 border-amber-500/30' : 'bg-slate-700/20 text-slate-400 border-slate-700/30'}`}>
+                                  {player.playerArchetype === 'Upside' ? '⬆️ Upside' : '📊 Baseline'}
+                                </span>
+                              )}
+                              {player.isRookie && (
+                                <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">
+                                  🌱 ROOKIE
                                 </span>
                               )}
                             </div>
