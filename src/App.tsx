@@ -102,7 +102,7 @@ export default function App() {
         const ghost = ghostPicks[ghostIndex];
         return {
           ...p,
-          status: ghost.isUser ? 'Mein Team' : 'Gegner',
+          status: ghost.isUser ? 'Mein Team' : 'Gedraftet (Gegner)',
           draftedAtPick: settings.currentOverallPick + ghostIndex,
           isGhostPick: true
         } as Player;

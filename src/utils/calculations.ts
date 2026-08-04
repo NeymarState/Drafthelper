@@ -218,15 +218,30 @@ export function generateLiveAlerts(
     const immediateNeeds = oppNeeds.slice(0, picksUntilNext);
     
     positions.forEach(pos => {
-      const needCount = immediateNeeds.filter(n => n.needs.includes(pos)).length;
+      let needCount = 0;
+      const needyTeams: string[] = [];
+      
+      immediateNeeds.forEach(n => {
+        let needsThisPos = false;
+        if (pos === 'QB' && n.needsQB) needsThisPos = true;
+        if (pos === 'RB' && n.needsRB) needsThisPos = true;
+        if (pos === 'WR' && n.needsWR) needsThisPos = true;
+        if (pos === 'TE' && n.needsTE) needsThisPos = true;
+
+        if (needsThisPos) {
+          needCount++;
+          needyTeams.push(`Team ${n.team} (Pick ${n.pickSlot}) braucht ${pos}`);
+        }
+      });
+
       if (needCount >= 2) {
         alerts.push({
           id: `threat-${pos}`,
           type: 'threat-radar',
           severity: 'high',
-          title: `🎯 GEGNER-RADAR: ${pos} GEFAHR`,
+          title: `🚨 GEGNER-RADAR: ${pos} GEFAHR`,
           message: `${needCount} der nächsten ${picksUntilNext} Teams brauchen dringend einen ${pos}!`,
-          details: immediateNeeds.filter(n => n.needs.includes(pos)).map(n => `Team ${n.teamSlot} (Pick ${n.pick}) braucht ${pos}`),
+          details: needyTeams,
         });
       }
     });
