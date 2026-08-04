@@ -23,7 +23,7 @@ import { CustomizationTab } from './components/CustomizationTab';
 import { GridBoardTab } from './components/GridBoardTab';
 import { ExportModal } from './components/ExportModal';
 
-import { LayoutDashboard, Table, Grid, Layers, SlidersHorizontal, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
+import { LayoutDashboard, Table, Grid, Layers, Settings2, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
 
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 
