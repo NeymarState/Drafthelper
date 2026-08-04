@@ -79,15 +79,15 @@ export default function App() {
     }
   }, [settings]);
 
+  // Total drafted players count
+  const totalDraftedCount = players.filter((p) => p.status !== 'Verfügbar').length;
+
   // Audio Feedback on Turn
   useEffect(() => {
     if (totalDraftedCount > 0 && isUserPickSlot(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize)) {
       playTurnSound();
     }
   }, [settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, totalDraftedCount]);
-
-  // Total drafted players count
-  const totalDraftedCount = players.filter((p) => p.status !== 'Verfügbar').length;
 
   // Auto-update current pick based on drafted count if not manually overridden
   const userTeam = players.filter((p) => p.status === 'Mein Team');
