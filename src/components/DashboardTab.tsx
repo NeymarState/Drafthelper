@@ -31,6 +31,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [showDrafted, setShowDrafted] = useState(false);
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
+  const [hideK, setHideK] = useState(false);
+  const [hideDST, setHideDST] = useState(false);
   const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
   
   const getPosBadgeClass = (pos: string) => {
@@ -85,6 +87,8 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
 
       if (hideQB && p.pos === 'QB') return false;
       if (hideTE && p.pos === 'TE') return false;
+      if (hideK && p.pos === 'K') return false;
+      if (hideDST && p.pos === 'DST') return false;
       
       return matchesSearch && matchesPos && matchesStatus;
     })
@@ -435,7 +439,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                 </div>
                 
                 <div className="flex bg-slate-900 border border-slate-700 rounded p-0.5 w-full">
-                  {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
+                  {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'] as const).map((pos) => (
                     <button
                       key={pos}
                       onClick={() => setSelectedPos(pos)}
@@ -448,6 +452,41 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       {pos}
                     </button>
                   ))}
+                </div>
+                
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setHideQB(!hideQB)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideQB ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO QB
+                  </button>
+                  <button
+                    onClick={() => setHideTE(!hideTE)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideTE ? 'bg-orange-900/50 text-orange-400 border-orange-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO TE
+                  </button>
+                  <button
+                    onClick={() => setHideK(!hideK)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideK ? 'bg-purple-900/50 text-purple-400 border-purple-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO K
+                  </button>
+                  <button
+                    onClick={() => setHideDST(!hideDST)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideDST ? 'bg-yellow-900/50 text-yellow-400 border-yellow-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO DST
+                  </button>
                 </div>
               </div>
             </div>

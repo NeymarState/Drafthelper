@@ -26,11 +26,32 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [sortBy, setSortBy] = useState<'OVR' | 'ADP' | 'VORP'>('OVR');
+  const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
+  const [poolHeight, setPoolHeight] = useState(256); // Default 64 * 4px = 256px
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
+  const [hideK, setHideK] = useState(false);
+  const [hideDST, setHideDST] = useState(false);
   const [showDrafted, setShowDrafted] = useState(false);
   
+  const startResizing = (e: React.MouseEvent) => {
+    const startY = e.clientY;
+    const startHeight = poolHeight;
+    
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      const deltaY = startY - moveEvent.clientY; // Dragging UP increases height
+      setPoolHeight(Math.max(150, Math.min(800, startHeight + deltaY)));
+    };
+    
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  };
+
   const gridContainerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to the current pick when it changes
@@ -111,6 +132,8 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
       
       if (hideQB && p.pos === 'QB') return false;
       if (hideTE && p.pos === 'TE') return false;
+      if (hideK && p.pos === 'K') return false;
+      if (hideDST && p.pos === 'DST') return false;
       if (!showDrafted && isDrafted) return false;
       
       return matchesSearch && matchesPos;
@@ -250,9 +273,20 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
             </div>
           </div>
 
-          {/* Live Draft Pool */}
-          <div className="h-64 shrink-0 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 flex flex-col">
-            <div className="flex justify-between items-center mb-3">
+          {/* Live Draft Pool with Resizer Handle */}
+          <div 
+            className="shrink-0 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 flex flex-col relative transition-all"
+            style={{ height: `${poolHeight}px` }}
+          >
+            {/* Resizer Handle */}
+            <div 
+              className="absolute top-0 left-0 right-0 h-2 cursor-row-resize flex justify-center items-center hover:bg-slate-700/50 group z-10 rounded-t-lg -mt-1"
+              onMouseDown={startResizing}
+            >
+              <div className="w-12 h-1 bg-slate-600 rounded-full group-hover:bg-blue-400 transition-colors" />
+            </div>
+
+            <div className="flex justify-between items-center mb-3 mt-1">
               <div className="flex items-center gap-3">
                 <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider">Live Draft Pool</h3>
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
@@ -286,7 +320,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                   />
                 </div>
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
-                  {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
+                  {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'] as const).map((pos) => (
                     <button
                       key={pos}
                       onClick={() => setSelectedPos(pos)}
@@ -316,6 +350,22 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                     }`}
                   >
                     NO TE
+                  </button>
+                  <button
+                    onClick={() => setHideK(!hideK)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideK ? 'bg-purple-900/50 text-purple-400 border-purple-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO K
+                  </button>
+                  <button
+                    onClick={() => setHideDST(!hideDST)}
+                    className={`px-2 py-0.5 rounded text-[9px] font-bold transition-colors border ${
+                      hideDST ? 'bg-yellow-900/50 text-yellow-400 border-yellow-500/50' : 'bg-slate-950 text-slate-500 border-slate-700'
+                    }`}
+                  >
+                    NO DST
                   </button>
                   <button
                     onClick={() => setShowDrafted(!showDrafted)}
