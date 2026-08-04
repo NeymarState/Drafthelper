@@ -195,8 +195,9 @@ export function generateLiveAlerts(
       if (tierPlayers.length > 0 && availableInTier.length <= 2 && availableInTier.length > 0) {
         let probMsg = '';
         if (picksUntilNext > 0) {
-          const prob = calculatePickProbability(availableInTier[0], nextUserPick, currentOverallPick);
-          probMsg = `Dein Pick ist in ${picksUntilNext} Picks. Wahrscheinlichkeit, dass ${availableInTier[0].name} überlebt: ${(prob.probability * 100).toFixed(0)}%.`;
+          const oppNeeds = analyzeOpponentNeeds(currentOverallPick, leagueSize, allPlayers);
+          const prob = calculatePickProbability(availableInTier[0], currentOverallPick, nextUserPick, oppNeeds);
+          probMsg = `Dein Pick ist in ${picksUntilNext} Picks. Wahrscheinlichkeit, dass ${availableInTier[0].name} überlebt: ${prob.percent.toFixed(0)}%.`;
         }
 
         alerts.push({

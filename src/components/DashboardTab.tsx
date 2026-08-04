@@ -550,7 +550,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                           <>
                             <span>•</span>
                             <span className="text-purple-400 font-bold" title={`Wahrscheinlichkeit, dass ${player.name} eine Runde weiter überlebt`}>
-                              Prob (Next Rd): {(calculatePickProbability(player as Player, settings.currentOverallPick + settings.leagueSize, settings.currentOverallPick + 1).probability * 100).toFixed(0)}%
+                              Prob (Next Rd): {calculatePickProbability(player as Player, settings.currentOverallPick + 1, settings.currentOverallPick + settings.leagueSize, []).percent.toFixed(0)}%
                             </span>
                           </>
                         )}
