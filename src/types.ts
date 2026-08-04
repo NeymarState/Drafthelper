@@ -31,6 +31,7 @@ export interface Player {
   isRookie?: boolean;
   adp?: number;
   draftedAtPick?: number;
+  isGhostPick?: boolean;
 }
 
 export interface DraftSettings {

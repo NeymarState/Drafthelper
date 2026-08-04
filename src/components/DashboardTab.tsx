@@ -32,7 +32,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
   const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
-  const [ghostDraftPlayerId, setGhostDraftPlayerId] = useState<string | null>(null);
   
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -73,7 +72,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   // Filter and sort players for the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
-      if (p.id === ghostDraftPlayerId) return false;
       const q = searchQuery.toLowerCase();
       const matchesSearch = !q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q);
       
@@ -205,7 +203,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     <div className="space-y-4">
       {/* Live Alerts Header */}
       <AlertsBanner alerts={alerts} />
-      <VORPChart allPlayers={players.filter(p => p.id !== ghostDraftPlayerId)} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} />
+      <VORPChart allPlayers={players} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} />
 
       {/* Main Grid: Live Team Roster + Recommendations */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -406,18 +404,13 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         {/* Right Column: Dynamic Draft Assistant & Best VORP Available */}
         <div className="lg:col-span-4 space-y-4">
           {/* Live Draft Pool (Filtered & Sorted by Rank) */}
-          <div className={`bg-slate-900 border ${ghostDraftPlayerId ? 'border-purple-500 shadow-purple-500/20' : 'border-slate-700'} rounded-lg shadow-xl overflow-hidden flex flex-col h-[500px] transition-colors`}>
-            <div className={`p-3 border-b flex flex-wrap justify-between items-center gap-3 ${ghostDraftPlayerId ? 'border-purple-500/50 bg-purple-900/20' : 'border-slate-700 bg-slate-800/40'}`}>
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden flex flex-col h-[500px] transition-colors">
+            <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex flex-wrap justify-between items-center gap-3">
               <div className="flex items-center gap-2">
-                <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${ghostDraftPlayerId ? 'text-purple-400' : 'text-slate-400'}`}>
-                  {ghostDraftPlayerId ? <Ghost className="w-4 h-4" /> : <Target className="w-4 h-4 text-emerald-400" />}
-                  {ghostDraftPlayerId ? 'GHOST DRAFT MODUS' : 'LIVE DRAFT POOL'}
+                <h3 className="text-xs font-bold uppercase tracking-wider flex items-center gap-2 text-slate-400">
+                  <Target className="w-4 h-4 text-emerald-400" />
+                  LIVE DRAFT POOL
                 </h3>
-                {ghostDraftPlayerId && (
-                  <button onClick={() => setGhostDraftPlayerId(null)} className="text-[9px] px-1.5 py-0.5 bg-purple-600 hover:bg-purple-500 text-white rounded font-bold transition cursor-pointer">
-                    END
-                  </button>
-                )}
               </div>
               <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer">
                 <input
@@ -546,11 +539,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         <span className={player.vorp > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
                           {player.vorp > 0 ? '+' : ''}{player.vorp} VORP
                         </span>
-                        {ghostDraftPlayerId && (
+                        {player.adp !== undefined && (
                           <>
                             <span>•</span>
-                            <span className="text-purple-400 font-bold" title={`Wahrscheinlichkeit, dass ${player.name} eine Runde weiter überlebt`}>
-                              Prob (Next Rd): {calculatePickProbability(player as Player, settings.currentOverallPick + 1, settings.currentOverallPick + settings.leagueSize, []).percent.toFixed(0)}%
+                            <span className="text-blue-400">
+                              ADP {getFormattedPick(player.adp, settings.leagueSize).formattedString}
                             </span>
                           </>
                         )}
@@ -561,17 +554,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       {!isDrafted ? (
                         <>
                           <button
-                            onClick={() => {
-                              if (ghostDraftPlayerId) {
-                                setGhostDraftPlayerId(player.id);
-                              } else {
-                                onDraftForMe(player as Player);
-                              }
-                            }}
-                            className={`px-2 py-1 rounded text-white text-[10px] font-bold transition-all shadow cursor-pointer ${ghostDraftPlayerId ? 'bg-purple-600 hover:bg-purple-500' : 'bg-emerald-600 hover:bg-emerald-500'}`}
-                            title={ghostDraftPlayerId ? "Ghost Pick (Simulieren)" : "Mein Team"}
+                            onClick={() => onDraftForMe(player as Player)}
+                            className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow cursor-pointer"
+                            title="Mein Team"
                           >
-                            {ghostDraftPlayerId ? '👻 SIM' : 'ICH'}
+                            + Team
                           </button>
                           <button
                             onClick={() => onDraftForOpponent(player as Player)}
@@ -580,15 +567,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                           >
                             GEGNER
                           </button>
-                          {!ghostDraftPlayerId && (
-                            <button
-                              onClick={() => setGhostDraftPlayerId(player.id)}
-                              className="px-2 py-1 rounded bg-purple-900/50 hover:bg-purple-600 text-purple-300 hover:text-white text-[10px] font-bold transition-all shadow border border-purple-700/50 cursor-pointer"
-                              title="Ghost Draft (Szenario simulieren)"
-                            >
-                              👻
-                            </button>
-                          )}
                         </>
                       ) : (
                         <button

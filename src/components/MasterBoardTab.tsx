@@ -226,7 +226,8 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                 const isExpanded = expandedPlayerId === player.id;
 
                 let rowBg = 'bg-slate-900/50 hover:bg-slate-800 cursor-pointer';
-                if (player.status === 'Mein Team') rowBg = 'bg-emerald-900/20 text-emerald-100 border-l-2 border-l-emerald-500 font-bold';
+                if (player.isGhostPick) rowBg = 'bg-purple-900/40 text-purple-100 border-l-2 border-l-purple-500 font-bold';
+                else if (player.status === 'Mein Team') rowBg = 'bg-emerald-900/20 text-emerald-100 border-l-2 border-l-emerald-500 font-bold';
                 else if (player.status === 'Gedraftet (Gegner)') rowBg = 'opacity-40 grayscale';
 
                 return (

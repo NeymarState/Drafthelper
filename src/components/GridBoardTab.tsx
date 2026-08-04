@@ -213,7 +213,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                                 : isUserTurn
                                   ? 'bg-emerald-950/20 border-emerald-900/30'
                                   : 'bg-slate-950/50 border-slate-800/60'
-                          }`}
+                          } ${draftedPlayer?.isGhostPick ? 'ring-2 ring-purple-500 ring-inset shadow-[0_0_10px_rgba(168,85,247,0.4)] border-purple-500 opacity-90' : ''}`}
                           title={draftedPlayer && pickNum === settings.currentOverallPick - 1 ? 'Klicken, um diesen Pick rückgängig zu machen' : ''}
                         >
                           <div className="flex justify-between items-start mb-0.5 leading-none">

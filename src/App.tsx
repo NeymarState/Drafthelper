@@ -23,7 +23,7 @@ import { CustomizationTab } from './components/CustomizationTab';
 import { GridBoardTab } from './components/GridBoardTab';
 import { ExportModal } from './components/ExportModal';
 
-import { LayoutDashboard, Table, Grid, Layers, SlidersHorizontal, Shield, Sparkles } from 'lucide-react';
+import { LayoutDashboard, Table, Grid, Layers, SlidersHorizontal, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
 
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 
@@ -69,6 +69,10 @@ export default function App() {
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
+  // Global Ghost Draft Mode
+  const [isGhostMode, setIsGhostMode] = useState(false);
+  const [ghostPicks, setGhostPicks] = useState<{playerId: string, isUser: boolean}[]>([]);
+
   // Save to LocalStorage on changes
 
   useEffect(() => {
@@ -90,11 +94,40 @@ export default function App() {
   }, [settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, totalDraftedCount]);
 
   // Auto-update current pick based on drafted count if not manually overridden
-  const userTeam = players.filter((p) => p.status === 'Mein Team');
-  const roster = calculateRosterSlots(userTeam, settings.scoringFormat);
-  const alerts = generateLiveAlerts(players, userTeam, settings);
+  const activePlayers = useMemo(() => {
+    if (!isGhostMode) return players;
+    return players.map(p => {
+      const ghostIndex = ghostPicks.findIndex(g => g.playerId === p.id);
+      if (ghostIndex !== -1) {
+        const ghost = ghostPicks[ghostIndex];
+        return {
+          ...p,
+          status: ghost.isUser ? 'Mein Team' : 'Gegner',
+          draftedAtPick: settings.currentOverallPick + ghostIndex,
+          isGhostPick: true
+        } as Player;
+      }
+      return p;
+    });
+  }, [players, isGhostMode, ghostPicks, settings.currentOverallPick]);
+
+  const activeSettings = useMemo(() => {
+    if (!isGhostMode) return settings;
+    return {
+      ...settings,
+      currentOverallPick: settings.currentOverallPick + ghostPicks.length
+    };
+  }, [settings, isGhostMode, ghostPicks]);
+
+  const userTeam = activePlayers.filter((p) => p.status === 'Mein Team');
+  const roster = calculateRosterSlots(userTeam, activeSettings.scoringFormat);
+  const alerts = generateLiveAlerts(activePlayers, userTeam, activeSettings);
 
   const onDraftForMeWrapper = (player: Player) => {
+    if (isGhostMode) {
+      setGhostPicks(prev => [...prev, { playerId: player.id, isUser: true }]);
+      return;
+    }
     if (player.customTag === 'Sleeper' || player.customTag === 'Target') playSuccessSound();
     if (player.customTag === 'Avoid' || player.customTag === 'Fade') playWarningSound();
     
@@ -107,6 +140,10 @@ export default function App() {
   };
 
   const onDraftForOpponentWrapper = (player: Player) => {
+    if (isGhostMode) {
+      setGhostPicks(prev => [...prev, { playerId: player.id, isUser: false }]);
+      return;
+    }
     const assignedSlot = findNextOpponentPickSlot(players, settings.userPickSlot, settings.leagueSize);
     handleDraftForOpponent(player, assignedSlot);
     setSettings((prev) => ({
@@ -116,6 +153,10 @@ export default function App() {
   };
 
   const onResetStatusWrapper = (player: Player) => {
+    if (isGhostMode && player.isGhostPick) {
+      setGhostPicks(prev => prev.filter(g => g.playerId !== player.id));
+      return;
+    }
     handleResetStatus(player);
     if (player.draftedAtPick === settings.currentOverallPick - 1) {
       setSettings((prev) => ({
@@ -123,6 +164,24 @@ export default function App() {
         currentOverallPick: Math.max(1, prev.currentOverallPick - 1),
       }));
     }
+  };
+
+  const applyGhostPicks = () => {
+    let currentOverall = settings.currentOverallPick;
+    ghostPicks.forEach(ghost => {
+      const p = players.find(p => p.id === ghost.playerId);
+      if (p) {
+        if (ghost.isUser) {
+          handleDraftForMe(p, currentOverall);
+        } else {
+          handleDraftForOpponent(p, currentOverall);
+        }
+        currentOverall++;
+      }
+    });
+    setSettings(prev => ({ ...prev, currentOverallPick: currentOverall }));
+    setGhostPicks([]);
+    setIsGhostMode(false);
   };
 
   const onResetDraftWrapper = () => {
@@ -149,6 +208,40 @@ export default function App() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 space-y-4">
+        {/* Global Ghost Draft Banner */}
+        {isGhostMode && (
+          <div className="bg-purple-900/40 border border-purple-500 rounded-lg p-3 flex items-center justify-between shadow-[0_0_15px_rgba(168,85,247,0.2)] animate-pulse-slow">
+            <div className="flex items-center gap-3">
+              <Ghost className="w-6 h-6 text-purple-400 animate-bounce" />
+              <div>
+                <h2 className="text-purple-300 font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+                  Ghost Draft Modus Aktiv
+                </h2>
+                <p className="text-[11px] text-purple-200/70 font-mono">
+                  {ghostPicks.length} Picks simuliert. Die Auswirkungen werden live im Dashboard berechnet.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setGhostPicks([]);
+                  setIsGhostMode(false);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition-all border border-slate-600"
+              >
+                <X className="w-4 h-4" /> Verwerfen & Beenden
+              </button>
+              <button
+                onClick={applyGhostPicks}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow cursor-pointer"
+              >
+                <Check className="w-4 h-4" /> Szenario Übernehmen
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Navigation Tabs Bar */}
         <nav className="flex flex-wrap bg-slate-900/80 border border-slate-700 p-1 rounded-lg shadow-xl gap-1">
           <button
@@ -256,18 +349,31 @@ export default function App() {
                 : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-t'
             }`}
           >
-            <SlidersHorizontal className="w-3.5 h-3.5 text-blue-400" />
-            <span>Spieler Anpassen</span>
+            <Settings2 className="w-3.5 h-3.5 text-blue-400" />
+            <span>Setup & Liga</span>
+          </button>
+
+          <button
+            onClick={() => setIsGhostMode(!isGhostMode)}
+            className={`flex-1 min-w-[130px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer rounded-lg border ${
+              isGhostMode
+                ? 'bg-purple-600 border-purple-500 text-white shadow-[0_0_10px_rgba(168,85,247,0.4)]'
+                : 'bg-purple-900/20 border-purple-700/50 text-purple-400 hover:bg-purple-900/40 hover:text-purple-300'
+            }`}
+            title="Szenarien mit fiktiven Picks durchspielen"
+          >
+            <Ghost className="w-3.5 h-3.5" />
+            <span>{isGhostMode ? 'GHOST BEENDEN' : 'GHOST STARTEN'}</span>
           </button>
         </nav>
 
         {/* Tab Contents */}
         {activeTab === 'dashboard' && (
           <DashboardTab
-            players={players}
+            players={activePlayers}
             userTeam={userTeam}
             roster={roster}
-            settings={settings}
+            settings={activeSettings}
             alerts={alerts}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
@@ -277,8 +383,8 @@ export default function App() {
 
         {activeTab === 'board' && (
           <MasterBoardTab
-            players={players}
-            settings={settings}
+            players={activePlayers}
+            settings={activeSettings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
             onResetStatus={onResetStatusWrapper}
@@ -287,9 +393,9 @@ export default function App() {
 
         {activeTab === 'grid' && (
           <GridBoardTab
-            players={players}
+            players={activePlayers}
             userTeam={userTeam}
-            settings={settings}
+            settings={activeSettings}
             alerts={alerts}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
@@ -301,16 +407,16 @@ export default function App() {
           <MyTeamTab
             userTeam={userTeam}
             roster={roster}
-            settings={settings}
+            settings={activeSettings}
             onRemoveFromTeam={onResetStatusWrapper}
           />
         )}
 
         {activeTab === 'sleepers' && (
           <SleepersHandcuffsTab
-            players={players}
+            players={activePlayers}
             userTeam={userTeam}
-            settings={settings}
+            settings={activeSettings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
           />
@@ -318,8 +424,8 @@ export default function App() {
 
         {activeTab === 'value' && (
           <ValuePlayersTab
-            players={players}
-            settings={settings}
+            players={activePlayers}
+            settings={activeSettings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
           />
@@ -327,8 +433,8 @@ export default function App() {
 
         {activeTab === 'tiers' && (
           <TiersTab
-            players={players}
-            settings={settings}
+            players={activePlayers}
+            settings={activeSettings}
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
           />
@@ -336,7 +442,7 @@ export default function App() {
 
         {activeTab === 'customization' && (
           <CustomizationTab 
-            players={players} 
+            players={activePlayers} 
             onUpdatePlayer={handleUpdatePlayer}
             onReorderPlayers={handleReorderPlayers}
             onMovePlayer={handleMovePlayer}
