@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Player, DraftSettings, RosterState, AlertItem, Position } from '../types';
-import { getAdjustedProjection, calculateVORP, getFormattedPick } from '../utils/calculations';
+import { getAdjustedProjection, calculateVORP, getFormattedPick, calculatePickProbability } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
-import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert } from 'lucide-react';
+import { VORPChart } from './VORPChart';
+import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert, Activity, Ghost } from 'lucide-react';
 
 interface DashboardTabProps {
   players: Player[];
@@ -31,6 +32,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
   const [sortBy, setSortBy] = useState<'OVR' | 'ADP'>('OVR');
+  const [ghostDraftPlayerId, setGhostDraftPlayerId] = useState<string | null>(null);
   
   const getPosBadgeClass = (pos: string) => {
     switch (pos) {
@@ -71,6 +73,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   // Filter and sort players for the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
+      if (p.id === ghostDraftPlayerId) return false;
       const q = searchQuery.toLowerCase();
       const matchesSearch = !q || p.name.toLowerCase().includes(q) || p.team.toLowerCase().includes(q);
       
@@ -202,9 +205,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     <div className="space-y-4">
       {/* Live Alerts Header */}
       <AlertsBanner alerts={alerts} />
+      <VORPChart allPlayers={players.filter(p => p.id !== ghostDraftPlayerId)} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} />
 
       {/* Main Grid: Live Team Roster + Recommendations */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Starters & Bench Roster */}
         <div className="lg:col-span-8 space-y-4">
           {/* Draft Needs Chart */}
@@ -402,24 +406,30 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
         {/* Right Column: Dynamic Draft Assistant & Best VORP Available */}
         <div className="lg:col-span-4 space-y-4">
           {/* Live Draft Pool (Filtered & Sorted by Rank) */}
-          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden flex flex-col h-[500px]">
-            <div className="p-3 border-b border-slate-700 bg-slate-800/40 space-y-3">
-              <div className="flex justify-between items-center">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                  <Target className="w-4 h-4 text-emerald-400" /> LIVE DRAFT POOL
+          <div className={`bg-slate-900 border ${ghostDraftPlayerId ? 'border-purple-500 shadow-purple-500/20' : 'border-slate-700'} rounded-lg shadow-xl overflow-hidden flex flex-col h-[500px] transition-colors`}>
+            <div className={`p-3 border-b flex flex-wrap justify-between items-center gap-3 ${ghostDraftPlayerId ? 'border-purple-500/50 bg-purple-900/20' : 'border-slate-700 bg-slate-800/40'}`}>
+              <div className="flex items-center gap-2">
+                <h3 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${ghostDraftPlayerId ? 'text-purple-400' : 'text-slate-400'}`}>
+                  {ghostDraftPlayerId ? <Ghost className="w-4 h-4" /> : <Target className="w-4 h-4 text-emerald-400" />}
+                  {ghostDraftPlayerId ? 'GHOST DRAFT MODUS' : 'LIVE DRAFT POOL'}
                 </h3>
-                <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={showDrafted}
-                    onChange={(e) => setShowDrafted(e.target.checked)}
-                    className="accent-blue-500 rounded bg-slate-900 border-slate-700"
-                  />
-                  Gedraftete anzeigen
-                </label>
+                {ghostDraftPlayerId && (
+                  <button onClick={() => setGhostDraftPlayerId(null)} className="text-[9px] px-1.5 py-0.5 bg-purple-600 hover:bg-purple-500 text-white rounded font-bold transition cursor-pointer">
+                    END
+                  </button>
+                )}
               </div>
+              <label className="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showDrafted}
+                  onChange={(e) => setShowDrafted(e.target.checked)}
+                  className="accent-blue-500 rounded bg-slate-900 border-slate-700"
+                />
+                Gedraftete
+              </label>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 w-full">
                 <div className="relative flex-1 min-w-[140px]">
                   <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2" />
                   <input
@@ -431,12 +441,12 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                   />
                 </div>
                 
-                <div className="flex bg-slate-900 border border-slate-700 rounded p-0.5">
+                <div className="flex bg-slate-900 border border-slate-700 rounded p-0.5 w-full">
                   {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE'] as const).map((pos) => (
                     <button
                       key={pos}
                       onClick={() => setSelectedPos(pos)}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
+                      className={`flex-1 px-1 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
                         selectedPos === pos
                           ? 'bg-blue-600 text-white'
                           : 'text-slate-400 hover:text-slate-200'
@@ -445,44 +455,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       {pos}
                     </button>
                   ))}
-                </div>
-                <div className="flex gap-1.5 ml-auto">
-                  <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700 mr-2">
-                    <button
-                      onClick={() => setSortBy('OVR')}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
-                        sortBy === 'OVR' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      OVR
-                    </button>
-                    <button
-                      onClick={() => setSortBy('ADP')}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors cursor-pointer ${
-                        sortBy === 'ADP' ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                    >
-                      ADP
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => setHideQB(!hideQB)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors border ${
-                      hideQB ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-900 text-slate-500 border-slate-700 hover:text-slate-400 hover:border-slate-600'
-                    }`}
-                    title="Quarterbacks ausblenden"
-                  >
-                    NO QB
-                  </button>
-                  <button
-                    onClick={() => setHideTE(!hideTE)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold transition-colors border ${
-                      hideTE ? 'bg-red-900/50 text-red-400 border-red-500/50' : 'bg-slate-900 text-slate-500 border-slate-700 hover:text-slate-400 hover:border-slate-600'
-                    }`}
-                    title="Tight Ends ausblenden"
-                  >
-                    NO TE
-                  </button>
                 </div>
               </div>
             </div>
@@ -502,9 +474,6 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       <div className="flex items-center gap-1.5">
                         <span className={`font-bold text-xs flex items-center gap-1 ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
                           {player.name} <span className="text-[10px] text-slate-500 font-normal">({player.team})</span>
-                          {player.customTag === 'Sleeper' && <Zap className="w-3 h-3 text-blue-400" title="Sleeper" />}
-                          {player.customTag === 'Target' && <Target className="w-3 h-3 text-green-400" title="Target" />}
-                          {player.customTag === 'Avoid' && <ShieldAlert className="w-3 h-3 text-rose-400" title="Avoid" />}
                           {isStackTarget(player) && (
                             <span className="ml-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-0.5">
                               <Zap className="w-2.5 h-2.5" /> STACK
@@ -577,13 +546,11 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                         <span className={player.vorp > 0 ? 'text-emerald-400 font-bold' : 'text-slate-500'}>
                           {player.vorp > 0 ? '+' : ''}{player.vorp} VORP
                         </span>
-                        <span>•</span>
-                        <span>OVR #{player.ovrRank}</span>
-                        {player.adp !== undefined && (
+                        {ghostDraftPlayerId && (
                           <>
                             <span>•</span>
-                            <span className="text-blue-400">
-                              ADP {getFormattedPick(player.adp, settings.leagueSize).formattedString}
+                            <span className="text-purple-400 font-bold" title={`Wahrscheinlichkeit, dass ${player.name} eine Runde weiter überlebt`}>
+                              Prob (Next Rd): {(calculatePickProbability(player as Player, settings.currentOverallPick + settings.leagueSize, settings.currentOverallPick + 1).probability * 100).toFixed(0)}%
                             </span>
                           </>
                         )}
@@ -594,19 +561,34 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       {!isDrafted ? (
                         <>
                           <button
-                            onClick={() => onDraftForMe(player as Player)}
-                            className="px-2 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow cursor-pointer"
-                            title="Mein Team"
+                            onClick={() => {
+                              if (ghostDraftPlayerId) {
+                                setGhostDraftPlayerId(player.id);
+                              } else {
+                                onDraftForMe(player as Player);
+                              }
+                            }}
+                            className={`px-2 py-1 rounded text-white text-[10px] font-bold transition-all shadow cursor-pointer ${ghostDraftPlayerId ? 'bg-purple-600 hover:bg-purple-500' : 'bg-emerald-600 hover:bg-emerald-500'}`}
+                            title={ghostDraftPlayerId ? "Ghost Pick (Simulieren)" : "Mein Team"}
                           >
-                            + Team
+                            {ghostDraftPlayerId ? '👻 SIM' : 'ICH'}
                           </button>
                           <button
                             onClick={() => onDraftForOpponent(player as Player)}
-                            className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] border border-slate-700 cursor-pointer"
+                            className="px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-slate-200 text-[10px] font-bold transition-all shadow cursor-pointer"
                             title="Gegner"
                           >
-                            Gegner
+                            GEGNER
                           </button>
+                          {!ghostDraftPlayerId && (
+                            <button
+                              onClick={() => setGhostDraftPlayerId(player.id)}
+                              className="px-2 py-1 rounded bg-purple-900/50 hover:bg-purple-600 text-purple-300 hover:text-white text-[10px] font-bold transition-all shadow border border-purple-700/50 cursor-pointer"
+                              title="Ghost Draft (Szenario simulieren)"
+                            >
+                              👻
+                            </button>
+                          )}
                         </>
                       ) : (
                         <button

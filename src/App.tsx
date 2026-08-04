@@ -7,7 +7,8 @@ import React, { useState, useEffect } from 'react';
 import { Player, DraftSettings } from './types';
 import { INITIAL_PLAYERS } from './data/initialPlayers';
 import { getUpdatedPlayers } from './data/updateRankings';
-import { calculateRosterSlots, generateLiveAlerts, findNextUserPickSlot, findNextOpponentPickSlot } from './utils/calculations';
+import { calculateRosterSlots, generateLiveAlerts, findNextUserPickSlot, findNextOpponentPickSlot, isUserPickSlot } from './utils/calculations';
+import { playTurnSound, playSuccessSound, playWarningSound } from './utils/audio';
 import { usePlayers } from './hooks/usePlayers';
 
 // Components
@@ -78,15 +79,25 @@ export default function App() {
     }
   }, [settings]);
 
+  // Audio Feedback on Turn
+  useEffect(() => {
+    if (totalDraftedCount > 0 && isUserPickSlot(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize)) {
+      playTurnSound();
+    }
+  }, [settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, totalDraftedCount]);
+
   // Total drafted players count
   const totalDraftedCount = players.filter((p) => p.status !== 'Verfügbar').length;
 
   // Auto-update current pick based on drafted count if not manually overridden
   const userTeam = players.filter((p) => p.status === 'Mein Team');
   const roster = calculateRosterSlots(userTeam, settings.scoringFormat);
-  const alerts = generateLiveAlerts(players, userTeam, settings.scoringFormat);
+  const alerts = generateLiveAlerts(players, userTeam, settings);
 
   const onDraftForMeWrapper = (player: Player) => {
+    if (player.customTag === 'Sleeper' || player.customTag === 'Target') playSuccessSound();
+    if (player.customTag === 'Avoid' || player.customTag === 'Fade') playWarningSound();
+    
     const assignedSlot = findNextUserPickSlot(players, settings.userPickSlot, settings.leagueSize);
     handleDraftForMe(player, assignedSlot);
     setSettings((prev) => ({

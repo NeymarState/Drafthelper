@@ -175,31 +175,61 @@ export function calculateRosterSlots(
 export function generateLiveAlerts(
   allPlayers: Player[],
   userTeam: Player[],
-  scoringFormat: ScoringFormat
+  settings: DraftSettings
 ): AlertItem[] {
   const alerts: AlertItem[] = [];
+  const { currentOverallPick, userPickSlot, leagueSize, scoringFormat } = settings;
 
-  // 1. Tier Scarcity Warning
+  // 1. Tier Scarcity Warning (Enhanced with Pick Probability)
   const positions: Position[] = ['QB', 'RB', 'WR', 'TE'];
+  const nextUserPick = findNextUserPickSlot(allPlayers, userPickSlot, leagueSize);
+  const picksUntilNext = Math.max(0, nextUserPick - currentOverallPick);
+
   positions.forEach((pos) => {
-    [1, 2].forEach((tierNum) => {
+    [1, 2, 3].forEach((tierNum) => {
       const tierPlayers = allPlayers.filter(
         (p) => p.pos === pos && p.tierNumber === tierNum
       );
       const availableInTier = tierPlayers.filter((p) => p.status === 'Verfügbar');
 
       if (tierPlayers.length > 0 && availableInTier.length <= 2 && availableInTier.length > 0) {
+        let probMsg = '';
+        if (picksUntilNext > 0) {
+          const prob = calculatePickProbability(availableInTier[0], nextUserPick, currentOverallPick);
+          probMsg = `Dein Pick ist in ${picksUntilNext} Picks. Wahrscheinlichkeit, dass ${availableInTier[0].name} überlebt: ${(prob.probability * 100).toFixed(0)}%.`;
+        }
+
         alerts.push({
           id: `scarcity-${pos}-t${tierNum}`,
           type: 'tier-scarcity',
           severity: availableInTier.length === 1 ? 'high' : 'medium',
-          title: `⚠️ Tier ${tierNum} Knappheit: ${pos}`,
-          message: `Nur noch ${availableInTier.length} Spieler in ${pos} Tier ${tierNum} verbleibend!`,
+          title: `⚠️ Tier ${tierNum} Cliff: ${pos}`,
+          message: `Nur noch ${availableInTier.length} ${pos} in Tier ${tierNum}! ${probMsg}`,
           details: availableInTier.map((p) => `${p.name} (${p.team}) - Ovr #${p.ovrRank}`),
         });
       }
     });
   });
+
+  // 1b. Opponent Threat Radar
+  if (picksUntilNext > 0 && picksUntilNext <= 5) {
+    const oppNeeds = analyzeOpponentNeeds(currentOverallPick, leagueSize, allPlayers);
+    const immediateNeeds = oppNeeds.slice(0, picksUntilNext);
+    
+    positions.forEach(pos => {
+      const needCount = immediateNeeds.filter(n => n.needs.includes(pos)).length;
+      if (needCount >= 2) {
+        alerts.push({
+          id: `threat-${pos}`,
+          type: 'threat-radar',
+          severity: 'high',
+          title: `🎯 GEGNER-RADAR: ${pos} GEFAHR`,
+          message: `${needCount} der nächsten ${picksUntilNext} Teams brauchen dringend einen ${pos}!`,
+          details: immediateNeeds.filter(n => n.needs.includes(pos)).map(n => `Team ${n.teamSlot} (Pick ${n.pick}) braucht ${pos}`),
+        });
+      }
+    });
+  }
 
   // 2. Stack Radar
   const qbsOnTeam = userTeam.filter((p) => p.pos === 'QB');
