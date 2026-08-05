@@ -664,7 +664,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
 
               {rightPanelView === 'vorp' && (
                 <div className="flex-1 overflow-auto custom-scrollbar -mx-2 px-2 -mt-2 pt-2">
-                  <VORPChart allPlayers={players} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} />
+                  <VORPChart allPlayers={players} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} layout="col" />
                 </div>
               )}
 

@@ -6,9 +6,10 @@ interface VORPChartProps {
   allPlayers: Player[];
   scoringFormat: ScoringFormat;
   leagueSize: number;
+  layout?: 'row' | 'col';
 }
 
-export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat, leagueSize }) => {
+export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat, leagueSize, layout = 'row' }) => {
   const positions = ['QB', 'RB', 'WR', 'TE'] as const;
   
   // Calculate VORP data per position for top 15 available players
@@ -34,7 +35,7 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
         Live VORP Curves (Top 15 Available)
       </h3>
       
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className={`grid ${layout === 'col' ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-4 gap-4'}`}>
         {chartData.map(({ pos, players }) => {
           if (players.length === 0) return null;
           
