@@ -1,14 +1,24 @@
 import { Player, DraftSettings } from '../types';
+import { calculateRosterSlots, getAdjustedProjection } from './calculations';
 
 export interface DraftEvaluationTip {
   type: 'positive' | 'negative' | 'warning';
   text: string;
 }
 
+export interface TeamRanking {
+  teamId: number;
+  isUser: boolean;
+  projectedPoints: number;
+}
+
 export interface DraftEvaluationResult {
   grade: string;
   score: number;
   tips: DraftEvaluationTip[];
+  powerRanking: number;
+  totalTeams: number;
+  teamRankings: TeamRanking[];
 }
 
 export const evaluateDraft = (
@@ -23,8 +33,49 @@ export const evaluateDraft = (
     return {
       grade: 'N/A',
       score: 0,
-      tips: [{ type: 'warning', text: 'Dein Team ist leer. Starte den Draft, um eine Bewertung zu erhalten!' }]
+      tips: [{ type: 'warning', text: 'Dein Team ist leer. Starte den Draft, um eine Bewertung zu erhalten!' }],
+      powerRanking: 0,
+      totalTeams: settings.leagueSize,
+      teamRankings: []
     };
+  }
+
+  // --- POWER RANKINGS ---
+  const teams = new Map<number, Player[]>();
+  for(let i = 1; i <= settings.leagueSize; i++) teams.set(i, []);
+
+  allPlayers.forEach(p => {
+    if (p.draftedAtPick) {
+      const round = Math.ceil(p.draftedAtPick / settings.leagueSize);
+      const positionInRound = p.draftedAtPick % settings.leagueSize || settings.leagueSize;
+      const draftedByTeam = round % 2 === 1 ? positionInRound : settings.leagueSize - positionInRound + 1;
+      if (teams.has(draftedByTeam)) {
+        teams.get(draftedByTeam)!.push(p);
+      }
+    }
+  });
+
+  const teamRankings: TeamRanking[] = [];
+  teams.forEach((teamPlayers, teamId) => {
+    const roster = calculateRosterSlots(teamPlayers, settings.scoringFormat);
+    const starters = [roster.QB, roster.RB1, roster.RB2, roster.WR1, roster.WR2, roster.TE, roster.FLEX, roster.DST, roster.K].filter(Boolean) as Player[];
+    const points = starters.reduce((acc, p) => acc + getAdjustedProjection(p, settings.scoringFormat), 0);
+    teamRankings.push({
+      teamId,
+      isUser: teamId === settings.userPickSlot,
+      projectedPoints: Math.round(points * 10) / 10
+    });
+  });
+
+  teamRankings.sort((a, b) => b.projectedPoints - a.projectedPoints);
+  const powerRanking = teamRankings.findIndex(t => t.isUser) + 1;
+
+  if (powerRanking <= 3 && powerRanking > 0) {
+    score += 10;
+    tips.push({ type: 'positive', text: `Glückwunsch! Dein Team wird auf Platz ${powerRanking} von ${settings.leagueSize} in den Power Rankings projiziert.` });
+  } else if (powerRanking >= settings.leagueSize - 2) {
+    score -= 5;
+    tips.push({ type: 'negative', text: `Dein Team liegt in den Power Rankings aktuell nur auf Platz ${powerRanking}. Du brauchst einige Breakouts, um das auszugleichen.` });
   }
 
   // 1. Roster Construction
@@ -102,13 +153,15 @@ export const evaluateDraft = (
   let biggestReach: { player: Player, diff: number } | null = null;
 
   userTeam.forEach(p => {
-    if (p.draftedAtPick && p.adp) {
+    if (p.draftedAtPick) {
       // Ignore K/DST reaches if they were drafted in the acceptable late rounds
       if ((p.pos === 'K' || p.pos === 'DST') && p.draftedAtPick > kDstThreshold) {
         return;
       }
 
-      const diff = p.draftedAtPick - p.adp; // Positive = Steal (drafted later than ADP), Negative = Reach (drafted earlier)
+      // Blend ADP and OvrRank to represent "True Value" for the user (orienting on their own board)
+      const referenceRank = p.adp ? (p.adp + p.ovrRank) / 2 : p.ovrRank;
+      const diff = p.draftedAtPick - referenceRank; // Positive = Steal, Negative = Reach
       
       if (diff > 5) {
         totalStealValue += diff;
@@ -127,18 +180,18 @@ export const evaluateDraft = (
   score -= reachPenalty;
 
   if (biggestSteal && biggestSteal.diff >= 12) {
-    tips.push({ type: 'positive', text: `Mega-Steal: Du hast ${biggestSteal.player.name} an Pick ${biggestSteal.player.draftedAtPick} bekommen (ADP: ${biggestSteal.player.adp}).` });
+    tips.push({ type: 'positive', text: `Mega-Steal: Du hast ${biggestSteal.player.name} an Pick ${biggestSteal.player.draftedAtPick} bekommen (Dein Board: ${biggestSteal.player.ovrRank}, ADP: ${biggestSteal.player.adp || 'N/A'}).` });
   }
 
   if (biggestReach && biggestReach.diff >= 12) {
-    // Let's find who was available at that ADP
+    // Let's find who was available at that pick who had a better blended value
     const reachPick = biggestReach.player.draftedAtPick!;
     const betterOptions = allPlayers.filter(p => p.adp && p.adp > reachPick && p.adp < reachPick + 12 && p.pos === biggestReach!.player.pos);
     const betterOptionName = betterOptions.length > 0 ? betterOptions[0].name : 'einen besseren Value';
     
     tips.push({ 
       type: 'negative', 
-      text: `Reach: Du hast ${biggestReach.player.name} sehr früh (Pick ${reachPick}) geholt, obwohl sein ADP bei ${biggestReach.player.adp} liegt. Hier hättest du eher auf ${betterOptionName} spekulieren können.` 
+      text: `Reach: Du hast ${biggestReach.player.name} früh geholt (Pick ${reachPick}). Selbst mit deinem eigenen Board (Rank ${biggestReach.player.ovrRank}) und seinem ADP (${biggestReach.player.adp || 'N/A'}) war das ein Reach. Hier hättest du z.B. auf ${betterOptionName} spekulieren können.` 
     });
   }
 
@@ -175,6 +228,9 @@ export const evaluateDraft = (
   return {
     grade,
     score,
-    tips
+    tips,
+    powerRanking,
+    totalTeams: settings.leagueSize,
+    teamRankings
   };
 };

@@ -55,12 +55,45 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
         {/* Content */}
         <div className="p-6 overflow-y-auto custom-scrollbar">
           
-          <div className="flex flex-col items-center mb-8">
-            <div className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-2">Deine Draft-Note</div>
-            <div className={`w-32 h-32 rounded-full border-4 flex flex-col items-center justify-center ${getGradeBg(result.grade)}`}>
-              <span className={`text-6xl font-black ${getGradeColor(result.grade)}`}>{result.grade}</span>
+          <div className="flex flex-wrap md:flex-nowrap gap-6 mb-8 justify-center">
+            {/* Grade Display */}
+            <div className="flex flex-col items-center flex-1 bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Deine Draft-Note</div>
+              <div className={`w-28 h-28 rounded-full border-4 flex flex-col items-center justify-center ${getGradeBg(result.grade)}`}>
+                <span className={`text-5xl font-black ${getGradeColor(result.grade)}`}>{result.grade}</span>
+              </div>
+              <div className="mt-3 text-slate-400 font-mono text-[11px]">Score: {result.score}/100</div>
             </div>
-            <div className="mt-3 text-slate-400 font-mono text-sm">Score: {result.score}/100</div>
+
+            {/* Power Ranking Display */}
+            <div className="flex flex-col items-center flex-1 bg-slate-950/40 p-4 rounded-xl border border-slate-800">
+              <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Power Ranking</div>
+              <div className="flex flex-col items-center justify-center flex-1 w-full">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-5xl font-black text-white">#{result.powerRanking}</span>
+                  <span className="text-lg text-slate-500 font-bold">/ {result.totalTeams}</span>
+                </div>
+                <div className="mt-2 text-slate-400 text-[11px] text-center">
+                  (Nach Starter-Proj.)
+                </div>
+                
+                {/* Mini Leaderboard */}
+                <div className="mt-4 w-full max-w-[200px] border-t border-slate-800 pt-3 space-y-1">
+                  {result.teamRankings.slice(0, 3).map((team, idx) => (
+                    <div key={team.teamId} className={`flex justify-between text-[10px] font-mono p-1 rounded ${team.isUser ? 'bg-blue-900/40 text-blue-300 font-bold' : 'text-slate-400'}`}>
+                      <span>{idx + 1}. Team {team.teamId}</span>
+                      <span>{team.projectedPoints}</span>
+                    </div>
+                  ))}
+                  {result.powerRanking > 3 && (
+                    <div className="flex justify-between text-[10px] font-mono p-1 rounded bg-blue-900/40 text-blue-300 font-bold border-t border-slate-800/50 mt-1">
+                      <span>{result.powerRanking}. Team {settings.userPickSlot} (Du)</span>
+                      <span>{result.teamRankings.find(t => t.isUser)?.projectedPoints}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-4">
