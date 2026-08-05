@@ -433,9 +433,9 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               {displayPlayers.map((player, index) => {
                 const isDrafted = player.status !== 'Verfügbar';
                 const previousPlayer = index > 0 ? displayPlayers[index - 1] : null;
-                const isNewTier = previousPlayer && player.tier !== previousPlayer.tier;
+                const isNewTier = selectedPos !== 'ALL' && previousPlayer && player.tier !== previousPlayer.tier;
                 // Add current pick line if sorting by ovrRank puts us exactly crossing the current pick
-                const crossesCurrentPick = previousPlayer && player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick;
+                const crossesCurrentPick = selectedPos === 'ALL' && previousPlayer && player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick;
                 
                 return (
                   <React.Fragment key={player.id}>

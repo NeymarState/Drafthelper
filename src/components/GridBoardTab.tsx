@@ -452,7 +452,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
             </div>
 
             <div className="flex-1 overflow-auto custom-scrollbar pr-2 space-y-1.5">
-              {displayPlayers.map(player => {
+              {displayPlayers.map((player, index) => {
                 const predictorTargetPick = nextUserPick === settings.currentOverallPick
                   ? calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, leagueSize, settings.totalRounds)
                   : nextUserPick;
@@ -461,9 +461,37 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                 const expectedPick = player.adp && player.adp > 0 ? player.adp : player.ovrRank;
                 
                 const isDrafted = player.status !== 'Verfügbar';
+
+                const previousPlayer = index > 0 ? displayPlayers[index - 1] : null;
+                const isNewTier = selectedPos !== 'ALL' && previousPlayer && player.tier !== previousPlayer.tier;
+                
+                const crossesCurrentPick = selectedPos === 'ALL' && previousPlayer && (
+                  sortBy === 'OVR'
+                    ? player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick
+                    : player.adp && previousPlayer.adp && player.adp >= settings.currentOverallPick && previousPlayer.adp < settings.currentOverallPick
+                );
                 
                 return (
-                  <div key={player.id} className={`flex flex-col bg-slate-950 border rounded-lg p-2 transition-colors gap-2 ${isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-800 hover:border-slate-700'}`}>
+                  <React.Fragment key={player.id}>
+                    {crossesCurrentPick && (
+                      <div className="flex items-center gap-4 my-3 opacity-80">
+                        <div className="h-px bg-blue-500/50 flex-1"></div>
+                        <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-blue-950 px-2 rounded-full border border-blue-500/50 flex items-center gap-1 shadow-lg shadow-blue-500/20">
+                          <Target className="w-3 h-3" /> Aktueller Pick ({settings.currentOverallPick})
+                        </span>
+                        <div className="h-px bg-blue-500/50 flex-1"></div>
+                      </div>
+                    )}
+                    {isNewTier && (
+                      <div className="flex items-center gap-4 my-3">
+                        <div className="h-px bg-slate-700/80 flex-1"></div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-800/80 px-2 rounded-full border border-slate-700/80 shadow-md">
+                          Tier Break: {player.tier}
+                        </span>
+                        <div className="h-px bg-slate-700/80 flex-1"></div>
+                      </div>
+                    )}
+                    <div className={`flex flex-col bg-slate-950 border rounded-lg p-2 transition-colors gap-2 ${isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-800 hover:border-slate-700'}`}>
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-1.5">
@@ -583,7 +611,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                         )}
                       </div>
                     </div>
-                  </div>
+                  </React.Fragment>
                 );
               })}
               {displayPlayers.length === 0 && (
