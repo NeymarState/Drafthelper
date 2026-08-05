@@ -3,6 +3,8 @@ import { Player, DraftSettings, Position, AlertItem } from '../types';
 import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
+import { VORPChart } from './VORPChart';
+import { DraftTracker } from './DraftTracker';
 
 interface GridBoardTabProps {
   players: Player[];
@@ -305,7 +307,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                                 : isUserTurn
                                   ? 'bg-emerald-950/20 border-emerald-900/30'
                                   : 'bg-slate-950/50 border-slate-800/60'
-                          } ${draftedPlayer?.isGhostPick ? 'ring-2 ring-purple-500 ring-inset shadow-[0_0_10px_rgba(168,85,247,0.4)] border-purple-500 opacity-90' : ''}`}
+                          } ${draftedPlayer?.isGhostPick ? (draftedPlayer.status === 'Mein Team' ? 'ring-2 ring-emerald-500 ring-inset shadow-[0_0_10px_rgba(16,185,129,0.4)] border-emerald-500 opacity-90' : 'ring-2 ring-purple-500 ring-inset shadow-[0_0_10px_rgba(168,85,247,0.4)] border-purple-500 opacity-90') : ''}`}
                           title={draftedPlayer && pickNum === settings.currentOverallPick - 1 ? 'Klicken, um diesen Pick rückgängig zu machen' : ''}
                         >
                           <div className="flex justify-between items-start mb-0.5 leading-none">
@@ -598,32 +600,78 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
             <AlertsBanner alerts={alerts} />
           </div>
 
-          {/* Opponent Analysis */}
-          <div className="flex-1 bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3 flex flex-col min-h-0">
-            <h3 className="text-sm font-bold text-slate-200 uppercase tracking-wider mb-2">Gegner Analyse</h3>
-            <div className="text-xs text-slate-400 mb-2 leading-tight">Die nächsten 5 Picks und ihre wahrscheinlichen Needs:</div>
-            <div className="flex-1 overflow-auto custom-scrollbar space-y-2 pr-1">
-              {upcomingNeeds.map((need, idx) => (
-                <div key={idx} className="bg-slate-950 border border-slate-800 rounded p-2">
-                  <div className="font-bold text-slate-300 text-[11px] mb-1.5">
-                    Pick {need.pickSlot} (Team {need.team}) {need.team === settings.userPickSlot && <span className="text-emerald-400"> DU</span>}
+          {/* Dynamic Right Panel */}
+          <div className="flex-1 bg-slate-900 border border-slate-700 rounded-lg shadow-xl flex flex-col min-h-0">
+            {/* Tab Headers */}
+            <div className="flex border-b border-slate-700 shrink-0">
+              <button
+                onClick={() => setRightPanelView('needs')}
+                className={`flex-1 text-[10px] font-bold uppercase tracking-wider py-2 transition-colors ${
+                  rightPanelView === 'needs' ? 'bg-slate-800 text-blue-400 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+                }`}
+              >
+                Needs
+              </button>
+              <button
+                onClick={() => setRightPanelView('vorp')}
+                className={`flex-1 text-[10px] font-bold uppercase tracking-wider py-2 transition-colors border-l border-slate-700 ${
+                  rightPanelView === 'vorp' ? 'bg-slate-800 text-blue-400 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+                }`}
+              >
+                VORP
+              </button>
+              <button
+                onClick={() => setRightPanelView('tracker')}
+                className={`flex-1 text-[10px] font-bold uppercase tracking-wider py-2 transition-colors border-l border-slate-700 ${
+                  rightPanelView === 'tracker' ? 'bg-slate-800 text-blue-400 border-b-2 border-blue-500' : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+                }`}
+              >
+                Tracker
+              </button>
+            </div>
+
+            {/* Tab Content */}
+            <div className="flex-1 overflow-hidden flex flex-col p-2">
+              {rightPanelView === 'needs' && (
+                <>
+                  <div className="text-[10px] text-slate-400 mb-2 leading-tight shrink-0 text-center">Die nächsten 5 Picks und wahrscheinliche Needs:</div>
+                  <div className="flex-1 overflow-auto custom-scrollbar space-y-2 pr-1">
+                    {upcomingNeeds.map((need, idx) => (
+                      <div key={idx} className="bg-slate-950 border border-slate-800 rounded p-2">
+                        <div className="font-bold text-slate-300 text-[11px] mb-1.5">
+                          Pick {need.pickSlot} (Team {need.team}) {need.team === settings.userPickSlot && <span className="text-emerald-400"> DU</span>}
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {need.needsQB && <span className="text-[9px] bg-red-900/30 text-red-400 border border-red-700/50 px-1 rounded">Braucht QB</span>}
+                          {need.needsTE && <span className="text-[9px] bg-orange-900/30 text-orange-400 border border-orange-700/50 px-1 rounded">Braucht TE</span>}
+                          {need.zeroRB && <span className="text-[9px] bg-red-600/50 text-white border border-red-500 font-bold px-1 rounded shadow-[0_0_8px_rgba(239,68,68,0.5)]">🚨 KEIN RB!</span>}
+                          {!need.zeroRB && need.needsRB && <span className="text-[9px] bg-green-900/30 text-green-400 border border-green-700/50 px-1 rounded">Braucht RB</span>}
+                          {need.zeroWR && <span className="text-[9px] bg-red-600/50 text-white border border-red-500 font-bold px-1 rounded shadow-[0_0_8px_rgba(239,68,68,0.5)]">🚨 KEIN WR!</span>}
+                          {!need.zeroWR && need.needsWR && <span className="text-[9px] bg-blue-900/30 text-blue-400 border border-blue-700/50 px-1 rounded">Braucht WR</span>}
+                          {need.needsK && <span className="text-[9px] bg-purple-900/30 text-purple-400 border border-purple-700/50 px-1 rounded">Braucht Kicker</span>}
+                          {need.needsDST && <span className="text-[9px] bg-yellow-900/30 text-yellow-400 border border-yellow-700/50 px-1 rounded">Braucht Defense</span>}
+                          
+                          {!need.needsQB && !need.needsTE && !need.needsRB && !need.needsWR && !need.needsK && !need.needsDST && (
+                            <span className="text-[9px] text-slate-500 italic">Keine dringenden Needs</span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex flex-wrap gap-1">
-                    {need.needsQB && <span className="text-[9px] bg-red-900/30 text-red-400 border border-red-700/50 px-1 rounded">Braucht QB</span>}
-                    {need.needsTE && <span className="text-[9px] bg-orange-900/30 text-orange-400 border border-orange-700/50 px-1 rounded">Braucht TE</span>}
-                    {need.zeroRB && <span className="text-[9px] bg-red-600/50 text-white border border-red-500 font-bold px-1 rounded shadow-[0_0_8px_rgba(239,68,68,0.5)]">🚨 KEIN RB!</span>}
-                    {!need.zeroRB && need.needsRB && <span className="text-[9px] bg-green-900/30 text-green-400 border border-green-700/50 px-1 rounded">Braucht RB</span>}
-                    {need.zeroWR && <span className="text-[9px] bg-red-600/50 text-white border border-red-500 font-bold px-1 rounded shadow-[0_0_8px_rgba(239,68,68,0.5)]">🚨 KEIN WR!</span>}
-                    {!need.zeroWR && need.needsWR && <span className="text-[9px] bg-blue-900/30 text-blue-400 border border-blue-700/50 px-1 rounded">Braucht WR</span>}
-                    {need.needsK && <span className="text-[9px] bg-purple-900/30 text-purple-400 border border-purple-700/50 px-1 rounded">Braucht Kicker</span>}
-                    {need.needsDST && <span className="text-[9px] bg-yellow-900/30 text-yellow-400 border border-yellow-700/50 px-1 rounded">Braucht Defense</span>}
-                    
-                    {!need.needsQB && !need.needsTE && !need.needsRB && !need.needsWR && !need.needsK && !need.needsDST && (
-                      <span className="text-[9px] text-slate-500 italic">Keine dringenden Needs</span>
-                    )}
-                  </div>
+                </>
+              )}
+
+              {rightPanelView === 'vorp' && (
+                <div className="flex-1 overflow-auto custom-scrollbar -mx-2 px-2 -mt-2 pt-2">
+                  <VORPChart allPlayers={players} scoringFormat={settings.scoringFormat} leagueSize={settings.leagueSize} />
                 </div>
-              ))}
+              )}
+
+              {rightPanelView === 'tracker' && (
+                <div className="flex-1 overflow-auto custom-scrollbar -mx-2 px-2 -mt-2 pt-2">
+                  <DraftTracker players={players} settings={settings} />
+                </div>
+              )}
             </div>
           </div>
         </div>
