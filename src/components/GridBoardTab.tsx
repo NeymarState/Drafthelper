@@ -35,6 +35,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
   const [hideK, setHideK] = useState(false);
   const [hideDST, setHideDST] = useState(false);
   const [showDrafted, setShowDrafted] = useState(false);
+  const [rightPanelView, setRightPanelView] = useState<'needs' | 'vorp' | 'tracker'>('needs');
   
   const startResizing = (e: React.MouseEvent) => {
     const startY = e.clientY;
