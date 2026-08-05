@@ -611,6 +611,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                         )}
                       </div>
                     </div>
+                    </div>
                   </React.Fragment>
                 );
               })}
