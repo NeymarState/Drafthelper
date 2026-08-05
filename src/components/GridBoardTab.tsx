@@ -465,10 +465,15 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                 const previousPlayer = index > 0 ? displayPlayers[index - 1] : null;
                 const isNewTier = selectedPos !== 'ALL' && previousPlayer && player.tier !== previousPlayer.tier;
                 
-                const crossesCurrentPick = selectedPos === 'ALL' && previousPlayer && (
-                  sortBy === 'OVR'
-                    ? player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick
-                    : player.adp && previousPlayer.adp && player.adp >= settings.currentOverallPick && previousPlayer.adp < settings.currentOverallPick
+                const crossesCurrentPick = selectedPos === 'ALL' && (
+                  (index === 0 && (
+                    sortBy === 'OVR' ? player.ovrRank >= settings.currentOverallPick : player.adp && player.adp >= settings.currentOverallPick
+                  )) ||
+                  (previousPlayer && (
+                    sortBy === 'OVR'
+                      ? player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick
+                      : player.adp && previousPlayer.adp && player.adp >= settings.currentOverallPick && previousPlayer.adp < settings.currentOverallPick
+                  ))
                 );
                 
                 return (
