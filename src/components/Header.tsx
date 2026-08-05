@@ -92,7 +92,11 @@ export const Header: React.FC<HeaderProps> = ({
               {(() => {
                 const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
                 if (nextUserPick === -1) return 'N/A';
-                if (nextUserPick === settings.currentOverallPick) return 'DU BIST DRAN!';
+                if (nextUserPick === settings.currentOverallPick) {
+                  const pickAfterNext = calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
+                  if (pickAfterNext === -1) return 'DU BIST DRAN!';
+                  return `DU BIST DRAN! (dann in ${pickAfterNext - settings.currentOverallPick} Picks)`;
+                }
                 return `${nextUserPick - settings.currentOverallPick} Picks`;
               })()}
             </span>

@@ -237,7 +237,15 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
             <div className="flex items-center gap-1.5">
               <span className="text-slate-400">NÄCHSTER PICK IN:</span>
               <span className="text-orange-400 font-bold">
-                {nextUserPick === -1 ? 'N/A' : nextUserPick === settings.currentOverallPick ? 'DU BIST DRAN!' : `${nextUserPick - settings.currentOverallPick} Picks`}
+                {(() => {
+                  if (nextUserPick === -1) return 'N/A';
+                  if (nextUserPick === settings.currentOverallPick) {
+                    const pickAfterNext = calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, leagueSize, settings.totalRounds);
+                    if (pickAfterNext === -1) return 'DU BIST DRAN!';
+                    return `DU BIST DRAN! (dann in ${pickAfterNext - settings.currentOverallPick} Picks)`;
+                  }
+                  return `${nextUserPick - settings.currentOverallPick} Picks`;
+                })()}
               </span>
             </div>
           </div>
