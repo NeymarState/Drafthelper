@@ -430,16 +430,38 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
             </div>
 
             <div className="p-3 space-y-2 overflow-y-auto flex-1 custom-scrollbar">
-              {displayPlayers.map((player) => {
+              {displayPlayers.map((player, index) => {
                 const isDrafted = player.status !== 'Verfügbar';
+                const previousPlayer = index > 0 ? displayPlayers[index - 1] : null;
+                const isNewTier = previousPlayer && player.tier !== previousPlayer.tier;
+                // Add current pick line if sorting by ovrRank puts us exactly crossing the current pick
+                const crossesCurrentPick = previousPlayer && player.ovrRank >= settings.currentOverallPick && previousPlayer.ovrRank < settings.currentOverallPick;
                 
                 return (
-                  <div
-                    key={player.id}
-                    className={`bg-slate-950 border rounded-lg p-2.5 transition-all flex items-center justify-between gap-2 group ${
-                      isDrafted ? 'border-slate-800 opacity-60' : 'border-slate-800 hover:border-blue-500/50'
-                    }`}
-                  >
+                  <React.Fragment key={player.id}>
+                    {crossesCurrentPick && (
+                      <div className="flex items-center gap-4 my-3 opacity-80">
+                        <div className="h-px bg-blue-500/50 flex-1"></div>
+                        <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-blue-950 px-2 rounded-full border border-blue-500/50 flex items-center gap-1 shadow-lg shadow-blue-500/20">
+                          <Target className="w-3 h-3" /> Aktueller Pick ({settings.currentOverallPick})
+                        </span>
+                        <div className="h-px bg-blue-500/50 flex-1"></div>
+                      </div>
+                    )}
+                    {isNewTier && (
+                      <div className="flex items-center gap-4 my-3">
+                        <div className="h-px bg-slate-700/80 flex-1"></div>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest bg-slate-800/80 px-2 rounded-full border border-slate-700/80 shadow-md">
+                          Tier Break: {player.tier}
+                        </span>
+                        <div className="h-px bg-slate-700/80 flex-1"></div>
+                      </div>
+                    )}
+                    <div
+                      className={`bg-slate-950 border rounded-lg p-2.5 transition-all flex items-center justify-between gap-2 group ${
+                        isDrafted ? 'border-slate-800 opacity-60' : 'border-slate-800 hover:border-blue-500/50'
+                      }`}
+                    >
                     <div className="space-y-0.5">
                       <div className="flex items-center gap-1.5">
                         <span className={`font-bold text-xs flex items-center gap-1 ${isDrafted ? 'text-slate-500 line-through' : 'text-slate-100 group-hover:text-blue-400'} transition-colors`}>
@@ -556,6 +578,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                       )}
                     </div>
                   </div>
+                  </React.Fragment>
                 );
               })}
               
