@@ -406,6 +406,7 @@ export default function App() {
 
         {activeTab === 'myteam' && (
           <MyTeamTab
+            players={activePlayers}
             userTeam={userTeam}
             roster={roster}
             settings={activeSettings}

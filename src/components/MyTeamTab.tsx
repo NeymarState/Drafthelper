@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { Player, RosterState, DraftSettings } from '../types';
 import { getAdjustedProjection, calculateVORP } from '../utils/calculations';
 import { Shield, Award, Zap, Calendar, UserX, Sparkles, ChevronDown, ChevronUp, FileText, Target, ShieldAlert } from 'lucide-react';
+import { DraftEvaluationModal } from './DraftEvaluationModal';
 
 interface MyTeamTabProps {
+  players: Player[];
   userTeam: Player[];
   roster: RosterState;
   settings: DraftSettings;
@@ -11,12 +13,14 @@ interface MyTeamTabProps {
 }
 
 export const MyTeamTab: React.FC<MyTeamTabProps> = ({
+  players,
   userTeam,
   roster,
   settings,
   onRemoveFromTeam,
 }) => {
   const [expandedPlayerId, setExpandedPlayerId] = useState<string | null>(null);
+  const [showEvaluation, setShowEvaluation] = useState(false);
 
   const totalPoints = userTeam.reduce(
     (acc, p) => acc + getAdjustedProjection(p, settings.scoringFormat),
@@ -76,6 +80,12 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
         </div>
 
         <div className="flex flex-wrap items-center gap-3 text-xs">
+          <button
+            onClick={() => setShowEvaluation(true)}
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-lg border border-blue-400/50 shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all flex items-center gap-2"
+          >
+            <Award className="w-4 h-4" /> DRAFT BEWERTEN
+          </button>
           <div className="bg-slate-950 px-3 py-1.5 rounded border border-slate-800 text-right">
             <div className="text-[10px] text-slate-400 uppercase">GEDRAFTET</div>
             <div className="text-emerald-400 font-bold">{userTeam.length} Spieler</div>
@@ -273,6 +283,15 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {showEvaluation && (
+        <DraftEvaluationModal
+          onClose={() => setShowEvaluation(false)}
+          players={players}
+          userTeam={userTeam}
+          settings={settings}
+        />
       )}
     </div>
   );
