@@ -60,6 +60,25 @@ export const Header: React.FC<HeaderProps> = ({
             )}
           </div>
           <span className="text-slate-600">|</span>
+          <div className="flex items-center gap-1.5 text-[10px] sm:text-xs">
+            <span className="text-slate-400">RUNDEN:</span>
+            {totalDraftedCount === 0 ? (
+              <select
+                value={settings.totalRounds}
+                onChange={(e) => onUpdateSettings({ totalRounds: Number(e.target.value) })}
+                className="bg-slate-950 border border-slate-700 text-purple-400 font-bold rounded px-1 py-0.5 outline-none focus:border-purple-500 cursor-pointer"
+              >
+                {Array.from({ length: 21 }, (_, i) => i + 10).map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            ) : (
+              <span className="text-purple-400 font-bold px-1.5 py-0.5 bg-purple-950/30 border border-purple-900/50 rounded">
+                {settings.totalRounds} 🔒
+              </span>
+            )}
+          </div>
+          <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">AKTUELLER PICK:</span>
             <span className="text-blue-400 font-bold">
@@ -71,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="text-slate-400">NÄCHSTER PICK IN:</span>
             <span className="text-orange-400 font-bold">
               {(() => {
-                const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize);
+                const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
                 if (nextUserPick === -1) return 'N/A';
                 if (nextUserPick === settings.currentOverallPick) return 'DU BIST DRAN!';
                 return `${nextUserPick - settings.currentOverallPick} Picks`;

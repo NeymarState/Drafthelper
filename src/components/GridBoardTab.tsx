@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
 import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
@@ -103,7 +103,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
     }
   };
 
-  const numRounds = 16;
+  const numRounds = settings.totalRounds || 16;
   const leagueSize = settings.leagueSize;
   const rounds = Array.from({ length: numRounds }, (_, i) => i + 1);
   const teams = Array.from({ length: leagueSize }, (_, i) => i + 1);
@@ -116,7 +116,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
     }
   };
 
-  const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, leagueSize);
+  const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, leagueSize, settings.totalRounds);
   const upcomingNeeds = analyzeOpponentNeeds(settings.currentOverallPick, leagueSize, players);
 
   const displayPlayers = players
@@ -152,6 +152,38 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
     })
     .slice(0, 50);
 
+  const rosterOverview = useMemo(() => {
+    const qbs = userTeam.filter(p => p.pos === 'QB').length;
+    const rbs = userTeam.filter(p => p.pos === 'RB').length;
+    const wrs = userTeam.filter(p => p.pos === 'WR').length;
+    const tes = userTeam.filter(p => p.pos === 'TE').length;
+    const ks = userTeam.filter(p => p.pos === 'K').length;
+    const dsts = userTeam.filter(p => p.pos === 'DST').length;
+    
+    // Calculate Flex (RB, WR, TE beyond the starters)
+    const extraRBs = Math.max(0, rbs - 2);
+    const extraWRs = Math.max(0, wrs - 2);
+    const extraTEs = Math.max(0, tes - 1);
+    const flexFilled = extraRBs + extraWRs + extraTEs > 0 ? 1 : 0;
+    
+    // Bench is everything beyond starters + flex
+    const totalStartersFilled = Math.min(1, qbs) + Math.min(2, rbs) + Math.min(2, wrs) + Math.min(1, tes) + flexFilled + Math.min(1, ks) + Math.min(1, dsts);
+    const benchCount = Math.max(0, userTeam.length - totalStartersFilled);
+
+    return {
+      QB: Math.min(1, qbs),
+      RB: Math.min(2, rbs),
+      WR: Math.min(2, wrs),
+      TE: Math.min(1, tes),
+      FLX: flexFilled,
+      K: Math.min(1, ks),
+      DST: Math.min(1, dsts),
+      Bench: benchCount,
+      totalRB: rbs,
+      totalWR: wrs
+    };
+  }, [userTeam]);
+
   const containerClass = isFullscreen
     ? "fixed inset-0 z-50 bg-[#0f172a] p-4 flex flex-col gap-4"
     : "flex flex-col h-[calc(100vh-6rem)] gap-4";
@@ -163,6 +195,35 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
           GRID BOARD
           {isFullscreen && <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30">VOLLBILD</span>}
         </h2>
+
+        {/* Roster Overview Widget */}
+        <div className="hidden md:flex gap-1.5 items-center bg-slate-950/60 px-2 py-1 rounded border border-slate-700/60 shadow-inner">
+          <span className="text-slate-500 mr-1 uppercase font-bold tracking-widest text-[9px]">Roster:</span>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.QB >= 1 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            QB:{rosterOverview.QB}/1
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.RB >= 2 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            RB:{rosterOverview.RB}/2 <span className="text-slate-600 font-normal">({rosterOverview.totalRB})</span>
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.WR >= 2 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            WR:{rosterOverview.WR}/2 <span className="text-slate-600 font-normal">({rosterOverview.totalWR})</span>
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.TE >= 1 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            TE:{rosterOverview.TE}/1
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.FLX >= 1 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            FLX:{rosterOverview.FLX}/1
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.K >= 1 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            K:{rosterOverview.K}/1
+          </div>
+          <div className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-bold ${rosterOverview.DST >= 1 ? 'bg-emerald-900/40 text-emerald-400 border border-emerald-800' : 'bg-slate-900 text-slate-500 border border-slate-700'}`}>
+            DST:{rosterOverview.DST}/1
+          </div>
+          <div className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-800 text-slate-400 border border-slate-700">
+            BN:{rosterOverview.Bench}
+          </div>
+        </div>
 
         {isFullscreen && (
           <div className="flex items-center gap-3 text-[10px] font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700">
@@ -382,7 +443,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
             <div className="flex-1 overflow-auto custom-scrollbar pr-2 space-y-1.5">
               {displayPlayers.map(player => {
                 const predictorTargetPick = nextUserPick === settings.currentOverallPick
-                  ? calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, leagueSize)
+                  ? calculateNextPick(settings.currentOverallPick + 1, settings.userPickSlot, leagueSize, settings.totalRounds)
                   : nextUserPick;
                   
                 const prob = calculatePickProbability(player, settings.currentOverallPick, predictorTargetPick, upcomingNeeds);

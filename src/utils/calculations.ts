@@ -178,11 +178,11 @@ export function generateLiveAlerts(
   settings: DraftSettings
 ): AlertItem[] {
   const alerts: AlertItem[] = [];
-  const { currentOverallPick, userPickSlot, leagueSize, scoringFormat } = settings;
+  const { currentOverallPick, userPickSlot, leagueSize, scoringFormat, totalRounds } = settings;
 
   // 1. Tier Scarcity Warning (Enhanced with Pick Probability)
   const positions: Position[] = ['QB', 'RB', 'WR', 'TE'];
-  const nextUserPick = findNextUserPickSlot(allPlayers, userPickSlot, leagueSize);
+  const nextUserPick = findNextUserPickSlot(allPlayers, userPickSlot, leagueSize, totalRounds);
   const picksUntilNext = Math.max(0, nextUserPick - currentOverallPick);
 
   positions.forEach((pos) => {
@@ -193,6 +193,13 @@ export function generateLiveAlerts(
       const availableInTier = tierPlayers.filter((p) => p.status === 'Verfügbar');
 
       if (tierPlayers.length > 0 && availableInTier.length <= 2 && availableInTier.length > 0) {
+        const topAvailable = availableInTier.sort((a, b) => (a.adp || a.ovrRank) - (b.adp || b.ovrRank))[0];
+        
+        // Filter: Don't alert if the player is expected to go much later (more than 1.5 to 2 rounds away)
+        if (topAvailable && (topAvailable.adp || topAvailable.ovrRank) > currentOverallPick + leagueSize * 1.5) {
+          return; // Skip this tier alert because it's too early based on ADP
+        }
+
         let probMsg = '';
         if (picksUntilNext > 0) {
           const oppNeeds = analyzeOpponentNeeds(currentOverallPick, leagueSize, allPlayers);
@@ -204,9 +211,9 @@ export function generateLiveAlerts(
           id: `scarcity-${pos}-t${tierNum}`,
           type: 'tier-scarcity',
           severity: availableInTier.length === 1 ? 'high' : 'medium',
-          title: `⚠️ Tier ${tierNum} Cliff: ${pos}`,
+          title: `🚨 Tier ${tierNum} Cliff: ${pos}`,
           message: `Nur noch ${availableInTier.length} ${pos} in Tier ${tierNum}! ${probMsg}`,
-          details: availableInTier.map((p) => `${p.name} (${p.team}) - Ovr #${p.ovrRank}`),
+          details: availableInTier.map((p) => `${p.name} (${p.team}) - Ovr #${p.ovrRank} / ADP ${p.adp || 'N/A'}`),
         });
       }
     });
@@ -391,32 +398,34 @@ export function isUserPickSlot(pick: number, userPickSlot: number, leagueSize: n
   return slotOwner === userPickSlot;
 }
 
-export function findNextUserPickSlot(players: Player[], userPickSlot: number, leagueSize: number): number {
-  for (let pick = 1; pick <= 500; pick++) {
+export function findNextUserPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
+  const maxPick = leagueSize * totalRounds;
+  for (let pick = 1; pick <= maxPick; pick++) {
     if (isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
     }
   }
-  return 1;
+  return -1;
 }
 
-export function findNextOpponentPickSlot(players: Player[], userPickSlot: number, leagueSize: number): number {
-  for (let pick = 1; pick <= 500; pick++) {
+export function findNextOpponentPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
+  const maxPick = leagueSize * totalRounds;
+  for (let pick = 1; pick <= maxPick; pick++) {
     if (!isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
     }
   }
-  return 1;
+  return -1;
 }
 
-export function calculateNextPick(currentOverallPick: number, userPickSlot: number, leagueSize: number): number {
+export function calculateNextPick(currentOverallPick: number, userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
   let round = Math.ceil(currentOverallPick / leagueSize);
   let nextPick = -1;
   
   // Try to find the next time the user picks
-  while (nextPick < currentOverallPick && round <= 30) {
+  while (nextPick < currentOverallPick && round <= totalRounds) {
     if (round % 2 === 1) {
       nextPick = (round - 1) * leagueSize + userPickSlot;
     } else {

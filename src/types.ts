@@ -36,6 +36,7 @@ export interface Player {
 
 export interface DraftSettings {
   leagueSize: number; // 8, 10, 12, 14, 16
+  totalRounds: number; // e.g. 15, 16, 17
   scoringFormat: ScoringFormat;
   leagueType: LeagueType;
   userPickSlot: number; // 1 to leagueSize

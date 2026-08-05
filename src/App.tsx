@@ -57,6 +57,7 @@ export default function App() {
     }
     return {
       leagueSize: 12,
+      totalRounds: 16,
       scoringFormat: 'Half-PPR',
       leagueType: 'Redraft',
       userPickSlot: 1,
@@ -131,7 +132,7 @@ export default function App() {
     if (player.customTag === 'Sleeper' || player.customTag === 'Target') playSuccessSound();
     if (player.customTag === 'Avoid' || player.customTag === 'Fade') playWarningSound();
     
-    const assignedSlot = findNextUserPickSlot(players, settings.userPickSlot, settings.leagueSize);
+    const assignedSlot = findNextUserPickSlot(players, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
     handleDraftForMe(player, assignedSlot);
     setSettings((prev) => ({
       ...prev,
@@ -144,7 +145,7 @@ export default function App() {
       setGhostPicks(prev => [...prev, { playerId: player.id, isUser: false }]);
       return;
     }
-    const assignedSlot = findNextOpponentPickSlot(players, settings.userPickSlot, settings.leagueSize);
+    const assignedSlot = findNextOpponentPickSlot(players, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
     handleDraftForOpponent(player, assignedSlot);
     setSettings((prev) => ({
       ...prev,
