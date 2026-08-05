@@ -54,7 +54,9 @@ export const evaluateDraft = (
   }
 
   // 2. Early Kicker/Defense
-  const earlySpecialTeams = userTeam.find(p => (p.pos === 'K' || p.pos === 'DST') && (p.draftedAtPick || 999) < (settings.leagueSize * 13));
+  const rounds = settings.totalRounds || 16;
+  const kDstThreshold = settings.leagueSize * Math.max(1, rounds - 3);
+  const earlySpecialTeams = userTeam.find(p => (p.pos === 'K' || p.pos === 'DST') && (p.draftedAtPick || 999) <= kDstThreshold);
   if (earlySpecialTeams) {
     score -= 5;
     tips.push({ type: 'negative', text: `Du hast ${earlySpecialTeams.name} sehr früh gedraftet. Kicker und Defenses sollten erst in den letzten 2-3 Runden geholt werden.` });
@@ -101,6 +103,11 @@ export const evaluateDraft = (
 
   userTeam.forEach(p => {
     if (p.draftedAtPick && p.adp) {
+      // Ignore K/DST reaches if they were drafted in the acceptable late rounds
+      if ((p.pos === 'K' || p.pos === 'DST') && p.draftedAtPick > kDstThreshold) {
+        return;
+      }
+
       const diff = p.draftedAtPick - p.adp; // Positive = Steal (drafted later than ADP), Negative = Reach (drafted earlier)
       
       if (diff > 5) {
