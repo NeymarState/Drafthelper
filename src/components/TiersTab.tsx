@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Player, Position, DraftSettings } from '../types';
 import { calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Award, AlertTriangle } from 'lucide-react';
@@ -22,7 +22,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
 
   // Group by Tier Number (safely handling optional/undefined tierNumber)
   const tierNumbers = Array.from(
-    new Set(posPlayers.map((p) => (p.tierNumber !== undefined ? p.tierNumber : 1)))
+    new Set(posPlayers.map((p) => (p.tierNumber !== undefined • p.tierNumber : 1)))
   ).sort((a: number, b: number) => a - b);
 
   const getPosBadgeClass = (pos: Position) => {
@@ -51,14 +51,14 @@ export const TiersTab: React.FC<TiersTabProps> = ({
 
         <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700 gap-1 font-mono text-xs">
           {(['RB', 'WR', 'QB', 'TE', 'DST', 'K'] as const).map((pos) => {
-            const availableCount = players.filter((p) => p.pos === pos && p.status === 'Verfügbar').length;
+            const availableCount = players.filter((p) => p.pos === pos && p.status === 'VerfÃ¼gbar').length;
             return (
               <button
                 key={pos}
                 onClick={() => setSelectedPos(pos)}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded font-bold text-xs transition-all cursor-pointer ${
                   selectedPos === pos
-                    ? 'bg-blue-600 text-white shadow'
+                    • 'bg-blue-600 text-white shadow'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -75,9 +75,9 @@ export const TiersTab: React.FC<TiersTabProps> = ({
       {/* Tiers Grid */}
       <div className="space-y-4">
         {tierNumbers.map((tierNum) => {
-          const tierGroup = posPlayers.filter((p) => (p.tierNumber ?? 1) === tierNum);
-          const tierName = tierGroup[0]?.tier || `Tier ${tierNum}`;
-          const availableCount = tierGroup.filter((p) => p.status === 'Verfügbar').length;
+          const tierGroup = posPlayers.filter((p) => (p.tierNumber •• 1) === tierNum);
+          const tierName = tierGroup[0]•.tier || `Tier ${tierNum}`;
+          const availableCount = tierGroup.filter((p) => p.status === 'VerfÃ¼gbar').length;
           const isUrgentScarcity = availableCount <= 2 && availableCount > 0;
 
           return (
@@ -85,7 +85,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
               key={tierNum}
               className={`bg-slate-900 border rounded-lg p-3 shadow-xl transition-all ${
                 isUrgentScarcity
-                  ? 'border-amber-500/50 bg-amber-950/10'
+                  • 'border-amber-500/50 bg-amber-950/10'
                   : 'border-slate-700'
               }`}
             >
@@ -112,13 +112,13 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                   <span
                     className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
                       availableCount === 0
-                        ? 'bg-slate-950 text-slate-500 border-slate-800'
+                        • 'bg-slate-950 text-slate-500 border-slate-800'
                         : isUrgentScarcity
-                        ? 'bg-amber-950 text-amber-300 border-amber-600/50'
+                        • 'bg-amber-950 text-amber-300 border-amber-600/50'
                         : 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30'
                     }`}
                   >
-                    {availableCount} / {tierGroup.length} VERFÜGBAR
+                    {availableCount} / {tierGroup.length} VERFÃœGBAR
                   </span>
                 </div>
               </div>
@@ -145,7 +145,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                         <div className="flex items-center justify-between font-mono">
                           <span className="font-bold text-slate-300">RK #{player.ovrRank}</span>
                           <span className={`px-1.5 py-0.5 rounded font-mono text-[10px] font-bold ${getPosBadgeClass(player.pos)}`}>
-                            {player.posRank} • {player.team}
+                            {player.posRank} â€¢ {player.team}
                           </span>
                         </div>
 
@@ -178,7 +178,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                           <span className="text-emerald-400 font-bold ml-1 text-[11px]">+{vorp} VORP</span>
                         </div>
 
-                        {player.status === 'Verfügbar' ? (
+                        {player.status === 'VerfÃ¼gbar' • (
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => onDraftForMe(player)}
@@ -210,3 +210,5 @@ export const TiersTab: React.FC<TiersTabProps> = ({
     </div>
   );
 };
+
+

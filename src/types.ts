@@ -24,7 +24,7 @@ export interface Player {
   age?: number;
   dynastyTier?: string;
   profile: string;     // Fantasy Footballers notes & upside
-  customTag?: 'Sleeper' | 'Target' | 'Avoid' | 'Fade' | 'Value' | null | '';
+  customTag?: 'Sleeper' | 'Target' | 'Avoid' | 'Fade' | 'Value' | 'Rookie' | null | '';
   rbRole?: 'RB1' | 'RB2' | 'Timeshare' | 'Handcuff' | 'RB3';
   wrRole?: 'WR1' | 'WR2' | 'WR3' | 'WR4';
   playerArchetype?: 'Upside' | 'Baseline';

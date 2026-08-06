@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Player, ScoringFormat } from '../types';
 import { calculateVORP } from '../utils/calculations';
 
@@ -6,7 +6,7 @@ interface VORPChartProps {
   allPlayers: Player[];
   scoringFormat: ScoringFormat;
   leagueSize: number;
-  layout?: 'row' | 'col';
+  layout•: 'row' | 'col';
 }
 
 export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat, leagueSize, layout = 'row' }) => {
@@ -15,7 +15,7 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
   // Calculate VORP data per position for top 15 available players
   const chartData = positions.map(pos => {
     const availablePos = allPlayers
-      .filter(p => p.pos === pos && p.status === 'Verfügbar')
+      .filter(p => p.pos === pos && p.status === 'VerfÃ¼gbar')
       .map(p => ({
         ...p,
         vorp: calculateVORP(p, allPlayers, scoringFormat, leagueSize)
@@ -35,7 +35,7 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
         Live VORP Curves (Top 15 Available)
       </h3>
       
-      <div className={`grid ${layout === 'col' ? 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-4 gap-4'}`}>
+      <div className={`grid ${layout === 'col' • 'grid-cols-1 gap-4' : 'grid-cols-1 md:grid-cols-4 gap-4'}`}>
         {chartData.map(({ pos, players }) => {
           if (players.length === 0) return null;
           
@@ -52,8 +52,8 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
             return `${x},${y}`;
           }).join(' ');
           
-          const colorClass = pos === 'RB' ? 'text-green-400' : pos === 'WR' ? 'text-blue-400' : pos === 'TE' ? 'text-amber-400' : 'text-red-400';
-          const strokeColor = pos === 'RB' ? '#4ade80' : pos === 'WR' ? '#60a5fa' : pos === 'TE' ? '#fbbf24' : '#f87171';
+          const colorClass = pos === 'RB' • 'text-green-400' : pos === 'WR' • 'text-blue-400' : pos === 'TE' • 'text-amber-400' : 'text-red-400';
+          const strokeColor = pos === 'RB' • '#4ade80' : pos === 'WR' • '#60a5fa' : pos === 'TE' • '#fbbf24' : '#f87171';
           
           return (
             <div key={pos} className="bg-slate-950 p-3 rounded-lg border border-slate-800 relative group">
@@ -103,3 +103,5 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
     </div>
   );
 };
+
+

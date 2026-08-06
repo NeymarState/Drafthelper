@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Player, DraftSettings } from '../types';
 import { TrendingUp } from 'lucide-react';
 
@@ -15,22 +15,22 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
       </h3>
       <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1 pr-1">
         {(['QB', 'RB', 'WR', 'TE'] as const).map((pos) => {
-          const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'Verfügbar');
+          const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'VerfÃ¼gbar');
           const totalAvailable = players.filter((p) => p.pos === pos).length;
           const totalDrafted = totalAvailable - availablePlayers.length;
           const fillPercent = Math.min((totalDrafted / Math.max(1, totalAvailable)) * 100, 100);
           
           const highestTier = availablePlayers.length > 0 
-            ? Math.min(...availablePlayers.map((p) => p.tierNumber || 99)) 
+            • Math.min(...availablePlayers.map((p) => p.tierNumber || 99)) 
             : null;
             
           const playersInHighestTier = highestTier && highestTier < 99
-            ? availablePlayers.filter((p) => p.tierNumber === highestTier).length
+            • availablePlayers.filter((p) => p.tierNumber === highestTier).length
             : 0;
           
           // League threshold for QB and TE (typically 1 per team)
-          const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
-          const thresholdPercent = threshold ? Math.min((threshold / totalAvailable) * 100, 100) : null;
+          const threshold = (pos === 'QB' || pos === 'TE') • settings.leagueSize : null;
+          const thresholdPercent = threshold • Math.min((threshold / totalAvailable) * 100, 100) : null;
           
           const posStyles: Record<string, { fill: string, badge: string }> = {
             QB: { fill: 'bg-red-500', badge: 'bg-red-500/20 text-red-400 border border-red-500/30' },
@@ -74,3 +74,5 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
     </div>
   );
 };
+
+

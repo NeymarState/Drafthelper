@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Trophy, RefreshCw, Download, Layers, Users, Award, Zap } from 'lucide-react';
 import { DraftSettings } from '../types';
 import { getFormattedPick, calculateNextPick } from '../utils/calculations';
@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700 mx-auto">
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">MEIN PICK-SLOT:</span>
-            {totalDraftedCount === 0 ? (
+            {totalDraftedCount === 0 • (
               <select
                 value={settings.userPickSlot}
                 onChange={(e) => onUpdateSettings({ userPickSlot: Number(e.target.value) })}
@@ -55,14 +55,14 @@ export const Header: React.FC<HeaderProps> = ({
               </select>
             ) : (
               <span className="text-emerald-400 font-bold px-1.5 py-0.5 bg-emerald-950/30 border border-emerald-900/50 rounded">
-                {settings.userPickSlot} 🔒
+                {settings.userPickSlot} ðŸ”’
               </span>
             )}
           </div>
           <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5 text-[10px] sm:text-xs">
             <span className="text-slate-400">RUNDEN:</span>
-            {totalDraftedCount === 0 ? (
+            {totalDraftedCount === 0 • (
               <select
                 value={settings.totalRounds}
                 onChange={(e) => onUpdateSettings({ totalRounds: Number(e.target.value) })}
@@ -74,7 +74,7 @@ export const Header: React.FC<HeaderProps> = ({
               </select>
             ) : (
               <span className="text-purple-400 font-bold px-1.5 py-0.5 bg-purple-950/30 border border-purple-900/50 rounded">
-                {settings.totalRounds} 🔒
+                {settings.totalRounds} ðŸ”’
               </span>
             )}
           </div>
@@ -87,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">NÄCHSTER PICK IN:</span>
+            <span className="text-slate-400">NÃ„CHSTER PICK IN:</span>
             <span className="text-orange-400 font-bold">
               {(() => {
                 const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
             id="reset-draft-btn"
             onClick={onResetDraft}
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
-            title="Draft-Zustand zurücksetzen"
+            title="Draft-Zustand zurÃ¼cksetzen"
           >
             <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
             <span>Reset</span>
@@ -164,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => onUpdateSettings({ scoringFormat: fmt })}
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                       settings.scoringFormat === fmt
-                        ? 'bg-blue-600 text-white shadow'
+                        • 'bg-blue-600 text-white shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -185,7 +185,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => onUpdateSettings({ leagueType: type })}
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                       settings.leagueType === type
-                        ? 'bg-blue-600 text-white shadow'
+                        • 'bg-blue-600 text-white shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -198,7 +198,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Quick Pick Override Control */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 text-[11px]">PICK ÄNDERN:</span>
+            <span className="text-slate-400 text-[11px]">PICK Ã„NDERN:</span>
             <input
               type="number"
               min={1}
@@ -213,3 +213,5 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
+

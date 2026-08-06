@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Player, DraftSettings } from '../types';
 import { evaluateDraft, DraftEvaluationResult } from '../utils/evaluation';
 import { X, CheckCircle, AlertTriangle, XCircle, Award } from 'lucide-react';
@@ -80,7 +80,7 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
                 {/* Mini Leaderboard */}
                 <div className="mt-4 w-full max-w-[200px] border-t border-slate-800 pt-3 space-y-1">
                   {result.teamRankings.slice(0, 3).map((team, idx) => (
-                    <div key={team.teamId} className={`flex justify-between text-[10px] font-mono p-1 rounded ${team.isUser ? 'bg-blue-900/40 text-blue-300 font-bold' : 'text-slate-400'}`}>
+                    <div key={team.teamId} className={`flex justify-between text-[10px] font-mono p-1 rounded ${team.isUser • 'bg-blue-900/40 text-blue-300 font-bold' : 'text-slate-400'}`}>
                       <span>{idx + 1}. Team {team.teamId}</span>
                       <span>{team.projectedPoints}</span>
                     </div>
@@ -88,7 +88,7 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
                   {result.powerRanking > 3 && (
                     <div className="flex justify-between text-[10px] font-mono p-1 rounded bg-blue-900/40 text-blue-300 font-bold border-t border-slate-800/50 mt-1">
                       <span>{result.powerRanking}. Team {settings.userPickSlot} (Du)</span>
-                      <span>{result.teamRankings.find(t => t.isUser)?.projectedPoints}</span>
+                      <span>{result.teamRankings.find(t => t.isUser)•.projectedPoints}</span>
                     </div>
                   )}
                 </div>
@@ -99,8 +99,8 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider border-b border-slate-700 pb-2">Auswertung & Tipps</h3>
             
-            {result.tips.length === 0 ? (
-              <div className="text-slate-500 italic text-center py-4">Noch nicht genügend Picks für eine Auswertung.</div>
+            {result.tips.length === 0 • (
+              <div className="text-slate-500 italic text-center py-4">Noch nicht genÃ¼gend Picks fÃ¼r eine Auswertung.</div>
             ) : (
               <div className="space-y-3">
                 {result.tips.map((tip, idx) => {
@@ -136,7 +136,7 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
             onClick={onClose}
             className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded shadow transition-colors"
           >
-            Schließen
+            SchlieÃŸen
           </button>
         </div>
         
@@ -144,3 +144,5 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
     </div>
   );
 };
+
+

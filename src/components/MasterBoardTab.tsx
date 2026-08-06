@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Search, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
@@ -264,11 +264,13 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                                     player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
                                     player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
                                     player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                player.customTag === 'Rookie' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' : 
                                     'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
                                   {player.customTag === 'Sleeper' ? '💤 Sleeper' : 
                                    player.customTag === 'Target' ? '🎯 Target' : 
                                    player.customTag === 'Avoid' ? '⛔ Avoid' : 
                                    player.customTag === 'Fade' ? '📉 Fade' : 
+                               player.customTag === 'Rookie' ? '👶 Rookie' : 
                                    '💎 Value'}
                                 </span>
                               )}
@@ -429,3 +431,4 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
     </div>
   );
 };
+

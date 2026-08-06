@@ -12,6 +12,7 @@ import { playTurnSound, playSuccessSound, playWarningSound } from './utils/audio
 import { usePlayers } from './hooks/usePlayers';
 
 // Components
+import { FullDraftboardTab } from './components/FullDraftboardTab';
 import { Header } from './components/Header';
 import { DashboardTab } from './components/DashboardTab';
 import { MasterBoardTab } from './components/MasterBoardTab';
@@ -23,7 +24,7 @@ import { CustomizationTab } from './components/CustomizationTab';
 import { GridBoardTab } from './components/GridBoardTab';
 import { ExportModal } from './components/ExportModal';
 
-import { LayoutDashboard, Table, Grid, Layers, Settings2, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
+import { LayoutDashboard, Table, Grid, LayoutGrid, Layers, Settings2, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
 
 const STORAGE_KEY_SETTINGS = 'ff_command_center_settings_2026';
 
@@ -66,7 +67,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'board' | 'grid' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
+    'dashboard' | 'board' | 'grid' | 'fullboard' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
@@ -83,6 +84,16 @@ export default function App() {
       console.error('Failed to save settings', e);
     }
   }, [settings]);
+
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY_SETTINGS && e.newValue) {
+        setSettings(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Total drafted players count
   const totalDraftedCount = players.filter((p) => p.status !== 'Verfügbar').length;
@@ -285,6 +296,19 @@ export default function App() {
           </button>
 
           <button
+            id="tab-fullboard"
+            onClick={() => setActiveTab('fullboard')}
+            className={`flex-1 min-w-[140px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
+              activeTab === 'fullboard'
+                ? 'border-blue-500 bg-blue-500/10 text-white rounded-t'
+                : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-t'
+            }`}
+          >
+            <LayoutGrid className="w-3.5 h-3.5 text-blue-400" />
+            FULL BOARD
+          </button>
+
+          <button
             id="tab-myteam"
             onClick={() => setActiveTab('myteam')}
             className={`flex-1 min-w-[120px] flex items-center justify-center gap-1.5 py-2 px-3 text-xs font-bold transition-all cursor-pointer border-b-2 ${
@@ -401,6 +425,13 @@ export default function App() {
             onDraftForMe={onDraftForMeWrapper}
             onDraftForOpponent={onDraftForOpponentWrapper}
             onResetStatus={onResetStatusWrapper}
+          />
+        )}
+
+        {activeTab === 'fullboard' && (
+          <FullDraftboardTab
+            players={activePlayers}
+            settings={activeSettings}
           />
         )}
 

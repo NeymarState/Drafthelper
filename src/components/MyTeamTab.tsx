@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { Player, RosterState, DraftSettings } from '../types';
 import { getAdjustedProjection, calculateVORP } from '../utils/calculations';
 import { Shield, Award, Zap, Calendar, UserX, Sparkles, ChevronDown, ChevronUp, FileText, Target, ShieldAlert } from 'lucide-react';
@@ -170,6 +170,7 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
                                     player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
                                     player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
                                     player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                player.customTag === 'Rookie' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' : 
                                     'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
                                   {player.customTag === 'Sleeper' && <Zap className="w-2.5 h-2.5" />}
                                   {player.customTag === 'Target' && <Target className="w-2.5 h-2.5" />}
@@ -178,6 +179,7 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
                                    player.customTag === 'Target' ? 'Target' : 
                                    player.customTag === 'Avoid' ? 'Avoid' : 
                                    player.customTag === 'Fade' ? 'Fade' : 
+                               player.customTag === 'Rookie' ? 'Rookie' : 
                                    'Value'}
                                 </span>
                               )}
@@ -296,3 +298,4 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
     </div>
   );
 };
+

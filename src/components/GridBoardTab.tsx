@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
 import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
@@ -537,11 +537,13 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                                   player.customTag === 'Target' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 
                                   player.customTag === 'Avoid' ? 'bg-red-500/20 text-red-400 border-red-500/30' : 
                                   player.customTag === 'Fade' ? 'bg-orange-500/20 text-orange-400 border-orange-500/30' : 
+                                player.customTag === 'Rookie' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' : 
                                   'bg-blue-500/20 text-blue-400 border-blue-500/30'}`}>
                                 {player.customTag === 'Sleeper' ? '💤 Sleeper' : 
                                  player.customTag === 'Target' ? '🎯 Target' : 
                                  player.customTag === 'Avoid' ? '⛔ Avoid' : 
                                  player.customTag === 'Fade' ? '📉 Fade' : 
+                               player.customTag === 'Rookie' ? '👶 Rookie' : 
                                  '💎 Value'}
                               </span>
                             )}
@@ -714,3 +716,4 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
     </div>
   );
 };
+

@@ -6,8 +6,8 @@ import { enrichPlayerData } from '../utils/calculations';
 
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_LEAGUE_SIZE = 'ff_command_center_league_size_2026';
-const DATA_VERSION_KEY = 'ff_command_center_data_version';
-const CURRENT_DATA_VERSION = 'v11-data-reset';
+const DATA_VERSION_KEY = 'ff_command_center_data_version_2026';
+const CURRENT_DATA_VERSION = 'v12-data-reset';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();
@@ -76,6 +76,17 @@ export const usePlayers = () => {
       console.error('Failed to save players', e);
     }
   }, [players]);
+
+  // Sync across tabs
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY_PLAYERS && e.newValue) {
+        setPlayers(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Data update merge logic
   useEffect(() => {
