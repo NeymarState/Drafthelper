@@ -59,10 +59,17 @@ export const evaluateDraft = (
   teams.forEach((teamPlayers, teamId) => {
     const roster = calculateRosterSlots(teamPlayers, settings.scoringFormat);
     const starters = [roster.QB, roster.RB1, roster.RB2, roster.WR1, roster.WR2, roster.TE, roster.FLEX, roster.DST, roster.K].filter(Boolean) as Player[];
-    const points = starters.reduce((acc, p) => acc + getAdjustedProjection(p, settings.scoringFormat), 0);
+    const isUser = teamId === settings.userPickSlot;
+    
+    // Evaluate based on ADP for opponents, OvrRank for the user. Focus strictly on Starting Lineup.
+    const points = starters.reduce((acc, p) => {
+      const rank = isUser ? p.ovrRank : (p.adp && p.adp > 0 ? p.adp : p.ovrRank);
+      return acc + Math.max(0, 300 - rank); // Convert rank to a pseudo-point value (lower rank = higher points)
+    }, 0);
+    
     teamRankings.push({
       teamId,
-      isUser: teamId === settings.userPickSlot,
+      isUser,
       projectedPoints: Math.round(points * 10) / 10
     });
   });
@@ -103,6 +110,28 @@ export const evaluateDraft = (
     score -= 3;
     tips.push({ type: 'warning', text: 'Zu viele Defenses: Nutze den Roster-Spot lieber für Upside-Spieler auf RB oder WR.' });
   }
+
+  // 1.5 Stacks & Overlaps
+  const teamCounts = new Map<string, Player[]>();
+  userTeam.forEach(p => {
+    if (!teamCounts.has(p.team)) teamCounts.set(p.team, []);
+    teamCounts.get(p.team)!.push(p);
+  });
+
+  teamCounts.forEach((players, teamName) => {
+    if (players.length >= 2) {
+      const hasQB = players.some(p => p.pos === 'QB');
+      const hasReceiver = players.some(p => p.pos === 'WR' || p.pos === 'TE');
+      
+      if (hasQB && hasReceiver) {
+        score += 8;
+        tips.push({ type: 'positive', text: `Guter Stack: Du hast einen wertvollen ${teamName} Stack (zzB. QB + WR/TE). Das erhöht dein wöchentliches Upside signifikant!` });
+      } else if (players.length >= 3) {
+        score -= 5;
+        tips.push({ type: 'negative', text: `Klumpenrisiko: Du hast ${players.length} Spieler von den ${teamName}, aber keinen echten QB-Stack. Das limitiert dein Upside und bringt wöchentliches Risiko.` });
+      }
+    }
+  });
 
   // 2. Early Kicker/Defense
   const rounds = settings.totalRounds || 16;
@@ -159,8 +188,8 @@ export const evaluateDraft = (
         return;
       }
 
-      // Blend ADP and OvrRank to represent "True Value" for the user (orienting on their own board)
-      const referenceRank = p.adp ? (p.adp + p.ovrRank) / 2 : p.ovrRank;
+      // User team is evaluated purely on their own ranking (OvrRank)
+      const referenceRank = p.ovrRank;
       const diff = p.draftedAtPick - referenceRank; // Positive = Steal, Negative = Reach
       
       if (diff > 5) {

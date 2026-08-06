@@ -245,19 +245,12 @@ export const usePlayers = () => {
       const adpMap: Record<string, number> = {};
       const normalizeName = (name: string) => name.toLowerCase().replace(/[^a-z]/g, '').replace(/jr$/, '').replace(/sr$/, '').replace(/iii$/, '').replace(/ii$/, '');
 
-      if (provider === 'sleeper') {
-        const res = await fetch("https://api.sleeper.app/projections/nfl/2026?season_type=regular&position[]=DEF&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp");
-        if (!res.ok) throw new Error('Failed to fetch Sleeper data');
-        const data = await res.json();
-        
-        for (const p of data) {
-          if (p.player && p.player.first_name && p.player.last_name && p.stats && p.stats.adp_half_ppr) {
-            const name = `${p.player.first_name} ${p.player.last_name}`;
-            adpMap[normalizeName(name)] = p.stats.adp_half_ppr;
-          }
-        }
-      } else {
-        throw new Error('ESPN ADP Sync is not implemented directly on the client yet.');
+      const res = await fetch(`/api/adp?provider=${provider}`);
+      if (!res.ok) throw new Error(`Failed to fetch ${provider} ADP data`);
+      const data = await res.json();
+      
+      for (const [name, adpVal] of Object.entries(data)) {
+        adpMap[name] = adpVal as number;
       }
       
       setPlayers(prev => prev.map(p => {

@@ -1,48 +1,69 @@
 export default async function handler(req: any, res: any) {
   try {
     const provider = req.query?.provider || 'sleeper';
-    
-    // We use the robust Sleeper projections API which provides comprehensive ADP data.
-    // FantasyPros hides full ADP lists behind a registration wall, which caused the "only 5 players" bug.
-    const url = "https://api.sleeper.app/projections/nfl/2026?season_type=regular&position[]=DEF&position[]=FLEX&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp";
-    
-    const fetchRes = await fetch(url);
-    if (!fetchRes.ok) {
-      throw new Error(`Failed to fetch from Sleeper API: ${fetchRes.status}`);
-    }
-    const data = await fetchRes.json();
-    
     const adpMap: Record<string, number> = {};
-    
-    for (const item of data) {
-      if (!item.player || !item.stats) continue;
+
+    const normalizeName = (name: string) => name
+      .toLowerCase()
+      .replace(/[^a-z]/g, '')
+      .replace(/jr$/, '')
+      .replace(/sr$/, '')
+      .replace(/iii$/, '')
+      .replace(/ii$/, '');
+
+    if (provider === 'espn') {
+      const espnUrl = "https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/2026/segments/0/leaguedefaults/3?view=kona_player_info";
+      const espnRes = await fetch(espnUrl, {
+        headers: {
+          "X-Fantasy-Filter": '{"players":{"filterSlotIds":{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},"filterStatsForTopScoringPeriodIds":{"value":16,"additionalValue":["002026","102026","002025","022026"]},"sortDraftRanks":{"sortPriority":100,"sortAsc":true,"value":"STANDARD"}}}'
+        }
+      });
       
-      const firstName = item.player.first_name || '';
-      const lastName = item.player.last_name || '';
-      const rawName = `${firstName} ${lastName}`.trim();
-      
-      // Fuzzy name matching setup: remove Jr., Sr., III, II, punctuation, spaces, and make lowercase
-      const normalizedName = rawName
-        .toLowerCase()
-        .replace(/[^a-z]/g, '')
-        .replace(/jr$/, '')
-        .replace(/sr$/, '')
-        .replace(/iii$/, '')
-        .replace(/ii$/, '');
-      
-      let adp = null;
-      
-      // The user requested Half-PPR for both Sleeper and ESPN.
-      if (typeof item.stats.adp_half_ppr === 'number' && item.stats.adp_half_ppr < 900) {
-        adp = item.stats.adp_half_ppr;
-      } else if (typeof item.stats.adp_ppr === 'number' && item.stats.adp_ppr < 900) {
-        adp = item.stats.adp_ppr;
-      } else if (typeof item.stats.adp_std === 'number' && item.stats.adp_std < 900) {
-        adp = item.stats.adp_std;
+      if (!espnRes.ok) {
+        throw new Error(`Failed to fetch from ESPN API: ${espnRes.status}`);
       }
       
-      if (adp !== null) {
-        adpMap[normalizedName] = adp;
+      const data = await espnRes.json();
+      if (data && data.players && Array.isArray(data.players)) {
+        for (const p of data.players) {
+          if (p.player && p.player.fullName && p.player.ownership && p.player.ownership.averageDraftPosition) {
+            const adp = p.player.ownership.averageDraftPosition;
+            if (adp > 0 && adp < 900) {
+              adpMap[normalizeName(p.player.fullName)] = adp;
+            }
+          }
+        }
+      }
+    } else {
+      // Sleeper (Default)
+      const url = "https://api.sleeper.app/projections/nfl/2026?season_type=regular&position[]=DEF&position[]=FLEX&position[]=K&position[]=QB&position[]=RB&position[]=TE&position[]=WR&order_by=adp";
+      
+      const fetchRes = await fetch(url);
+      if (!fetchRes.ok) {
+        throw new Error(`Failed to fetch from Sleeper API: ${fetchRes.status}`);
+      }
+      const data = await fetchRes.json();
+      
+      for (const item of data) {
+        if (!item.player || !item.stats) continue;
+        
+        const firstName = item.player.first_name || '';
+        const lastName = item.player.last_name || '';
+        const rawName = `${firstName} ${lastName}`.trim();
+        const normName = normalizeName(rawName);
+        
+        let adp = null;
+        if (typeof item.stats.adp_half_ppr === 'number' && item.stats.adp_half_ppr < 900) {
+          adp = item.stats.adp_half_ppr;
+        } else if (typeof item.stats.adp_ppr === 'number' && item.stats.adp_ppr < 900) {
+          adp = item.stats.adp_ppr;
+        } else if (typeof item.stats.adp_std === 'number' && item.stats.adp_std < 900) {
+          adp = item.stats.adp_std;
+        }
+        
+        if (adp !== null) {
+          adpMap[normName] = adp;
+        }
       }
     }
     

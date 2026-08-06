@@ -297,6 +297,12 @@ GB(11)
 14
 12
 12
+[Joe Mixon](https://www.thefantasyfootballers.com/fantasy/joe-mixon/)
+HOU(14)
+15
+15
+15
+15
 [Kyren Williams](https://www.thefantasyfootballers.com/fantasy/kyren-williams/)
 LAR(11)
 14
@@ -760,6 +766,36 @@ NO(8)
 87
 89
 
+[Tyreek Hill](https://www.thefantasyfootballers.com/fantasy/tyreek-hill/)
+MIA(6)
+2
+1
+2
+1
+[Brandon Aiyuk](https://www.thefantasyfootballers.com/fantasy/brandon-aiyuk/)
+SF(8)
+12
+12
+12
+12
+[Deebo Samuel Sr.](https://www.thefantasyfootballers.com/fantasy/deebo-samuel/)
+SF(8)
+18
+18
+18
+18
+[Stefon Diggs](https://www.thefantasyfootballers.com/fantasy/stefon-diggs/)
+WAS(14)
+24
+24
+24
+24
+[Amari Cooper](https://www.thefantasyfootballers.com/fantasy/amari-cooper/)
+BUF(7)
+26
+26
+26
+26
 [Ja'Marr Chase](https://www.thefantasyfootballers.com/fantasy/jamarr-chase/)
 CIN(6)
 1
