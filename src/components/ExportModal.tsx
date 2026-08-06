@@ -64,7 +64,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             onClick={() => setActiveTab('excel')}
             className={`flex items-center gap-2 py-2 px-3 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'excel'
-                • 'border-blue-500 text-white font-bold bg-blue-500/10 rounded-t'
+                ? 'border-blue-500 text-white font-bold bg-blue-500/10 rounded-t'
                 : 'border-transparent text-slate-400 hover:text-slate-200 rounded-t'
             }`}
           >
@@ -76,7 +76,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             onClick={() => setActiveTab('python')}
             className={`flex items-center gap-2 py-2 px-3 border-b-2 transition-colors cursor-pointer ${
               activeTab === 'python'
-                • 'border-blue-500 text-white font-bold bg-blue-500/10 rounded-t'
+                ? 'border-blue-500 text-white font-bold bg-blue-500/10 rounded-t'
                 : 'border-transparent text-slate-400 hover:text-slate-200 rounded-t'
             }`}
           >
@@ -87,7 +87,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
 
         {/* Modal Body */}
         <div className="p-4 overflow-y-auto space-y-4 text-xs font-sans">
-          {activeTab === 'excel' • (
+          {activeTab === 'excel' ? (
             <div className="space-y-4">
               <div className="bg-slate-950 border border-slate-700 p-3 rounded-lg space-y-2">
                 <h3 className="font-bold text-xs text-slate-200 flex items-center gap-2 font-mono">
@@ -124,8 +124,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                     onClick={handleCopyPythonCode}
                     className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors cursor-pointer"
                   >
-                    {copied • <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied • 'KOPIERT!' : 'CODE KOPIEREN'}</span>
+                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copied ? 'KOPIERT!' : 'CODE KOPIEREN'}</span>
                   </button>
 
                   <button
@@ -149,5 +149,6 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     </div>
   );
 };
+
 
 

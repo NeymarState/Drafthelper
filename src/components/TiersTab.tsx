@@ -22,7 +22,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
 
   // Group by Tier Number (safely handling optional/undefined tierNumber)
   const tierNumbers = Array.from(
-    new Set(posPlayers.map((p) => (p.tierNumber !== undefined • p.tierNumber : 1)))
+    new Set(posPlayers.map((p) => (p.tierNumber !== undefined ? p.tierNumber : 1)))
   ).sort((a: number, b: number) => a - b);
 
   const getPosBadgeClass = (pos: Position) => {
@@ -58,7 +58,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                 onClick={() => setSelectedPos(pos)}
                 className={`flex items-center gap-1.5 px-3 py-1 rounded font-bold text-xs transition-all cursor-pointer ${
                   selectedPos === pos
-                    • 'bg-blue-600 text-white shadow'
+                    ? 'bg-blue-600 text-white shadow'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -75,8 +75,8 @@ export const TiersTab: React.FC<TiersTabProps> = ({
       {/* Tiers Grid */}
       <div className="space-y-4">
         {tierNumbers.map((tierNum) => {
-          const tierGroup = posPlayers.filter((p) => (p.tierNumber •• 1) === tierNum);
-          const tierName = tierGroup[0]•.tier || `Tier ${tierNum}`;
+          const tierGroup = posPlayers.filter((p) => (p.tierNumber ?? 1) === tierNum);
+          const tierName = tierGroup[0]?.tier || `Tier ${tierNum}`;
           const availableCount = tierGroup.filter((p) => p.status === 'VerfÃ¼gbar').length;
           const isUrgentScarcity = availableCount <= 2 && availableCount > 0;
 
@@ -85,7 +85,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
               key={tierNum}
               className={`bg-slate-900 border rounded-lg p-3 shadow-xl transition-all ${
                 isUrgentScarcity
-                  • 'border-amber-500/50 bg-amber-950/10'
+                  ? 'border-amber-500/50 bg-amber-950/10'
                   : 'border-slate-700'
               }`}
             >
@@ -112,9 +112,9 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                   <span
                     className={`px-2 py-0.5 rounded text-[11px] font-bold border ${
                       availableCount === 0
-                        • 'bg-slate-950 text-slate-500 border-slate-800'
+                        ? 'bg-slate-950 text-slate-500 border-slate-800'
                         : isUrgentScarcity
-                        • 'bg-amber-950 text-amber-300 border-amber-600/50'
+                        ? 'bg-amber-950 text-amber-300 border-amber-600/50'
                         : 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30'
                     }`}
                   >
@@ -178,7 +178,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                           <span className="text-emerald-400 font-bold ml-1 text-[11px]">+{vorp} VORP</span>
                         </div>
 
-                        {player.status === 'VerfÃ¼gbar' • (
+                        {player.status === 'VerfÃ¼gbar' ? (
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => onDraftForMe(player)}
@@ -210,5 +210,6 @@ export const TiersTab: React.FC<TiersTabProps> = ({
     </div>
   );
 };
+
 
 

@@ -11,10 +11,10 @@ interface CustomizationTabProps {
   onMoveToRank: (playerId: string, targetRank: number) => void;
   onMoveToPosRank: (playerId: string, targetPosRank: number, pos: string) => void;
   onImportRankings: (players: Player[]) => void;
-  leagueSize•: number;
-  onLeagueSizeChange•: (size: number) => void;
-  onSyncAdp•: (provider: 'sleeper' | 'espn') => void;
-  onAutoAssignRoles•: () => void;
+  leagueSize?: number;
+  onLeagueSizeChange?: (size: number) => void;
+  onSyncAdp?: (provider: 'sleeper' | 'espn') => void;
+  onAutoAssignRoles?: () => void;
 }
 
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
@@ -63,14 +63,14 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   };
 
   const handleImportBackup = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files•.[0];
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const fileReader = new FileReader();
     fileReader.readAsText(file, "UTF-8");
     fileReader.onload = (e) => {
       try {
-        const importedPlayers = JSON.parse(e.target•.result as string);
+        const importedPlayers = JSON.parse(e.target?.result as string);
         if (Array.isArray(importedPlayers) && importedPlayers.length > 0 && importedPlayers[0].id) {
           onImportRankings(importedPlayers);
           alert('Backup erfolgreich geladen!');
@@ -93,13 +93,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     })
     .sort((a, b) => {
       if (sortBy === 'OVR') {
-        return sortOrder === 'asc' • a.ovrRank - b.ovrRank : b.ovrRank - a.ovrRank;
+        return sortOrder === 'asc' ? a.ovrRank - b.ovrRank : b.ovrRank - a.ovrRank;
       }
       if (sortBy === 'TIER') {
         const tierA = a.tierNumber || 99;
         const tierB = b.tierNumber || 99;
         if (tierA !== tierB) {
-          return sortOrder === 'asc' • tierA - tierB : tierB - tierA;
+          return sortOrder === 'asc' ? tierA - tierB : tierB - tierA;
         }
         return a.ovrRank - b.ovrRank;
       }
@@ -140,7 +140,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     setDraggedId(null);
   };
 
-  const getTagBadgeClass = (tag•: string | null) => {
+  const getTagBadgeClass = (tag?: string | null) => {
     switch (tag) {
       case 'Sleeper':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
@@ -176,7 +176,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             <button onClick={handleExportBackup} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-emerald-600 hover:bg-emerald-500 text-white rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
               <Download className="w-3 h-3" /> Backup (JSON)
             </button>
-            <button onClick={() => fileInputRef.current•.click()} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
+            <button onClick={() => fileInputRef.current?.click()} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
               <Upload className="w-3 h-3" /> Laden (JSON)
             </button>
             <input type="file" accept=".json" ref={fileInputRef} onChange={handleImportBackup} className="hidden" />
@@ -192,7 +192,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
               <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">LigagrÃ¶ÃŸe:</label>
               <select
                 value={leagueSize}
-                onChange={(e) => onLeagueSizeChange•.(Number(e.target.value))}
+                onChange={(e) => onLeagueSizeChange?.(Number(e.target.value))}
                 className="bg-slate-800 text-slate-200 border border-slate-700 text-xs rounded px-2 py-1 outline-none focus:border-emerald-500"
               >
                 {[8, 10, 12, 14, 16].map(size => (
@@ -201,7 +201,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
               </select>
             </div>
                         <button
-                onClick={() => onAutoAssignRoles•.()}
+                onClick={() => onAutoAssignRoles?.()}
                 className="px-3 py-1.5 text-[10px] font-bold uppercase bg-amber-600 hover:bg-amber-500 text-white rounded transition-colors flex items-center gap-1.5 shadow"
               >
                 <Zap className="w-3.5 h-3.5" />
@@ -247,7 +247,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 onClick={() => setSelectedPos(pos)}
                 className={`px-3 py-1 rounded text-xs font-bold transition-colors cursor-pointer ${
                   selectedPos === pos
-                    • 'bg-blue-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'text-slate-400 hover:text-slate-200'
                 }`}
               >
@@ -272,20 +272,20 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           <div 
             className="col-span-2 cursor-pointer hover:text-blue-400 flex items-center gap-1 transition-colors"
             onClick={() => {
-              if (sortBy === 'OVR') setSortOrder(sortOrder === 'asc' • 'desc' : 'asc');
+              if (sortBy === 'OVR') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
               else { setSortBy('OVR'); setSortOrder('asc'); }
             }}
           >
-            OVR / POS {sortBy === 'OVR' && (sortOrder === 'asc' • 'â†‘' : 'â†“')}
+            OVR / POS {sortBy === 'OVR' && (sortOrder === 'asc' ? 'â†‘' : 'â†“')}
           </div>
           <div 
             className="col-span-3 sm:col-span-2 cursor-pointer hover:text-blue-400 flex items-center gap-1 transition-colors"
             onClick={() => {
-              if (sortBy === 'TIER') setSortOrder(sortOrder === 'asc' • 'desc' : 'asc');
+              if (sortBy === 'TIER') setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
               else { setSortBy('TIER'); setSortOrder('asc'); }
             }}
           >
-            Tier Override {sortBy === 'TIER' && (sortOrder === 'asc' • 'â†‘' : 'â†“')}
+            Tier Override {sortBy === 'TIER' && (sortOrder === 'asc' ? 'â†‘' : 'â†“')}
           </div>
           <div className="col-span-3">Custom Tags</div>
         </div>
@@ -305,27 +305,27 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                 onDragLeave={(e) => isDefaultSort && handleDragLeave(e, player.id)}
                 onDrop={(e) => isDefaultSort && handleDrop(e, player.id)}
                 className={`grid grid-cols-12 gap-2 p-3 items-center bg-slate-950/80 transition-colors ${
-                  draggedId === player.id • 'opacity-50 scale-[0.99] bg-slate-800' : 'hover:bg-slate-900'
-                } ${dragOverId === player.id • 'border-t-2 border-t-blue-500 border-b border-b-slate-800/50' : 'border-b border-slate-800/50'}`}
+                  draggedId === player.id ? 'opacity-50 scale-[0.99] bg-slate-800' : 'hover:bg-slate-900'
+                } ${dragOverId === player.id ? 'border-t-2 border-t-blue-500 border-b border-b-slate-800/50' : 'border-b border-slate-800/50'}`}
               >
                 <div className="col-span-4 sm:col-span-5 flex items-center gap-2">
                   <div className="flex flex-col items-center gap-0.5 mr-1">
                     <button 
                       onClick={() => !isFirst && isDefaultSort && onMovePlayer(player.id, 'up', selectedPos)}
                       disabled={isFirst || !isDefaultSort}
-                      className={`p-0.5 rounded ${isFirst || !isDefaultSort • 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
-                      title={isDefaultSort • "Hoch verschieben" : "Verschieben deaktiviert"}
+                      className={`p-0.5 rounded ${isFirst || !isDefaultSort ? 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title={isDefaultSort ? "Hoch verschieben" : "Verschieben deaktiviert"}
                     >
                       <ArrowUp className="w-3 h-3" />
                     </button>
-                    <div className={`p-0.5 ${isDefaultSort • 'cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-400' : 'cursor-not-allowed text-slate-800'}`} title={isDefaultSort • "Drag & Drop" : "Drag & Drop deaktiviert"}>
+                    <div className={`p-0.5 ${isDefaultSort ? 'cursor-grab active:cursor-grabbing text-slate-600 hover:text-slate-400' : 'cursor-not-allowed text-slate-800'}`} title={isDefaultSort ? "Drag & Drop" : "Drag & Drop deaktiviert"}>
                       <GripVertical className="w-3.5 h-3.5" />
                     </div>
                     <button 
                       onClick={() => !isLast && isDefaultSort && onMovePlayer(player.id, 'down', selectedPos)}
                       disabled={isLast || !isDefaultSort}
-                      className={`p-0.5 rounded ${isLast || !isDefaultSort • 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
-                      title={isDefaultSort • "Runter verschieben" : "Verschieben deaktiviert"}
+                      className={`p-0.5 rounded ${isLast || !isDefaultSort ? 'text-slate-800 cursor-not-allowed' : 'text-slate-500 hover:text-white hover:bg-slate-800'} transition-colors cursor-pointer`}
+                      title={isDefaultSort ? "Runter verschieben" : "Verschieben deaktiviert"}
                     >
                       <ArrowDown className="w-3 h-3" />
                     </button>
@@ -372,7 +372,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                           type="number"
                           key={player.posRank}
                           defaultValue={parseInt(player.posRank.replace(/[^\d]/g, ''), 10)}
-                          className={`w-12 bg-slate-950 border border-slate-700 ${player.pos === 'RB' • 'text-emerald-400' : player.pos === 'WR' • 'text-sky-400' : player.pos === 'QB' • 'text-rose-400' : 'text-amber-400'} px-1 py-0.5 rounded text-center appearance-none cursor-text focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:bg-slate-800 transition-colors`}
+                          className={`w-12 bg-slate-950 border border-slate-700 ${player.pos === 'RB' ? 'text-emerald-400' : player.pos === 'WR' ? 'text-sky-400' : player.pos === 'QB' ? 'text-rose-400' : 'text-amber-400'} px-1 py-0.5 rounded text-center appearance-none cursor-text focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 hover:bg-slate-800 transition-colors`}
                           onBlur={(e) => {
                             const val = parseInt(e.target.value, 10);
                             const currentPosRank = parseInt(player.posRank.replace(/[^\d]/g, ''), 10);
@@ -398,7 +398,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                         const val = parseInt(e.target.value, 10);
                         onUpdatePlayer(player.id, { 
                           tierNumber: val, 
-                          tier: val === 99 • 'Kein Tier' : `Tier ${val}` 
+                          tier: val === 99 ? 'Kein Tier' : `Tier ${val}` 
                         });
                       }}
                       className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
@@ -413,7 +413,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       value={player.customTag || ''}
                       onChange={(e) => {
                         const val = e.target.value as 'Sleeper' | 'Target' | 'Avoid' | 'Fade' | 'Value' | 'Rookie' | '';
-                        onUpdatePlayer(player.id, { customTag: val === '' • undefined : val });
+                        onUpdatePlayer(player.id, { customTag: val === '' ? undefined : val });
                       }}
                       className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
                     >
@@ -430,7 +430,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       value={player.playerArchetype || ''}
                       onChange={(e) => {
                         const val = e.target.value as 'Upside' | 'Baseline' | '';
-                        onUpdatePlayer(player.id, { playerArchetype: val === '' • undefined : val });
+                        onUpdatePlayer(player.id, { playerArchetype: val === '' ? undefined : val });
                       }}
                       className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded px-2 py-1.5 focus:outline-none focus:border-blue-500"
                     >
@@ -453,5 +453,6 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
     </div>
   );
 };
+
 
 

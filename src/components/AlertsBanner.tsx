@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿﻿import React from 'react';
 import { AlertTriangle, Zap, Calendar, CheckCircle2 } from 'lucide-react';
 import { AlertItem } from '../types';
 
@@ -55,5 +55,6 @@ export const AlertsBanner: React.FC<AlertsBannerProps> = ({ alerts }) => {
     </div>
   );
 };
+
 
 

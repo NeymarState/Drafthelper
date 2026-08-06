@@ -22,7 +22,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
   const [sortBy, setSortBy] = useState<'DIFF' | 'RANK'>('DIFF');
 
   const toggleExpand = (id: string) => {
-    setExpandedPlayerId(expandedPlayerId === id • null : id);
+    setExpandedPlayerId(expandedPlayerId === id ? null : id);
   };
 
   const getPosBadgeClass = (pos: Position) => {
@@ -75,25 +75,25 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
   const renderPlayerCard = (player: Player) => {
     const isExpanded = expandedPlayerId === player.id;
     const isDrafted = player.status !== 'VerfÃ¼gbar';
-    const roundedAdp = player.adp !== undefined • Math.round(player.adp) : 0;
+    const roundedAdp = player.adp !== undefined ? Math.round(player.adp) : 0;
     const isUndervalued = player.adp !== undefined && roundedAdp - player.ovrRank >= 12;
-    const valueDiff = player.adp !== undefined • Math.abs(roundedAdp - player.ovrRank) : 0;
+    const valueDiff = player.adp !== undefined ? Math.abs(roundedAdp - player.ovrRank) : 0;
     
     return (
       <div
         key={player.id}
         className={`bg-slate-950 border rounded-lg p-3 transition-all ${
-          isDrafted • 'border-slate-800 opacity-50' : 'border-slate-700 hover:border-blue-500/50'
+          isDrafted ? 'border-slate-800 opacity-50' : 'border-slate-700 hover:border-blue-500/50'
         }`}
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <span className={`font-bold text-sm ${isDrafted • 'line-through text-slate-500' : 'text-slate-100'}`}>
+              <span className={`font-bold text-sm ${isDrafted ? 'line-through text-slate-500' : 'text-slate-100'}`}>
                 {player.name}
               </span>
               <span className="text-xs text-slate-500 font-mono">({player.team})</span>
-              {isUndervalued • (
+              {isUndervalued ? (
                 <span className="ml-2 text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 flex items-center gap-1" title="Market undervalues this player">
                   <TrendingUp className="w-3 h-3" /> +{valueDiff} PICKS VALUE
                 </span>
@@ -139,7 +139,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
               onClick={() => toggleExpand(player.id)}
               className="p-1.5 bg-slate-900 hover:bg-slate-800 text-slate-400 rounded transition-colors"
             >
-              {isExpanded • <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
           </div>
         </div>
@@ -200,7 +200,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
             onClick={() => setActiveFilter('ALL')}
             className={`px-3 py-1.5 rounded font-bold transition-all whitespace-nowrap ${
               activeFilter === 'ALL'
-                • 'bg-blue-600 text-white shadow-md'
+                ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
             }`}
           >
@@ -210,7 +210,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
             onClick={() => setActiveFilter('UNDERVALUED')}
             className={`px-3 py-1.5 rounded font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeFilter === 'UNDERVALUED'
-                • 'bg-emerald-600 text-white shadow-md'
+                ? 'bg-emerald-600 text-white shadow-md'
                 : 'bg-slate-800 text-emerald-500/70 hover:bg-emerald-900/50 hover:text-emerald-400'
             }`}
           >
@@ -220,7 +220,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
             onClick={() => setActiveFilter('OVERVALUED')}
             className={`px-3 py-1.5 rounded font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
               activeFilter === 'OVERVALUED'
-                • 'bg-red-600 text-white shadow-md'
+                ? 'bg-red-600 text-white shadow-md'
                 : 'bg-slate-800 text-red-500/70 hover:bg-red-900/50 hover:text-red-400'
             }`}
           >
@@ -243,10 +243,10 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
 
       <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-900/20">
         <div className="space-y-3">
-          {processedPlayers.length === 0 • (
+          {processedPlayers.length === 0 ? (
             <div className="text-center py-12 text-slate-500 font-mono">
               Keine Spieler gefunden, die den Kriterien entsprechen. 
-              <br/>(Hast du die ADP-Daten unter "Spieler anpassen" synchronisiert•)
+              <br/>(Hast du die ADP-Daten unter "Spieler anpassen" synchronisiert?)
             </div>
           ) : (
             processedPlayers.map(renderPlayerCard)
@@ -256,5 +256,6 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
     </div>
   );
 };
+
 
 

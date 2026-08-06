@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[10px] sm:text-xs font-mono bg-slate-800/50 px-3 py-1.5 rounded border border-slate-700 mx-auto">
           <div className="flex items-center gap-1.5">
             <span className="text-slate-400">MEIN PICK-SLOT:</span>
-            {totalDraftedCount === 0 • (
+            {totalDraftedCount === 0 ? (
               <select
                 value={settings.userPickSlot}
                 onChange={(e) => onUpdateSettings({ userPickSlot: Number(e.target.value) })}
@@ -62,7 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
           <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5 text-[10px] sm:text-xs">
             <span className="text-slate-400">RUNDEN:</span>
-            {totalDraftedCount === 0 • (
+            {totalDraftedCount === 0 ? (
               <select
                 value={settings.totalRounds}
                 onChange={(e) => onUpdateSettings({ totalRounds: Number(e.target.value) })}
@@ -164,7 +164,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => onUpdateSettings({ scoringFormat: fmt })}
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                       settings.scoringFormat === fmt
-                        • 'bg-blue-600 text-white shadow'
+                        ? 'bg-blue-600 text-white shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -185,7 +185,7 @@ export const Header: React.FC<HeaderProps> = ({
                     onClick={() => onUpdateSettings({ leagueType: type })}
                     className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors cursor-pointer ${
                       settings.leagueType === type
-                        • 'bg-blue-600 text-white shadow'
+                        ? 'bg-blue-600 text-white shadow'
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
@@ -213,5 +213,6 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+
 
 
