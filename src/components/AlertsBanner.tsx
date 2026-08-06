@@ -12,7 +12,7 @@ export const AlertsBanner: React.FC<AlertsBannerProps> = ({ alerts }) => {
       <div id="no-alerts-bar" className="bg-slate-900 border border-slate-700 rounded-lg p-3 flex items-center justify-between text-xs text-slate-300 shadow-xl">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>Keine akuten Tier-Scarcity oder Bye-Week Warnungen. Draft verlÃ¤uft optimal.</span>
+          <span>Keine akuten Tier-Scarcity oder Bye-Week Warnungen. Draft verläuft optimal.</span>
         </div>
         <span className="text-[10px] font-mono text-slate-500">ENGINE: LIVE_MONITOR</span>
       </div>

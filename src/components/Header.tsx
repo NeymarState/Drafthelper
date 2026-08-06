@@ -123,7 +123,7 @@ export const Header: React.FC<HeaderProps> = ({
             id="reset-draft-btn"
             onClick={onResetDraft}
             className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all cursor-pointer"
-            title="Draft-Zustand zurÃ¼cksetzen"
+            title="Draft-Zustand zurücksetzen"
           >
             <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
             <span>Reset</span>

@@ -53,7 +53,7 @@ export const SleepersHandcuffsTab: React.FC<SleepersHandcuffsTabProps> = ({
       profileText.includes('backup') ||
       profileText.includes('absicherung') ||
       profileText.includes('versicherung') ||
-      profileText.includes('komplementÃ¤r') ||
+      profileText.includes('komplementär') ||
       profileText.includes('verletzung') ||
       profileText.includes('rotations-rb') ||
       profileText.includes('schwerpunkt');
@@ -292,7 +292,7 @@ export const SleepersHandcuffsTab: React.FC<SleepersHandcuffsTabProps> = ({
 
               {/* Action Buttons */}
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between font-mono text-xs">
-                {player.status === 'VerfÃ¼gbar' ? (
+                {player.status === 'Verfügbar' ? (
                   <div className="flex gap-1.5 w-full">
                     <button
                       onClick={() => onDraftForMe(player)}

@@ -75,7 +75,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           onImportRankings(importedPlayers);
           alert('Backup erfolgreich geladen!');
         } else {
-          alert('UngÃ¼ltiges Backup-Format.');
+          alert('Ungültiges Backup-Format.');
         }
       } catch (err) {
         alert("Fehler beim Lesen der Backup-Datei.");
@@ -183,13 +183,13 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
           </div>
         </div>
         <p className="text-xs text-slate-400 leading-relaxed mb-4">
-          Hier kannst du die Reihenfolge der Spieler manuell Ã¼berschreiben, ihre Tiers anpassen und persÃ¶nliche Tags (Sleeper, Target, Avoid) vergeben. 
+          Hier kannst du die Reihenfolge der Spieler manuell überschreiben, ihre Tiers anpassen und persönliche Tags (Sleeper, Target, Avoid) vergeben. 
           Greife einen Spieler am Griff-Symbol links, um ihn per Drag & Drop zu verschieben, oder nutze die Pfeile.
         </p>
         
         <div className="flex flex-wrap items-center gap-3 mb-4 p-3 bg-slate-950/50 rounded border border-slate-800">
             <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">LigagrÃ¶ÃŸe:</label>
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">LigagröÃŸe:</label>
               <select
                 value={leagueSize}
                 onChange={(e) => onLeagueSizeChange?.(Number(e.target.value))}
@@ -260,7 +260,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
         {!isDefaultSort && (
           <div className="bg-amber-900/30 border border-amber-500/50 text-amber-200 p-2.5 rounded text-xs flex items-center gap-2">
             <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>Du verwendest eine benutzerdefinierte Sortierung. Drag & Drop und die Pfeiltasten sind temporÃ¤r deaktiviert, bis du wieder nach "OVR / POS" aufsteigend sortierst.</span>
+            <span>Du verwendest eine benutzerdefinierte Sortierung. Drag & Drop und die Pfeiltasten sind temporär deaktiviert, bis du wieder nach "OVR / POS" aufsteigend sortierst.</span>
           </div>
         )}
       </div>

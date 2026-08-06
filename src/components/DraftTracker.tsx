@@ -15,7 +15,7 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
       </h3>
       <div className="flex flex-col gap-4 overflow-y-auto custom-scrollbar flex-1 pr-1">
         {(['QB', 'RB', 'WR', 'TE'] as const).map((pos) => {
-          const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'VerfÃ¼gbar');
+          const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'Verfügbar');
           const totalAvailable = players.filter((p) => p.pos === pos).length;
           const totalDrafted = totalAvailable - availablePlayers.length;
           const fillPercent = Math.min((totalDrafted / Math.max(1, totalAvailable)) * 100, 100);

@@ -51,7 +51,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
 
         <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700 gap-1 font-mono text-xs">
           {(['RB', 'WR', 'QB', 'TE', 'DST', 'K'] as const).map((pos) => {
-            const availableCount = players.filter((p) => p.pos === pos && p.status === 'VerfÃ¼gbar').length;
+            const availableCount = players.filter((p) => p.pos === pos && p.status === 'Verfügbar').length;
             return (
               <button
                 key={pos}
@@ -77,7 +77,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
         {tierNumbers.map((tierNum) => {
           const tierGroup = posPlayers.filter((p) => (p.tierNumber ?? 1) === tierNum);
           const tierName = tierGroup[0]?.tier || `Tier ${tierNum}`;
-          const availableCount = tierGroup.filter((p) => p.status === 'VerfÃ¼gbar').length;
+          const availableCount = tierGroup.filter((p) => p.status === 'Verfügbar').length;
           const isUrgentScarcity = availableCount <= 2 && availableCount > 0;
 
           return (
@@ -178,7 +178,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                           <span className="text-emerald-400 font-bold ml-1 text-[11px]">+{vorp} VORP</span>
                         </div>
 
-                        {player.status === 'VerfÃ¼gbar' ? (
+                        {player.status === 'Verfügbar' ? (
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => onDraftForMe(player)}

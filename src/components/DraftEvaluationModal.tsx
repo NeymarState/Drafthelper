@@ -100,7 +100,7 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
             <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider border-b border-slate-700 pb-2">Auswertung & Tipps</h3>
             
             {result.tips.length === 0 ? (
-              <div className="text-slate-500 italic text-center py-4">Noch nicht genÃ¼gend Picks fÃ¼r eine Auswertung.</div>
+              <div className="text-slate-500 italic text-center py-4">Noch nicht genügend Picks für eine Auswertung.</div>
             ) : (
               <div className="space-y-3">
                 {result.tips.map((tip, idx) => {

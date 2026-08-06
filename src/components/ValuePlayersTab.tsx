@@ -74,7 +74,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
 
   const renderPlayerCard = (player: Player) => {
     const isExpanded = expandedPlayerId === player.id;
-    const isDrafted = player.status !== 'VerfÃ¼gbar';
+    const isDrafted = player.status !== 'Verfügbar';
     const roundedAdp = player.adp !== undefined ? Math.round(player.adp) : 0;
     const isUndervalued = player.adp !== undefined && roundedAdp - player.ovrRank >= 12;
     const valueDiff = player.adp !== undefined ? Math.abs(roundedAdp - player.ovrRank) : 0;
@@ -119,7 +119,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
-            {player.status === 'VerfÃ¼gbar' && (
+            {player.status === 'Verfügbar' && (
               <>
                 <button
                   onClick={() => onDraftForMe(player)}
@@ -176,7 +176,7 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
             <TrendingUp className="text-blue-400 w-5 h-5" /> VALUE ANALYSE
           </h1>
           <p className="text-xs text-slate-400 mt-1 font-mono">
-            Finde Spieler mit der grÃ¶ÃŸten Differenz zwischen ADP und deinem Ranking.
+            Finde Spieler mit der gröÃŸten Differenz zwischen ADP und deinem Ranking.
           </p>
         </div>
 

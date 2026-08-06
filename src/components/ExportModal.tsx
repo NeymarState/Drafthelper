@@ -94,8 +94,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <FileSpreadsheet className="w-4 h-4 text-emerald-400" /> EXCEL ARBEITSMAPPE (.XLSX) FEATURES:
                 </h3>
                 <ul className="text-xs text-slate-300 space-y-1.5 list-disc list-inside">
-                  <li><strong>Keine Makros / KEIN VBA:</strong> VollstÃ¤ndig kompatibel mit Excel 365, Google Sheets & OpenPyXL.</li>
-                  <li><strong>Master Draft Board Sheet:</strong> EnthÃ¤lt dynamische Pick-Formeln <code className="text-blue-400 font-mono">Rd X (X.YY)</code> und VORP-Werte.</li>
+                  <li><strong>Keine Makros / KEIN VBA:</strong> Vollständig kompatibel mit Excel 365, Google Sheets & OpenPyXL.</li>
+                  <li><strong>Master Draft Board Sheet:</strong> Enthält dynamische Pick-Formeln <code className="text-blue-400 font-mono">Rd X (X.YY)</code> und VORP-Werte.</li>
                   <li><strong>Mein Team Sheet:</strong> Automatische Trennung Deiner gedrafteten Spieler.</li>
                   <li><strong>Positional Tiers Sheet:</strong> Ãœbersicht aller Tiers mit OpenXML-konformer Formatierung.</li>
                 </ul>
