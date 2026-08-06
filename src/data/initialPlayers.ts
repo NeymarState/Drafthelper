@@ -1,4 +1,4 @@
-﻿import { Player } from '../types';
+import { Player } from '../types';
 
 const RAW_INITIAL_PLAYERS: Player[] = [
   {
@@ -6410,6 +6410,108 @@ const RAW_INITIAL_PLAYERS: Player[] = [
     basePointsHalfPpr: -13.4,
     profile: 'Automatisch aktualisiert aus Fantasy Footballers Daten.'
   },
+  {
+    id: 'wr-tyreekhill',
+    ovrRank: 4,
+    posRank: 'WR2',
+    name: 'Tyreek Hill',
+    pos: 'WR',
+    team: 'MIA',
+    bye: 6,
+    tier: 'Tier 1: Alpha Targets',
+    tierNumber: 1,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 340.0,
+    profile: 'Tyreek Hill ist einer der dominantesten Receiver der Liga.'
+  },
+  {
+    id: 'rb-joemixon',
+    ovrRank: 15,
+    posRank: 'RB8',
+    name: 'Joe Mixon',
+    pos: 'RB',
+    team: 'HOU',
+    bye: 14,
+    tier: 'Tier 2: High-Volume RB1s',
+    tierNumber: 2,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 280.0,
+    profile: 'Joe Mixon übernimmt das Backfield der Texans.'
+  },
+  {
+    id: 'wr-brandonaiyuk',
+    ovrRank: 20,
+    posRank: 'WR8',
+    name: 'Brandon Aiyuk',
+    pos: 'WR',
+    team: 'SF',
+    bye: 8,
+    tier: 'Tier 2: Elite WR1s',
+    tierNumber: 2,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 265.0,
+    profile: 'Brandon Aiyuk ist ein exzellenter Routenläufer.'
+  },
+  {
+    id: 'wr-deebosamuel',
+    ovrRank: 24,
+    posRank: 'WR10',
+    name: 'Deebo Samuel Sr.',
+    pos: 'WR',
+    team: 'SF',
+    bye: 8,
+    tier: 'Tier 2: Elite WR1s',
+    tierNumber: 2,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 255.0,
+    profile: 'Deebo Samuel ist eine YAC-Maschine.'
+  },
+  {
+    id: 'wr-stefondiggs',
+    ovrRank: 35,
+    posRank: 'WR16',
+    name: 'Stefon Diggs',
+    pos: 'WR',
+    team: 'WAS',
+    bye: 14,
+    tier: 'Tier 3: Solid WR2s',
+    tierNumber: 3,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 235.0,
+    profile: 'Stefon Diggs spielt nun bei den Commanders.'
+  },
+  {
+    id: 'wr-amaricooper',
+    ovrRank: 42,
+    posRank: 'WR22',
+    name: 'Amari Cooper',
+    pos: 'WR',
+    team: 'BUF',
+    bye: 7,
+    tier: 'Tier 3: Solid WR2s',
+    tierNumber: 3,
+    status: 'VerfǬgbar',
+    targetShare: 0,
+    rzTouches: 0,
+    airYards: 0,
+    basePointsHalfPpr: 215.0,
+    profile: 'Amari Cooper ist ein konstanter Veteran.'
+  }
 ];
 
 export const INITIAL_PLAYERS = RAW_INITIAL_PLAYERS.sort((a,b) => b.basePointsHalfPpr - a.basePointsHalfPpr).map((p, i) => ({ ...p, ovrRank: i + 1 }));
