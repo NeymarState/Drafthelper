@@ -43,6 +43,7 @@ export default function App() {
     handleMoveToRank,
     handleMoveToPosRank,
     handleImportRankings,
+    handleRecalculateProjections,
     leagueSize,
     setLeagueSize,
     syncAdp,
@@ -486,7 +487,8 @@ export default function App() {
             onMoveToRank={handleMoveToRank}
             onMoveToPosRank={handleMoveToPosRank}
             onImportRankings={handleImportRankings}
-            leagueSize={leagueSize}
+            onRecalculateProjections={handleRecalculateProjections}
+            leagueSize={settings.leagueSize}
             onLeagueSizeChange={setLeagueSize}
             onSyncAdp={syncAdp}
             onAutoAssignRoles={autoAssignRoles}

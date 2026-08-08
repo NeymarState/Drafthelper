@@ -11,6 +11,7 @@ interface CustomizationTabProps {
   onMoveToRank: (playerId: string, targetRank: number) => void;
   onMoveToPosRank: (playerId: string, targetPosRank: number, pos: string) => void;
   onImportRankings: (players: Player[]) => void;
+  onRecalculateProjections: () => void;
   leagueSize?: number;
   onLeagueSizeChange?: (size: number) => void;
   onSyncAdp?: (provider: 'sleeper' | 'espn') => void;
@@ -25,6 +26,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   onMoveToRank,
   onMoveToPosRank,
   onImportRankings,
+  onRecalculateProjections,
   leagueSize = 12,
   onLeagueSizeChange,
   onSyncAdp,
@@ -173,6 +175,17 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             Spieler Anpassen & Eigene Rankings
           </h2>
           <div className="flex flex-wrap items-center gap-2">
+            <button 
+              onClick={() => {
+                if(confirm("Möchtest du das Gesamtranking und die Basis-Punkte aller Spieler (VORP) anhand ihrer aktuellen Positions-Ränge neu berechnen? Das überschreibt deine manuellen Änderungen im Overall Ranking!")) {
+                  onRecalculateProjections();
+                }
+              }} 
+              className="px-2.5 py-1 text-[10px] font-bold uppercase bg-blue-600 hover:bg-blue-500 text-white rounded transition-colors flex items-center gap-1 shadow cursor-pointer mr-2"
+              title="Gesamtranking aus Einzelpositionen neu berechnen"
+            >
+              <Zap className="w-3 h-3" /> Auto-Rank
+            </button>
             <button onClick={handleExportBackup} className="px-2.5 py-1 text-[10px] font-bold uppercase bg-emerald-600 hover:bg-emerald-500 text-white rounded transition-colors flex items-center gap-1 shadow cursor-pointer">
               <Download className="w-3 h-3" /> Backup (JSON)
             </button>
