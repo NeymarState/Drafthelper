@@ -316,8 +316,26 @@ export const usePlayers = () => {
         return p;
       });
 
-      // Sort by newly generated points
-      updated.sort((a, b) => b.basePointsHalfPpr - a.basePointsHalfPpr);
+      // Compute Replacement Baselines
+      const baselines: Record<string, number> = { QB: 0, RB: 0, WR: 0, TE: 0, K: 0, DST: 0 };
+      const getBaseline = (pos: string, rankIndex: number) => {
+        const posPlayers = updated.filter(p => p.pos === pos).sort((a, b) => b.basePointsHalfPpr - a.basePointsHalfPpr);
+        return posPlayers[Math.min(posPlayers.length - 1, rankIndex)]?.basePointsHalfPpr || 0;
+      };
+      
+      baselines['QB'] = getBaseline('QB', leagueSize - 1);
+      baselines['RB'] = getBaseline('RB', (leagueSize * 2) - 1);
+      baselines['WR'] = getBaseline('WR', (leagueSize * 2) - 1);
+      baselines['TE'] = getBaseline('TE', leagueSize - 1);
+      baselines['K'] = getBaseline('K', leagueSize - 1);
+      baselines['DST'] = getBaseline('DST', leagueSize - 1);
+
+      // Sort by VORP
+      updated.sort((a, b) => {
+        const vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
+        const vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
+        return vorpB - vorpA;
+      });
       
       // Update ovrRank
       return updated.map((p, idx) => ({ ...p, ovrRank: idx + 1 }));
