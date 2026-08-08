@@ -759,7 +759,7 @@ CIN(6)
 89
 81
 82
-[Audric Estimé](https://www.thefantasyfootballers.com/fantasy/audric-estime/)
+[Audric EstimÃ©](https://www.thefantasyfootballers.com/fantasy/audric-estime/)
 NO(8)
 90
 90
@@ -1957,16 +1957,22 @@ export const getUpdatedPlayers = (): Player[] => {
       
       const existing = existingMap.get(name.toLowerCase().trim());
       
-      // SYNTHESIZE ADP-BASED POINTS:
-      // This forces the sorting to reflect standard Redraft Half-PPR ADP
-      // RBs and WRs dominate the early rounds. QBs and TEs start later.
+      // SYNTHESIZE ADP-BASED POINTS (REALISTIC PROJECTIONS):
+      // This uses exponential decay formulas tuned to real Half-PPR fantasy data.
+      // It generates realistic point projections based on positional rank.
+      // We also apply explicit Tier Cliffs so Elite players separate mathematically.
+      let tierBonus = 0;
+      if (tierNumber === 1) tierBonus = 25;
+      else if (tierNumber === 2) tierBonus = 10;
+      else if (tierNumber === 3) tierBonus = 4;
+      
       let basePoints = 0;
-      if (pos === 'RB') basePoints = 350 - (rank * 3.5);
-      if (pos === 'WR') basePoints = 345 - (rank * 2.8);
-      if (pos === 'QB') basePoints = 285 - (rank * 3.0);
-      if (pos === 'TE') basePoints = 280 - (rank * 3.5);
-      if (pos === 'K') basePoints = 120 - rank;
-      if (pos === 'DST') basePoints = 120 - rank;
+      if (pos === 'QB') basePoints = 250 + 150 * Math.exp(-0.08 * (rank - 1)) + tierBonus;
+      if (pos === 'RB') basePoints = 100 + 240 * Math.exp(-0.06 * (rank - 1)) + tierBonus;
+      if (pos === 'WR') basePoints = 110 + 220 * Math.exp(-0.045 * (rank - 1)) + tierBonus;
+      if (pos === 'TE') basePoints = 90 + 150 * Math.exp(-0.1 * (rank - 1)) + tierBonus;
+      if (pos === 'K') basePoints = 120 + 30 * Math.exp(-0.15 * (rank - 1));
+      if (pos === 'DST') basePoints = 100 + 30 * Math.exp(-0.15 * (rank - 1));
       
       parsedPlayers.push({
         id: existing ? existing.id : `${pos.toLowerCase()}-${rank}-${Date.now()}`,
