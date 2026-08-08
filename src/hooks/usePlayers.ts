@@ -286,37 +286,6 @@ export const usePlayers = () => {
 
   const handleRecalculateProjections = () => {
     setPlayers(prev => {
-      const getTierInfo = (pos: string, rank: number) => {
-        if (pos === 'QB') {
-          if (rank <= 3) return { tier: 'Tier 1: Elite QBs', tierNumber: 1 };
-          if (rank <= 7) return { tier: 'Tier 2: High-End QB1', tierNumber: 2 };
-          if (rank <= 12) return { tier: 'Tier 3: Solid QB1', tierNumber: 3 };
-          if (rank <= 18) return { tier: 'Tier 4: High-End QB2', tierNumber: 4 };
-          return { tier: 'Tier 5: Depth QBs', tierNumber: 5 };
-        }
-        if (pos === 'RB') {
-          if (rank <= 4) return { tier: 'Tier 1: Legendary Bellcows', tierNumber: 1 };
-          if (rank <= 12) return { tier: 'Tier 2: High-Volume RB1s', tierNumber: 2 };
-          if (rank <= 24) return { tier: 'Tier 3: Solid RB2s', tierNumber: 3 };
-          if (rank <= 36) return { tier: 'Tier 4: Flex Options / Handcuffs', tierNumber: 4 };
-          return { tier: 'Tier 5: Depth RBs', tierNumber: 5 };
-        }
-        if (pos === 'WR') {
-          if (rank <= 5) return { tier: 'Tier 1: Alpha Target Monsters', tierNumber: 1 };
-          if (rank <= 16) return { tier: 'Tier 2: Elite WR1s', tierNumber: 2 };
-          if (rank <= 28) return { tier: 'Tier 3: Solid WR2s', tierNumber: 3 };
-          if (rank <= 48) return { tier: 'Tier 4: Flex WRs', tierNumber: 4 };
-          return { tier: 'Tier 5: Depth WRs', tierNumber: 5 };
-        }
-        if (pos === 'TE') {
-          if (rank <= 3) return { tier: 'Tier 1: Elite TEs', tierNumber: 1 };
-          if (rank <= 8) return { tier: 'Tier 2: High-End TE1s', tierNumber: 2 };
-          if (rank <= 14) return { tier: 'Tier 3: Solid TE1s', tierNumber: 3 };
-          return { tier: 'Tier 4: Depth TEs', tierNumber: 4 };
-        }
-        return { tier: 'Tier Unknown', tierNumber: 99 };
-      };
-
       const updated = prev.map(p => {
         // Parse posRank, e.g. "QB12" -> pos="QB", rank=12
         const match = p.posRank.match(/^([A-Z]+)(\d+)$/);
@@ -324,7 +293,8 @@ export const usePlayers = () => {
           const pos = match[1];
           const rank = parseInt(match[2], 10);
           
-          const { tier, tierNumber } = getTierInfo(pos, rank);
+          // Use the player's existing tier that the user manually set
+          const tierNumber = p.tierNumber || 99;
           
           let tierBonus = 0;
           if (tierNumber === 1) tierBonus = 25;
@@ -335,14 +305,12 @@ export const usePlayers = () => {
           if (pos === 'QB') basePoints = 250 + 150 * Math.exp(-0.08 * (rank - 1)) + tierBonus;
           if (pos === 'RB') basePoints = 100 + 240 * Math.exp(-0.06 * (rank - 1)) + tierBonus;
           if (pos === 'WR') basePoints = 110 + 220 * Math.exp(-0.045 * (rank - 1)) + tierBonus;
-          if (pos === 'TE') basePoints = 90 + 150 * Math.exp(-0.1 * (rank - 1)) + tierBonus;
+          if (pos === 'TE') basePoints = 90 + 150 * Math.exp(-0.11 * (rank - 1)) + tierBonus;
           if (pos === 'K') basePoints = 120 + 30 * Math.exp(-0.15 * (rank - 1));
           if (pos === 'DST') basePoints = 100 + 30 * Math.exp(-0.15 * (rank - 1));
 
           return {
             ...p,
-            tier,
-            tierNumber,
             basePointsHalfPpr: parseFloat(basePoints.toFixed(1))
           };
         }
