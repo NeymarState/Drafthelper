@@ -330,19 +330,18 @@ export const usePlayers = () => {
       baselines['K'] = getBaseline('K', leagueSize - 1);
       baselines['DST'] = getBaseline('DST', leagueSize - 1);
 
-      // Sort by VORP (with Positional Meta Adjustments for modern ADP)
+      // Sort by VORP (with a gentle ADP blend)
       updated.sort((a, b) => {
         let vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
         let vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
         
-        // Apply modern ADP meta adjustments to VORP to reflect real-world draft capital
-        if (a.pos === 'WR') vorpA *= 1.2; // Premium for WR safety and longevity
-        if (a.pos === 'RB') vorpA *= 0.85; // Penalty for RB injury risk
-        
-        if (b.pos === 'WR') vorpB *= 1.2;
-        if (b.pos === 'RB') vorpB *= 0.85;
+        // Blend slightly with ADP: lower ADP (better) results in a slightly higher final score
+        // This ensures the ranking feels realistic and respects community draft capital
+        // without overriding the mathematical VORP logic.
+        let scoreA = vorpA - (a.adp * 0.4);
+        let scoreB = vorpB - (b.adp * 0.4);
 
-        return vorpB - vorpA;
+        return scoreB - scoreA;
       });
       
       // Update ovrRank
