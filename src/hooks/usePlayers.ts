@@ -368,20 +368,31 @@ export const usePlayers = () => {
         let vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
         let vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
         
-        // Late-Round QB/TE Meta Adjustments
-        // Mathematically, QBs and TEs have high VORP, but in real drafts they go much later.
-        // We heavily penalize their VORP in the sorting phase so their ovrRank aligns with ADP.
-        if (a.pos === 'QB') vorpA *= 0.45;
-        if (a.pos === 'TE') vorpA *= 0.55;
-        
-        if (b.pos === 'QB') vorpB *= 0.45;
-        if (b.pos === 'TE') vorpB *= 0.55;
+        const getPosRankNum = (posRank: string) => parseInt(posRank.replace(/[^\d]/g, ''), 10) || 99;
+        const rankA = getPosRankNum(a.posRank);
+        const rankB = getPosRankNum(b.posRank);
+
+        // Positional Meta Adjustments
+        const applyMetaAdjustments = (pos: string, vorp: number, rank: number) => {
+          if (pos === 'K' || pos === 'DST') return -1000 - rank; // Force to the very end of the draft
+          
+          if (pos === 'QB') {
+            if (rank <= 3) return vorp * 0.85; // Top 3 Elite QBs hold value (Rounds 2-4)
+            return vorp * 0.35; // Steep dropoff for mid-tier QBs (Late-Round QB Strategy)
+          }
+          if (pos === 'TE') {
+            if (rank <= 3) return vorp * 0.85; // Top 3 Elite TEs hold value
+            return vorp * 0.40; // Mid-tier TEs fall to later rounds
+          }
+          return vorp;
+        };
+
+        let scoreA = applyMetaAdjustments(a.pos, vorpA, rankA);
+        let scoreB = applyMetaAdjustments(b.pos, vorpB, rankB);
 
         // Blend slightly with ADP: lower ADP (better) results in a slightly higher final score
-        // This ensures the ranking feels realistic and respects community draft capital
-        // without overriding the mathematical VORP logic.
-        let scoreA = vorpA - (a.adp * 0.4);
-        let scoreB = vorpB - (b.adp * 0.4);
+        scoreA -= (a.adp * 0.4);
+        scoreB -= (b.adp * 0.4);
 
         return scoreB - scoreA;
       });
