@@ -330,10 +330,18 @@ export const usePlayers = () => {
       baselines['K'] = getBaseline('K', leagueSize - 1);
       baselines['DST'] = getBaseline('DST', leagueSize - 1);
 
-      // Sort by VORP
+      // Sort by VORP (with Positional Meta Adjustments for modern ADP)
       updated.sort((a, b) => {
-        const vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
-        const vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
+        let vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
+        let vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
+        
+        // Apply modern ADP meta adjustments to VORP to reflect real-world draft capital
+        if (a.pos === 'WR') vorpA *= 1.2; // Premium for WR safety and longevity
+        if (a.pos === 'RB') vorpA *= 0.85; // Penalty for RB injury risk
+        
+        if (b.pos === 'WR') vorpB *= 1.2;
+        if (b.pos === 'RB') vorpB *= 0.85;
+
         return vorpB - vorpA;
       });
       
