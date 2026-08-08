@@ -7,7 +7,7 @@ import { enrichPlayerData } from '../utils/calculations';
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_LEAGUE_SIZE = 'ff_command_center_league_size_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version_2026';
-const CURRENT_DATA_VERSION = 'v16-data-reset';
+const CURRENT_DATA_VERSION = 'v19-profiles';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();
@@ -335,6 +335,15 @@ export const usePlayers = () => {
         let vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
         let vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
         
+        // Late-Round QB/TE Meta Adjustments
+        // Mathematically, QBs and TEs have high VORP, but in real drafts they go much later.
+        // We heavily penalize their VORP in the sorting phase so their ovrRank aligns with ADP.
+        if (a.pos === 'QB') vorpA *= 0.45;
+        if (a.pos === 'TE') vorpA *= 0.55;
+        
+        if (b.pos === 'QB') vorpB *= 0.45;
+        if (b.pos === 'TE') vorpB *= 0.55;
+
         // Blend slightly with ADP: lower ADP (better) results in a slightly higher final score
         // This ensures the ranking feels realistic and respects community draft capital
         // without overriding the mathematical VORP logic.
