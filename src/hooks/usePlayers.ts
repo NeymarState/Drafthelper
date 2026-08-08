@@ -7,7 +7,7 @@ import { enrichPlayerData } from '../utils/calculations';
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_LEAGUE_SIZE = 'ff_command_center_league_size_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version_2026';
-const CURRENT_DATA_VERSION = 'v19-profiles';
+const CURRENT_DATA_VERSION = 'v20-auto-tiers';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();
@@ -149,7 +149,20 @@ export const usePlayers = () => {
   };
 
   const handleUpdatePlayer = (playerId: string, updates: Partial<Player>) => {
-    setPlayers((prev) => prev.map((p) => (p.id === playerId ? { ...p, ...updates } : p)));
+    setPlayers(prev => {
+      const updated = prev.map(p => p.id === playerId ? { ...p, ...updates } : p);
+      return recomputeRanks(updated);
+    });
+  };
+
+  const handleBulkUpdatePlayers = (updates: {id: string, changes: Partial<Player>}[]) => {
+    setPlayers(prev => {
+      let updated = [...prev];
+      updates.forEach(update => {
+        updated = updated.map(p => p.id === update.id ? { ...p, ...update.changes } : p);
+      });
+      return recomputeRanks(updated);
+    });
   };
 
   const handleReorderPlayers = (draggedId: string, targetId: string) => {
@@ -254,6 +267,8 @@ export const usePlayers = () => {
                 ...importedPlayer,
                 playerArchetype: systemPlayer.playerArchetype,
                 profile: systemPlayer.profile,
+                tier: systemPlayer.tier,
+                tierNumber: systemPlayer.tierNumber,
                 customTag: finalCustomTag || systemPlayer.customTag
              };
           }
@@ -446,6 +461,7 @@ export const usePlayers = () => {
     handleResetStatus,
     handleResetDraft,
     handleUpdatePlayer,
+    handleBulkUpdatePlayers,
     handleReorderPlayers,
     handleMovePlayer,
     handleMoveToRank,

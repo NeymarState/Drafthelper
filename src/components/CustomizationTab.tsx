@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Player, Position } from '../types';
-import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload, X } from 'lucide-react';
+import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload, X, Scissors } from 'lucide-react';
 import { getFormattedPick } from '../utils/calculations';
 
 interface CustomizationTabProps {
   players: Player[];
   onUpdatePlayer: (playerId: string, updates: Partial<Player>) => void;
+  onBulkUpdatePlayers?: (updates: {id: string, changes: Partial<Player>}[]) => void;
   onReorderPlayers: (draggedId: string, targetId: string) => void;
   onMovePlayer: (playerId: string, direction: 'up' | 'down', currentFilter: Position | 'ALL') => void;
   onMoveToRank: (playerId: string, targetRank: number) => void;
@@ -21,6 +22,7 @@ interface CustomizationTabProps {
 export const CustomizationTab: React.FC<CustomizationTabProps> = ({
   players,
   onUpdatePlayer,
+  onBulkUpdatePlayers,
   onReorderPlayers,
   onMovePlayer,
   onMoveToRank,
@@ -414,7 +416,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                   </div>
                 </div>
 
-                  <div className="col-span-4 sm:col-span-4 flex items-center gap-2">
+                  <div className="col-span-4 sm:col-span-4 flex items-center gap-1">
                     <select
                       value={player.tierNumber || 99}
                       onChange={(e) => {
@@ -431,6 +433,27 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
                       ))}
                       <option value={99}>Kein Tier</option>
                     </select>
+
+                    {onBulkUpdatePlayers && (
+                      <button
+                        onClick={() => {
+                          const currentTierNum = player.tierNumber || 1;
+                          const nextTierNum = currentTierNum === 99 ? 1 : currentTierNum + 1;
+                          const updates = displayPlayers.slice(idx + 1).map(p => ({
+                            id: p.id,
+                            changes: {
+                              tierNumber: nextTierNum,
+                              tier: nextTierNum === 99 ? 'Kein Tier' : `Tier ${nextTierNum}`
+                            }
+                          }));
+                          onBulkUpdatePlayers(updates);
+                        }}
+                        className="px-1.5 py-1 text-slate-400 hover:text-blue-400 hover:bg-slate-800 rounded transition-colors"
+                        title="Tier-Break hier setzen (erhöht das Tier aller Spieler darunter)"
+                      >
+                        <Scissors className="w-3.5 h-3.5" />
+                      </button>
+                    )}
 
                     <select
                       value={player.customTag || ''}

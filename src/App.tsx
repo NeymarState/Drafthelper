@@ -38,6 +38,7 @@ export default function App() {
     handleResetStatus,
     handleResetDraft,
     handleUpdatePlayer,
+    handleBulkUpdatePlayers,
     handleReorderPlayers,
     handleMovePlayer,
     handleMoveToRank,
@@ -482,6 +483,7 @@ export default function App() {
           <CustomizationTab 
             players={activePlayers} 
             onUpdatePlayer={handleUpdatePlayer}
+            onBulkUpdatePlayers={handleBulkUpdatePlayers}
             onReorderPlayers={handleReorderPlayers}
             onMovePlayer={handleMovePlayer}
             onMoveToRank={handleMoveToRank}
