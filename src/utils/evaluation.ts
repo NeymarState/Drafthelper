@@ -125,8 +125,8 @@ export const evaluateDraft = (
       
       if (hasQB && hasReceiver) {
         score += 8;
-        tips.push({ type: 'positive', text: `Guter Stack: Du hast einen wertvollen ${teamName} Stack (zzB. QB + WR/TE). Das erhöht dein wöchentliches Upside signifikant!` });
-      } else if (players.length >= 3) {
+        tips.push({ type: 'positive', text: `Guter Stack: Du hast einen wertvollen ${teamName} Stack (z.B. QB + WR/TE). Das erhöht dein wöchentliches Upside signifikant!` });
+      } else {
         score -= 5;
         tips.push({ type: 'negative', text: `Klumpenrisiko: Du hast ${players.length} Spieler von den ${teamName}, aber keinen echten QB-Stack. Das limitiert dein Upside und bringt wöchentliches Risiko.` });
       }

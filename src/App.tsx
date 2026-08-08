@@ -23,6 +23,8 @@ import { TiersTab } from './components/TiersTab';
 import { CustomizationTab } from './components/CustomizationTab';
 import { GridBoardTab } from './components/GridBoardTab';
 import { ExportModal } from './components/ExportModal';
+import { DraftManagerModal } from './components/DraftManagerModal';
+import { NotesSidebar } from './components/NotesSidebar';
 
 import { LayoutDashboard, Table, Grid, LayoutGrid, Layers, Settings2, Shield, Sparkles, Ghost, Check, X } from 'lucide-react';
 
@@ -70,7 +72,8 @@ export default function App() {
     'dashboard' | 'board' | 'grid' | 'fullboard' | 'myteam' | 'sleepers' | 'value' | 'tiers' | 'customization'
   >('dashboard');
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
-
+  const [isDraftManagerOpen, setIsDraftManagerOpen] = useState(false);
+  
   // Global Ghost Draft Mode
   const [isGhostMode, setIsGhostMode] = useState(false);
   const [ghostPicks, setGhostPicks] = useState<{playerId: string, isUser: boolean}[]>([]);
@@ -215,6 +218,7 @@ export default function App() {
         onUpdateSettings={handleUpdateSettings}
         onResetDraft={onResetDraftWrapper}
         onOpenExportModal={() => setIsExportModalOpen(true)}
+        onOpenDraftManager={() => setIsDraftManagerOpen(true)}
         totalDraftedCount={totalDraftedCount}
       />
 
@@ -507,6 +511,17 @@ export default function App() {
         players={players}
         settings={settings}
       />
+
+      {/* Draft Manager Modal */}
+      <DraftManagerModal
+        isOpen={isDraftManagerOpen}
+        onClose={() => setIsDraftManagerOpen(false)}
+        players={players}
+        settings={settings}
+      />
+
+      {/* Global Notes Sidebar */}
+      <NotesSidebar />
     </div>
   );
 }

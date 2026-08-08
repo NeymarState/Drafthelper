@@ -1,6 +1,6 @@
-﻿import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Player, DraftSettings, Position, AlertItem } from '../types';
-import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert } from 'lucide-react';
+import { Search, Maximize2, Minimize2, Zap, Target, ShieldAlert, X } from 'lucide-react';
 import { getFormattedPick, calculateNextPick, analyzeOpponentNeeds, calculatePickProbability, calculateVORP } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
 import { VORPChart } from './VORPChart';
@@ -388,8 +388,16 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                     placeholder="Suche..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-8 w-32 bg-slate-950 border border-slate-700 text-slate-100 rounded px-3 py-1 text-xs focus:outline-none focus:border-blue-500"
+                    className="pl-8 pr-7 w-32 bg-slate-950 border border-slate-700 text-slate-100 rounded px-3 py-1 text-xs focus:outline-none focus:border-blue-500"
                   />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-1 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer p-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
                 <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
                   {(['ALL', 'FLEX', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'] as const).map((pos) => (

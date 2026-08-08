@@ -1,7 +1,7 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, Position, DraftSettings } from '../types';
 import { calculateVORP, getAdjustedProjection, getFormattedPick } from '../utils/calculations';
-import { Sparkles, ShieldAlert, Zap, Search, PlusCircle, CheckCircle2, TrendingUp, Filter } from 'lucide-react';
+import { Sparkles, ShieldAlert, Zap, Search, PlusCircle, CheckCircle2, TrendingUp, Filter, X } from 'lucide-react';
 
 interface SleepersHandcuffsTabProps {
   players: Player[];
@@ -172,8 +172,16 @@ export const SleepersHandcuffsTab: React.FC<SleepersHandcuffsTabProps> = ({
               placeholder="Suche Sleeper / Team..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-2.5 py-1 pl-8 text-xs focus:outline-none focus:border-blue-500"
+              className="w-full bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-2.5 py-1 pl-8 pr-7 text-xs focus:outline-none focus:border-blue-500"
             />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer p-0.5"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 

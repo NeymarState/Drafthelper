@@ -1,6 +1,6 @@
-﻿import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Player, Position } from '../types';
-import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload } from 'lucide-react';
+import { Target, Zap, ShieldAlert, ArrowUp, ArrowDown, GripVertical, Download, Upload, X } from 'lucide-react';
 import { getFormattedPick } from '../utils/calculations';
 
 interface CustomizationTabProps {
@@ -232,14 +232,24 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
             </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3 mb-4">
-          <input
-            type="text"
-            placeholder="Spieler suchen..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 min-w-[200px] bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-3 py-1.5 text-xs focus:outline-none focus:border-blue-500"
-          />
+          <div className="flex flex-wrap gap-3 mb-4">
+            <div className="relative flex-1 min-w-[200px]">
+              <input
+                type="text"
+                placeholder="Spieler suchen..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-3 py-1.5 pr-8 text-xs focus:outline-none focus:border-blue-500"
+              />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           <div className="flex bg-slate-950 p-1 rounded border border-slate-700">
             {(['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'] as const).map((pos) => (
               <button

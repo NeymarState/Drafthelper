@@ -7,7 +7,7 @@ import { enrichPlayerData } from '../utils/calculations';
 const STORAGE_KEY_PLAYERS = 'ff_command_center_players_2026';
 const STORAGE_KEY_LEAGUE_SIZE = 'ff_command_center_league_size_2026';
 const DATA_VERSION_KEY = 'ff_command_center_data_version_2026';
-const CURRENT_DATA_VERSION = 'v13-data-reset';
+const CURRENT_DATA_VERSION = 'v16-data-reset';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();

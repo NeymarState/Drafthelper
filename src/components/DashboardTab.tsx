@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, DraftSettings, RosterState, AlertItem, Position } from '../types';
 import { getAdjustedProjection, calculateVORP, getFormattedPick, calculatePickProbability } from '../utils/calculations';
 import { AlertsBanner } from './AlertsBanner';
 import { VORPChart } from './VORPChart';
 import { DraftTracker } from './DraftTracker';
-import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert, Activity, Ghost } from 'lucide-react';
+import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert, Activity, Ghost, X } from 'lucide-react';
 
 interface DashboardTabProps {
   players: Player[];
@@ -374,8 +374,16 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
                     placeholder="Suche..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-2 py-1 pl-7 text-[11px] focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-950 border border-slate-700 text-slate-100 placeholder-slate-500 rounded px-2 py-1 pl-7 pr-7 text-[11px] focus:outline-none focus:border-blue-500"
                   />
+                  {searchQuery && (
+                    <button 
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer p-0.5"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                 </div>
                 
                 <div className="flex bg-slate-900 border border-slate-700 rounded p-0.5 w-full">

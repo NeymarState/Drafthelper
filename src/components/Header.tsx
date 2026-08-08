@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Trophy, RefreshCw, Download, Layers, Users, Award, Zap } from 'lucide-react';
 import { DraftSettings } from '../types';
 import { getFormattedPick, calculateNextPick } from '../utils/calculations';
@@ -8,6 +8,7 @@ interface HeaderProps {
   onUpdateSettings: (newSettings: Partial<DraftSettings>) => void;
   onResetDraft: () => void;
   onOpenExportModal: () => void;
+  onOpenDraftManager: () => void;
   totalDraftedCount: number;
 }
 
@@ -16,6 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   onUpdateSettings,
   onResetDraft,
   onOpenExportModal,
+  onOpenDraftManager,
   totalDraftedCount,
 }) => {
   const currentPickInfo = getFormattedPick(settings.currentOverallPick, settings.leagueSize);
@@ -110,6 +112,15 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={onOpenDraftManager}
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-md shadow-blue-900/30 cursor-pointer"
+            title="Drafts speichern & laden"
+          >
+            <Layers className="w-3.5 h-3.5" />
+            <span>Drafts</span>
+          </button>
+
           <button
             id="export-code-excel-btn"
             onClick={onOpenExportModal}

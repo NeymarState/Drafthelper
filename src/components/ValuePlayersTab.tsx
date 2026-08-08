@@ -1,7 +1,7 @@
-﻿import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Player, Position, DraftSettings } from '../types';
 import { calculateVORP, getAdjustedProjection, getFormattedPick } from '../utils/calculations';
-import { Search, ChevronDown, ChevronUp, Zap, Target, ShieldAlert, PlusCircle, TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, Target, Zap, Clock, ShieldAlert, CheckCircle2, ChevronRight, Filter, Search, PlusCircle, UserPlus, FileSpreadsheet, X, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface ValuePlayersTabProps {
   players: Player[];
@@ -181,16 +181,24 @@ export const ValuePlayersTab: React.FC<ValuePlayersTabProps> = ({
         </div>
 
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-48">
-            <input
-              type="text"
-              placeholder="Spieler suchen..."
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg pl-8 pr-3 py-1.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
-          </div>
+            <div className="relative flex-1 sm:w-48">
+              <input
+                type="text"
+                placeholder="Spieler suchen..."
+                className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-xs rounded-lg pl-8 pr-8 py-1.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all font-mono"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-1/2 -translate-y-1/2" />
+              {searchQuery && (
+                <button 
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer p-0.5"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
         </div>
       </div>
 

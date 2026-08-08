@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Player, ScoringFormat } from '../types';
 import { calculateVORP } from '../utils/calculations';
 
