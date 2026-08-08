@@ -331,42 +331,45 @@ export const usePlayers = () => {
       baselines['K'] = getBaseline('K', leagueSize - 1);
       baselines['DST'] = getBaseline('DST', leagueSize - 1);
 
-      // Sort by VORP (with a gentle ADP blend)
-      updated.sort((a, b) => {
-        let vorpA = a.basePointsHalfPpr - (baselines[a.pos] || 0);
-        let vorpB = b.basePointsHalfPpr - (baselines[b.pos] || 0);
+      const getPosRankNum = (posRank: string) => parseInt(posRank.replace(/[^\d]/g, ''), 10) || 99;
+
+      // Calculate raw scores
+      const scoredPlayers = updated.map(p => {
+        let vorp = p.basePointsHalfPpr - (baselines[p.pos] || 0);
+        const rank = getPosRankNum(p.posRank);
         
-        const getPosRankNum = (posRank: string) => parseInt(posRank.replace(/[^\d]/g, ''), 10) || 99;
-        const rankA = getPosRankNum(a.posRank);
-        const rankB = getPosRankNum(b.posRank);
-
-        // Positional Meta Adjustments
-        const applyMetaAdjustments = (pos: string, vorp: number, rank: number) => {
-          if (pos === 'K' || pos === 'DST') return -1000 - rank; // Force to the very end of the draft
-          
-          if (pos === 'QB') {
-            if (rank <= 3) return vorp * 0.85; // Top 3 Elite QBs hold value (Rounds 2-4)
-            return vorp * 0.35; // Steep dropoff for mid-tier QBs (Late-Round QB Strategy)
-          }
-          if (pos === 'TE') {
-            if (rank <= 3) return vorp * 0.85; // Top 3 Elite TEs hold value
-            return vorp * 0.40; // Mid-tier TEs fall to later rounds
-          }
-          return vorp;
-        };
-
-        let scoreA = applyMetaAdjustments(a.pos, vorpA, rankA);
-        let scoreB = applyMetaAdjustments(b.pos, vorpB, rankB);
-
-        // Blend slightly with ADP: lower ADP (better) results in a slightly higher final score
-        scoreA -= (a.adp * 0.4);
-        scoreB -= (b.adp * 0.4);
-
-        return scoreB - scoreA;
+        let score = vorp;
+        if (p.pos === 'K' || p.pos === 'DST') {
+          score = -1000 - rank;
+        } else if (p.pos === 'QB') {
+          score = rank <= 3 ? vorp * 0.85 : vorp * 0.35;
+        } else if (p.pos === 'TE') {
+          score = rank <= 3 ? vorp * 0.85 : vorp * 0.40;
+        }
+        
+        // Blend with ADP
+        score -= (p.adp * 0.4);
+        
+        return { ...p, _rawScore: score };
       });
-      
-      // Update ovrRank
-      return updated.map((p, idx) => ({ ...p, ovrRank: idx + 1 }));
+
+      // Enforce monotonicity within each position so Auto-Rank NEVER alters the individual lists!
+      ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
+        const posList = scoredPlayers.filter(p => p.pos === pos).sort((a, b) => getPosRankNum(a.posRank) - getPosRankNum(b.posRank));
+        for (let i = 1; i < posList.length; i++) {
+          if (posList[i]._rawScore >= posList[i-1]._rawScore) {
+            posList[i]._rawScore = posList[i-1]._rawScore - 0.001;
+          }
+        }
+      });
+
+      // Sort by the strictly monotonic scores
+      scoredPlayers.sort((a, b) => b._rawScore - a._rawScore);
+
+      return scoredPlayers.map((p, idx) => {
+        const { _rawScore, ...rest } = p as any;
+        return { ...rest, ovrRank: idx + 1 };
+      });
     });
   };
 
