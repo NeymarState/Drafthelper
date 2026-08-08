@@ -244,11 +244,17 @@ export const usePlayers = () => {
        const merged = importedPlayers.map(importedPlayer => {
           const systemPlayer = INITIAL_PLAYERS.find(p => p.name.toLowerCase().trim() === importedPlayer.name.toLowerCase().trim());
           if (systemPlayer) {
+             let finalCustomTag = importedPlayer.customTag;
+             // Force-strip obsolete Rookie tags from old backups if the system says they aren't a rookie anymore
+             if (finalCustomTag === 'Rookie' && systemPlayer.customTag !== 'Rookie') {
+                finalCustomTag = undefined;
+             }
+             
              return {
                 ...importedPlayer,
                 playerArchetype: systemPlayer.playerArchetype,
                 profile: systemPlayer.profile,
-                customTag: importedPlayer.customTag || systemPlayer.customTag
+                customTag: finalCustomTag || systemPlayer.customTag
              };
           }
           return importedPlayer;
