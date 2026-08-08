@@ -241,7 +241,19 @@ export const usePlayers = () => {
 
   const handleImportRankings = (importedPlayers: Player[]) => {
     setPlayers(prev => {
-       const merged = [...importedPlayers];
+       const merged = importedPlayers.map(importedPlayer => {
+          const systemPlayer = INITIAL_PLAYERS.find(p => p.name.toLowerCase().trim() === importedPlayer.name.toLowerCase().trim());
+          if (systemPlayer) {
+             return {
+                ...importedPlayer,
+                playerArchetype: systemPlayer.playerArchetype,
+                profile: systemPlayer.profile,
+                customTag: importedPlayer.customTag || systemPlayer.customTag
+             };
+          }
+          return importedPlayer;
+       });
+       
        INITIAL_PLAYERS.forEach(systemPlayer => {
           if (!merged.find(p => p.name.toLowerCase().trim() === systemPlayer.name.toLowerCase().trim())) {
              merged.push(systemPlayer);
