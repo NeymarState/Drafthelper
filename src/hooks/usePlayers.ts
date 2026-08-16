@@ -202,14 +202,14 @@ export const usePlayers = () => {
       
       let swapIdx = -1;
       if (direction === 'up') {
-        für (let i = idx - 1; i >= 0; i--) {
+        for (let i = idx - 1; i >= 0; i--) {
           if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
             swapIdx = i;
             break;
           }
         }
       } else {
-        für (let i = idx + 1; i < prev.length; i++) {
+        for (let i = idx + 1; i < prev.length; i++) {
           if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
             swapIdx = i;
             break;
@@ -254,7 +254,7 @@ export const usePlayers = () => {
       let posCount = 0;
       let targetIndex = newList.length;
       
-      für (let i = 0; i < newList.length; i++) {
+      for (let i = 0; i < newList.length; i++) {
         if (newList[i].pos === pos) {
           posCount++;
           if (posCount === targetPosRank) {
@@ -380,7 +380,7 @@ export const usePlayers = () => {
       // Enforce monotonicity within each position so Auto-Rank NEVER alters the individual lists!
       ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
         const posList = scoredPlayers.filter(p => p.pos === pos).sort((a, b) => getPosRankNum(a.posRank) - getPosRankNum(b.posRank));
-        für (let i = 1; i < posList.length; i++) {
+        for (let i = 1; i < posList.length; i++) {
           if (posList[i]._rawScore >= posList[i-1]._rawScore) {
             posList[i]._rawScore = posList[i-1]._rawScore - 0.001;
           }
@@ -406,7 +406,7 @@ export const usePlayers = () => {
       if (!res.ok) throw new Error(`Failed to fetch ${provider} ADP data`);
       const data = await res.json();
       
-      für (const [name, adpVal] of Object.entries(data)) {
+      for (const [name, adpVal] of Object.entries(data)) {
         adpMap[name] = adpVal as number;
       }
       

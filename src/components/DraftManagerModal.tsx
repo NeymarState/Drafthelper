@@ -28,7 +28,7 @@ export const DraftManagerModal: React.FC<DraftManagerModalProps> = ({
 
   const loadProfiles = () => {
     const loadedProfiles: DraftProfile[] = [];
-    für (let i = 0; i < localStorage.length; i++) {
+    for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key && key.startsWith('ff_command_center_profile_')) {
         try {

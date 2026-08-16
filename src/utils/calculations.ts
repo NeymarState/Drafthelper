@@ -338,7 +338,7 @@ export function enrichPlayerData(players: Player[]): Player[] {
       }
     }
     if (rbs.length > 2) {
-      für (let i = 2; i < rbs.length; i++) {
+      for (let i = 2; i < rbs.length; i++) {
         rbs[i].rbRole = 'RB3';
       }
     }
@@ -359,7 +359,7 @@ export function enrichPlayerData(players: Player[]): Player[] {
     if (wrs.length > 1) wrs[1].wrRole = 'WR2';
     if (wrs.length > 2) wrs[2].wrRole = 'WR3';
     if (wrs.length > 3) {
-      für (let i = 3; i < wrs.length; i++) {
+      for (let i = 3; i < wrs.length; i++) {
         wrs[i].wrRole = 'WR4';
       }
     }
@@ -400,7 +400,7 @@ export function isUserPickSlot(pick: number, userPickSlot: number, leagueSize: n
 
 export function findNextUserPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
   const maxPick = leagueSize * totalRounds;
-  für (let pick = 1; pick <= maxPick; pick++) {
+  for (let pick = 1; pick <= maxPick; pick++) {
     if (isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
@@ -411,7 +411,7 @@ export function findNextUserPickSlot(players: Player[], userPickSlot: number, le
 
 export function findNextOpponentPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
   const maxPick = leagueSize * totalRounds;
-  für (let pick = 1; pick <= maxPick; pick++) {
+  for (let pick = 1; pick <= maxPick; pick++) {
     if (!isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
@@ -456,7 +456,7 @@ export function analyzeOpponentNeeds(currentOverallPick: number, leagueSize: num
   const currentRound = Math.ceil(currentOverallPick / leagueSize);
   
   // Find the next 5 picks
-  für (let offset = 0; offset < 5; offset++) {
+  for (let offset = 0; offset < 5; offset++) {
     const pick = currentOverallPick + offset;
     const round = Math.ceil(pick / leagueSize);
     let teamSlot = 0;
