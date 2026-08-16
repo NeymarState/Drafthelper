@@ -190,7 +190,7 @@ export function generateLiveAlerts(
       const tierPlayers = allPlayers.filter(
         (p) => p.pos === pos && p.tierNumber === tierNum
       );
-      const availableInTier = tierPlayers.filter((p) => p.status === 'Verfügbar');
+      const availableInTier = tierPlayers.filter((p) => p.status === 'VERFÜGBAR');
 
       if (tierPlayers.length > 0 && availableInTier.length <= 2 && availableInTier.length > 0) {
         const topAvailable = availableInTier.sort((a, b) => (a.adp || a.ovrRank) - (b.adp || b.ovrRank))[0];

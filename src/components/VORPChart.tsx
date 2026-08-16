@@ -15,7 +15,7 @@ export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat,
   // Calculate VORP data per position für top 15 available players
   const chartData = positions.map(pos => {
     const availablePos = allPlayers
-      .filter(p => p.pos === pos && p.status === 'Verfügbar')
+      .filter(p => p.pos === pos && p.status === 'VERFÜGBAR')
       .map(p => ({
         ...p,
         vorp: calculateVORP(p, allPlayers, scoringFormat, leagueSize)

@@ -300,7 +300,7 @@ export const SleepersHandcuffsTab: React.FC<SleepersHandcuffsTabProps> = ({
 
               {/* Action Buttons */}
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between font-mono text-xs">
-                {player.status === 'Verfügbar' ? (
+                {player.status === 'VERFÜGBAR' ? (
                   <div className="flex gap-1.5 w-full">
                     <button
                       onClick={() => onDraftForMe(player)}

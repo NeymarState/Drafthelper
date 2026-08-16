@@ -11,6 +11,7 @@ const CURRENT_DATA_VERSION = 'v21-granular-tiers';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();
+  let hasSeenAudric = false;
   
   const sanitizeName = (name: string) => {
     return name
@@ -24,8 +25,15 @@ const deduplicatePlayers = (list: Player[]) => {
   return list.filter(p => {
     if (!p || !p.name) return false;
     
-    // Quick fix for the specific corrupted Audric Estime
-    if (p.name.includes('Estim') && p.id !== 'rb-audricestim') return false;
+    // Aggressive fix for the corrupted Audric Estime duplicates
+    // If the name contains Audric, we only keep the very first one we see and fix its data
+    if (p.name.toLowerCase().includes('audric') || p.id === 'rb-audricestim') {
+      if (hasSeenAudric) return false;
+      hasSeenAudric = true;
+      p.id = 'rb-audricestim';
+      p.name = 'Audric Estime';
+      // don't return early here, let it pass through standard logic to avoid bugs, but we know it's clean now
+    }
     
     const name = sanitizeName(p.name);
     if (!name) return false;
@@ -58,8 +66,8 @@ export const usePlayers = () => {
         let parsedPlayers: Player[] = JSON.parse(saved);
         // Fix any encoding issues from previous versions
         parsedPlayers = parsedPlayers.map(p => {
-          if (typeof p.status === 'string' && /^Verf.*gbar$/.test(p.status)) {
-            p.status = 'Verfügbar';
+          if (typeof p.status === 'string' && /^VERFÜGBAR$/.test(p.status)) {
+            p.status = 'VERFÜGBAR';
           }
           return p;
         });
@@ -122,7 +130,7 @@ export const usePlayers = () => {
             if (existing) {
               return { 
                 ...fresh, 
-                status: (existing.status && /^Verf.*gbar$/.test(existing.status)) ? fresh.status : existing.status,
+                status: (existing.status && /^VERFÜGBAR$/.test(existing.status)) ? fresh.status : existing.status,
                 customTag: existing.customTag || fresh.customTag
               };
             }
@@ -154,7 +162,7 @@ export const usePlayers = () => {
       prev.map((p) => {
         if (p.id === player.id) {
           const { draftedAtPick, ...rest } = p;
-          return { ...rest, status: 'Verfügbar' };
+          return { ...rest, status: 'VERFÜGBAR' };
         }
         return p;
       })

@@ -1,6 +1,6 @@
 export type Position = 'QB' | 'RB' | 'WR' | 'TE' | 'DST' | 'K';
 
-export type PlayerStatus = 'Verfügbar' | 'Mein Team' | 'Gedraftet (Gegner)';
+export type PlayerStatus = 'VERFÜGBAR' | 'Mein Team' | 'Gedraftet (Gegner)';
 
 export type ScoringFormat = 'Half-PPR' | 'Full-PPR' | 'Standard';
 

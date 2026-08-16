@@ -131,7 +131,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
         : selectedPos === 'FLEX' 
           ? ['RB', 'WR', 'TE'].includes(p.pos)
           : p.pos === selectedPos;
-      const isDrafted = p.status !== 'Verfügbar';
+      const isDrafted = p.status !== 'VERFÜGBAR';
       
       if (hideQB && p.pos === 'QB') return false;
       if (hideTE && p.pos === 'TE') return false;
@@ -468,7 +468,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                 const prob = calculatePickProbability(player, settings.currentOverallPick, predictorTargetPick, upcomingNeeds);
                 const expectedPick = player.adp && player.adp > 0 ? player.adp : player.ovrRank;
                 
-                const isDrafted = player.status !== 'Verfügbar';
+                const isDrafted = player.status !== 'VERFÜGBAR';
 
                 const previousPlayer = index > 0 ? displayPlayers[index - 1] : null;
                 const isNewTier = selectedPos !== 'ALL' && previousPlayer && player.tier !== previousPlayer.tier;
@@ -565,7 +565,7 @@ export const GridBoardTab: React.FC<GridBoardTabProps> = ({
                                 🌱 ROOKIE
                               </span>
                             )}
-                            {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
+                            {player.status === 'VERFÜGBAR' && settings.currentOverallPick - player.ovrRank >= 10 && (
                               <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
                                 💎 STEAL
                               </span>

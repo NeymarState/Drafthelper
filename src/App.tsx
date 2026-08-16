@@ -101,7 +101,7 @@ export default function App() {
   }, []);
 
   // Total drafted players count
-  const totalDraftedCount = players.filter((p) => p.status !== 'Verfügbar').length;
+  const totalDraftedCount = players.filter((p) => p.status !== 'VERFÜGBAR').length;
 
   // Audio Feedback on Turn
   useEffect(() => {

@@ -16,7 +16,7 @@ export const FullDraftboardTab: React.FC<FullDraftboardTabProps> = ({ players, s
     const board = Array(totalRounds).fill(null).map(() => Array(leagueSize).fill(null));
     
     // Map drafted players to their pick slots
-    const draftedPlayers = players.filter(p => p.status !== 'Verfügbar' && p.draftedAtPick);
+    const draftedPlayers = players.filter(p => p.status !== 'VERFÜGBAR' && p.draftedAtPick);
     
     draftedPlayers.forEach(player => {
       const pick = player.draftedAtPick!;

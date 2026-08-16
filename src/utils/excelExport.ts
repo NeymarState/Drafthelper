@@ -116,11 +116,11 @@ def get_pick_string(ovr_rank, N):
 
 # Generate Sample Dataframe
 data = [
-    {"Ovr_Rank": 1, "Pos_Rank": "RB1", "Name": "Christian McCaffrey", "Pos": "RB", "Team": "SF", "Bye": 9, "Tier": "Tier 1: Legendary Bellcows", "Status": "Verfügbar", "Target_Share": 0.19, "RZ_Touches": 64, "Air_Yards": 0.12, "VORP": 85.0, "Profile": "Unangefochtener 1.01 Overall in Half-PPR."},
-    {"Ovr_Rank": 2, "Pos_Rank": "RB2", "Name": "Breece Hall", "Pos": "RB", "Team": "NYJ", "Bye": 12, "Tier": "Tier 1: Legendary Bellcows", "Status": "Verfügbar", "Target_Share": 0.18, "RZ_Touches": 52, "Air_Yards": 0.10, "VORP": 68.5, "Profile": "Dynasty RB1 Potenzial."},
-    {"Ovr_Rank": 3, "Pos_Rank": "RB3", "Name": "Bijan Robinson", "Pos": "RB", "Team": "ATL", "Bye": 12, "Tier": "Tier 1: Legendary Bellcows", "Status": "Verfügbar", "Target_Share": 0.17, "RZ_Touches": 48, "Air_Yards": 0.08, "VORP": 56.0, "Profile": "Mike's My Guy."},
-    {"Ovr_Rank": 4, "Pos_Rank": "WR1", "Name": "CeeDee Lamb", "Pos": "WR", "Team": "DAL", "Bye": 7, "Tier": "Tier 1: Alpha Target Monsters", "Status": "Verfügbar", "Target_Share": 0.31, "RZ_Touches": 28, "Air_Yards": 0.39, "VORP": 72.0, "Profile": "Andy's WR1 overall."},
-    {"Ovr_Rank": 5, "Pos_Rank": "WR2", "Name": "Tyreek Hill", "Pos": "WR", "Team": "MIA", "Bye": 6, "Tier": "Tier 1: Alpha Target Monsters", "Status": "Verfügbar", "Target_Share": 0.32, "RZ_Touches": 24, "Air_Yards": 0.44, "VORP": 65.0, "Profile": "Gamebreaking Ceiling."},
+    {"Ovr_Rank": 1, "Pos_Rank": "RB1", "Name": "Christian McCaffrey", "Pos": "RB", "Team": "SF", "Bye": 9, "Tier": "Tier 1: Legendary Bellcows", "Status": "VERFÜGBAR", "Target_Share": 0.19, "RZ_Touches": 64, "Air_Yards": 0.12, "VORP": 85.0, "Profile": "Unangefochtener 1.01 Overall in Half-PPR."},
+    {"Ovr_Rank": 2, "Pos_Rank": "RB2", "Name": "Breece Hall", "Pos": "RB", "Team": "NYJ", "Bye": 12, "Tier": "Tier 1: Legendary Bellcows", "Status": "VERFÜGBAR", "Target_Share": 0.18, "RZ_Touches": 52, "Air_Yards": 0.10, "VORP": 68.5, "Profile": "Dynasty RB1 Potenzial."},
+    {"Ovr_Rank": 3, "Pos_Rank": "RB3", "Name": "Bijan Robinson", "Pos": "RB", "Team": "ATL", "Bye": 12, "Tier": "Tier 1: Legendary Bellcows", "Status": "VERFÜGBAR", "Target_Share": 0.17, "RZ_Touches": 48, "Air_Yards": 0.08, "VORP": 56.0, "Profile": "Mike's My Guy."},
+    {"Ovr_Rank": 4, "Pos_Rank": "WR1", "Name": "CeeDee Lamb", "Pos": "WR", "Team": "DAL", "Bye": 7, "Tier": "Tier 1: Alpha Target Monsters", "Status": "VERFÜGBAR", "Target_Share": 0.31, "RZ_Touches": 28, "Air_Yards": 0.39, "VORP": 72.0, "Profile": "Andy's WR1 overall."},
+    {"Ovr_Rank": 5, "Pos_Rank": "WR2", "Name": "Tyreek Hill", "Pos": "WR", "Team": "MIA", "Bye": 6, "Tier": "Tier 1: Alpha Target Monsters", "Status": "VERFÜGBAR", "Target_Share": 0.32, "RZ_Touches": 24, "Air_Yards": 0.44, "VORP": 65.0, "Profile": "Gamebreaking Ceiling."},
 ]
 
 df = pd.DataFrame(data)
@@ -131,7 +131,7 @@ st.subheader("🎯 Master Draft Board")
 edited_df = st.data_editor(
     df,
     column_config={
-        "Status": st.column_config.SelectboxColumn("Status", options=["Verfügbar", "Mein Team", "Gedraftet (Gegner)"], required=True),
+        "Status": st.column_config.SelectboxColumn("Status", options=["VERFÜGBAR", "Mein Team", "Gedraftet (Gegner)"], required=True),
         "Target_Share": st.column_config.NumberColumn("Target Share", format="%.2f"),
     },
     disabled=["Ovr_Rank", "Pick", "Name", "Pos", "Team"],

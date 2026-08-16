@@ -1984,7 +1984,7 @@ export const getUpdatedPlayers = (): Player[] => {
         bye: bye,
         tier: tier,
         tierNumber: tierNumber,
-        status: 'Verfügbar',
+        status: 'VERFÜGBAR',
         targetShare: existing ? existing.targetShare : 0,
         rzTouches: existing ? existing.rzTouches : 0,
         airYards: existing ? existing.airYards : 0,

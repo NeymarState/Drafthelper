@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">NÃ„CHSTER PICK IN:</span>
+            <spaNÄCHSTER PICK IN:</span>
             <span className="text-orange-400 font-bold">
               {(() => {
                 const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
@@ -209,7 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Quick Pick Override Control */}
           <div className="flex items-center gap-2">
-            <span className="text-slate-400 text-[11px]">PICK Ã„NDERN:</span>
+            <span className="text-slate-400 text-[11px]">PICK ÄNDERN:</span>
             <input
               type="number"
               min={1}

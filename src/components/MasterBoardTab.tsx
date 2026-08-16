@@ -240,7 +240,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                             <button onClick={() => toggleExpand(player.id)} className="text-slate-400 hover:text-blue-400 transition-colors cursor-pointer" title="Ballers Profile Toggle">
                               {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-blue-400" /> : <ChevronDown className="w-3.5 h-3.5" />}
                             </button>
-                            <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'Verfügbar' ? 'text-blue-400 font-bold flex items-center gap-1.5' : 'line-through flex items-center gap-1.5'}>
+                            <span className={player.status === 'Mein Team' ? 'text-emerald-300 font-bold' : player.status === 'VERFÜGBAR' ? 'text-blue-400 font-bold flex items-center gap-1.5' : 'line-through flex items-center gap-1.5'}>
                               {player.name}
                               {player.customTag === 'Sleeper' && <Zap className="w-3.5 h-3.5 text-blue-400" title="Sleeper" />}
                               {player.customTag === 'Target' && <Target className="w-3.5 h-3.5 text-green-400" title="Target" />}
@@ -284,7 +284,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                                 🌱 ROOKIE
                               </span>
                             )}
-                            {player.status === 'Verfügbar' && settings.currentOverallPick - player.ovrRank >= 10 && (
+                            {player.status === 'VERFÜGBAR' && settings.currentOverallPick - player.ovrRank >= 10 && (
                               <span className="text-[9px] font-mono px-1 py-0.5 rounded bg-fuchsia-500/20 text-fuchsia-400 font-bold border border-fuchsia-500/30">
                                 💎 STEAL
                               </span>
@@ -316,17 +316,17 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border truncate max-w-[130px] inline-block ${getTierBadgeClass(player.tierNumber)}`} title={player.tier}>{player.tier}</span>
                       </td>
                       <td className="p-2 text-center font-mono text-[10px] font-bold uppercase">
-                        {player.status === 'Mein Team' ? <span className="text-emerald-400">Mein Team</span> : player.status === 'Gedraftet (Gegner)' ? <span className="text-slate-500 line-through">Gedraftet</span> : <span className="text-blue-500">Verfügbar</span>}
+                        {player.status === 'Mein Team' ? <span className="text-emerald-400">Mein Team</span> : player.status === 'Gedraftet (Gegner)' ? <span className="text-slate-500 line-through">Gedraftet</span> : <span className="text-blue-500">VERFÜGBAR</span>}
                       </td>
                       <td className="p-2 text-center">
                         <div className="flex items-center justify-center gap-1 font-mono">
-                          {player.status === 'Verfügbar' && (
+                          {player.status === 'VERFÜGBAR' && (
                             <>
                               <button onClick={() => onDraftForMe(player)} className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] shadow cursor-pointer" title="für MEIN TEAM gedraftet">+ Mein Team</button>
                               <button onClick={() => onDraftForOpponent(player)} className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] border border-slate-700 cursor-pointer" title="Vom GEGNER gedraftet">Gegner</button>
                             </>
                           )}
-                          {player.status !== 'Verfügbar' && (
+                          {player.status !== 'VERFÜGBAR' && (
                             <button onClick={() => onResetStatus(player)} className="p-1 rounded bg-slate-800 text-slate-400 hover:text-white cursor-pointer" title="Reset"><RotateCcw className="w-3 h-3" /></button>
                           )}
                         </div>
@@ -372,7 +372,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
           <div className="flex items-center gap-2">
             <span className="text-slate-400 text-[11px]">STATUS:</span>
             <div className="flex bg-slate-950 p-0.5 rounded border border-slate-700">
-              {(['ALL', 'Verfügbar', 'Mein Team', 'Gedraftet (Gegner)'] as const).map((st) => (
+              {(['ALL', 'VERFÜGBAR', 'Mein Team', 'Gedraftet (Gegner)'] as const).map((st) => (
                 <button key={st} onClick={() => setSelectedStatus(st)} className={`px-2 py-0.5 rounded text-[11px] font-bold transition-colors cursor-pointer ${selectedStatus === st ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'}`}>
                   {st === 'Gedraftet (Gegner)' ? 'Gegner' : st}
                 </button>
@@ -409,7 +409,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
         <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-800">
           <span className="text-slate-400 mr-1 font-bold">POS:</span>
           {(['ALL', 'QB', 'RB', 'WR', 'TE', 'DST', 'K'] as const).map((pos) => {
-            const count = players.filter((p) => (pos === 'ALL' || p.pos === pos) && p.status === 'Verfügbar').length;
+            const count = players.filter((p) => (pos === 'ALL' || p.pos === pos) && p.status === 'VERFÜGBAR').length;
             const isSelected = selectedPositions.includes(pos);
             return (
               <button key={pos} onClick={() => togglePosition(pos)} className={`flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold transition-all cursor-pointer ${isSelected ? 'bg-blue-600 text-white shadow' : 'bg-slate-950 text-slate-400 hover:text-slate-200 border border-slate-700'}`}>

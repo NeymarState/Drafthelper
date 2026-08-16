@@ -204,7 +204,7 @@ export const CustomizationTab: React.FC<CustomizationTabProps> = ({
         
         <div className="flex flex-wrap items-center gap-3 mb-4 p-3 bg-slate-950/50 rounded border border-slate-800">
             <div className="flex items-center gap-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">LigagröÃŸe:</label>
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ligagröße:</label>
               <select
                 value={leagueSize}
                 onChange={(e) => onLeagueSizeChange?.(Number(e.target.value))}

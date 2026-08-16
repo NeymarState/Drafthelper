@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, DraftSettings } from '../types';
 import { downloadDraftExcel, PYTHON_STREAMLIT_CODE } from '../utils/excelExport';
 import { FileSpreadsheet, Code, Copy, Download, Check, X, Terminal } from 'lucide-react';
@@ -97,7 +97,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
                   <li><strong>Keine Makros / KEIN VBA:</strong> Vollständig kompatibel mit Excel 365, Google Sheets & OpenPyXL.</li>
                   <li><strong>Master Draft Board Sheet:</strong> Enthält dynamische Pick-Formeln <code className="text-blue-400 font-mono">Rd X (X.YY)</code> und VORP-Werte.</li>
                   <li><strong>Mein Team Sheet:</strong> Automatische Trennung Deiner gedrafteten Spieler.</li>
-                  <li><strong>Positional Tiers Sheet:</strong> Ãœbersicht aller Tiers mit OpenXML-konformer Formatierung.</li>
+                  <li><strong>Positional Tiers Sheet:</strong> Übersicht aller Tiers mit OpenXML-konformer Formatierung.</li>
                 </ul>
               </div>
 
