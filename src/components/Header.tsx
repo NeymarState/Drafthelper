@@ -89,7 +89,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
           <span className="text-slate-600">|</span>
           <div className="flex items-center gap-1.5">
-            <spaNÄCHSTER PICK IN:</span>
+            <span className="text-slate-400">NÄCHSTER PICK IN:</span>
             <span className="text-orange-400 font-bold">
               {(() => {
                 const nextUserPick = calculateNextPick(settings.currentOverallPick, settings.userPickSlot, settings.leagueSize, settings.totalRounds);
