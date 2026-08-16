@@ -66,8 +66,8 @@ export const usePlayers = () => {
         let parsedPlayers: Player[] = JSON.parse(saved);
         // Fix any encoding issues from previous versions
         parsedPlayers = parsedPlayers.map(p => {
-          if (typeof p.status === 'string' && /^VERFÜGBAR$/.test(p.status)) {
-            p.status = 'VERFÜGBAR';
+          if (typeof p.status === 'string' && p.status.toLowerCase().includes('verf')) {
+            p.status = 'Verfügbar';
           }
           return p;
         });

@@ -57,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
               </select>
             ) : (
               <span className="text-emerald-400 font-bold px-1.5 py-0.5 bg-emerald-950/30 border border-emerald-900/50 rounded">
-                {settings.userPickSlot} ðŸ”’
+                {settings.userPickSlot}
               </span>
             )}
           </div>
@@ -76,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
               </select>
             ) : (
               <span className="text-purple-400 font-bold px-1.5 py-0.5 bg-purple-950/30 border border-purple-900/50 rounded">
-                {settings.totalRounds} ðŸ”’
+                {settings.totalRounds}
               </span>
             )}
           </div>
