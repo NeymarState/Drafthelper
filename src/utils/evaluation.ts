@@ -10,6 +10,8 @@ export interface TeamRanking {
   teamId: number;
   isUser: boolean;
   projectedPoints: number;
+  starterPoints: number;
+  benchPoints: number;
 }
 
 export interface DraftEvaluationResult {
@@ -61,16 +63,20 @@ export const evaluateDraft = (
     const starters = [roster.QB, roster.RB1, roster.RB2, roster.WR1, roster.WR2, roster.TE, roster.FLEX, roster.DST, roster.K].filter(Boolean) as Player[];
     const isUser = teamId === settings.userPickSlot;
     
-    // Evaluate based on ADP for opponents, OvrRank for the user. Focus strictly on Starting Lineup.
-    const points = starters.reduce((acc, p) => {
-      const rank = isUser ? p.ovrRank : (p.adp && p.adp > 0 ? p.adp : p.ovrRank);
-      return acc + Math.max(0, 300 - rank); // Convert rank to a pseudo-point value (lower rank = higher points)
-    }, 0);
+    // Evaluate based on actual projected points using getAdjustedProjection
+    const starterPoints = starters.reduce((acc, p) => acc + getAdjustedProjection(p, settings), 0);
+    const benchPlayers = teamPlayers.filter(p => !starters.includes(p));
+    const benchPoints = benchPlayers.reduce((acc, p) => acc + getAdjustedProjection(p, settings), 0);
+    
+    // For power rankings, starters are weighted 100% and bench is weighted 15% (for depth value)
+    const points = starterPoints + (benchPoints * 0.15);
     
     teamRankings.push({
       teamId,
       isUser,
-      projectedPoints: Math.round(points * 10) / 10
+      projectedPoints: Math.round(points * 10) / 10,
+      starterPoints: Math.round(starterPoints * 10) / 10,
+      benchPoints: Math.round(benchPoints * 10) / 10
     });
   });
 
@@ -105,8 +111,7 @@ export const evaluateDraft = (
   if (ks.length > 1) {
     score -= 3;
     tips.push({ type: 'warning', text: 'Zu viele Kicker: Es lohnt sich selten, mehr als einen Kicker im Roster zu haben.' });
-  }
-  if (dsts.length > 1) {
+  } else if (dsts.length > 1) {
     score -= 3;
     tips.push({ type: 'warning', text: 'Zu viele Defenses: Nutze den Roster-Spot lieber für Upside-Spieler auf RB oder WR.' });
   }
@@ -137,83 +142,11 @@ export const evaluateDraft = (
   const rounds = settings.totalRounds || 16;
   const kDstThreshold = settings.leagueSize * Math.max(1, rounds - 3);
   const earlySpecialTeams = userTeam.find(p => (p.pos === 'K' || p.pos === 'DST') && (p.draftedAtPick || 999) <= kDstThreshold);
-  if (earlySpecialTeams) {
-    score -= 5;
-    tips.push({ type: 'negative', text: `Du hast ${earlySpecialTeams.name} sehr früh gedraftet. Kicker und Defenses sollten erst in den letzten 2-3 Runden geholt werden.` });
-  }
+  if (earlySpecialTeamsöööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööööepr nefc emakn 
+ emd ubr
+ ssr ola; poetdons ubr
+ trePit:nme; bnhons ubr
 
-  // 3. Bye Week Overlaps (Top Starters)
-  // We'll check the top QB, top 2 RBs, top 2 WRs, top TE
-  const keyStarters = [
-    ...qbs.slice(0, 1),
-    ...rbs.slice(0, 2),
-    ...wrs.slice(0, 2),
-    ...tes.slice(0, 1)
-  ];
-  
-  const byeWeekCounts = new Map<number, Player[]>();
-  keyStarters.forEach(p => {
-    if (p.byeWeek) {
-      if (!byeWeekCounts.has(p.byeWeek)) byeWeekCounts.set(p.byeWeek, []);
-      byeWeekCounts.get(p.byeWeek)!.push(p);
-    }
-  });
-
-  let hasByeWeekIssue = false;
-  byeWeekCounts.forEach((players, week) => {
-    if (players.length >= 3) {
-      score -= 3;
-      hasByeWeekIssue = true;
-      tips.push({ 
-        type: 'warning', 
-        text: `Bye-Week Problem: Du hast ${players.length} Key-Starter (${players.map(p => p.name).join(', ')}) mit Bye Week ${week}.` 
-      });
-    }
-  });
-  if (!hasByeWeekIssue && keyStarters.length >= 5) {
-    score += 2;
-    tips.push({ type: 'positive', text: 'Gutes Bye-Week Management bei deinen Startern.' });
-  }
-
-  // 4. Value Analysis (Reaches and Steals)
-  let totalStealValue = 0;
-  let totalReachValue = 0;
-  let biggestSteal: { player: Player, diff: number } | null = null;
-  let biggestReach: { player: Player, diff: number } | null = null;
-
-  userTeam.forEach(p => {
-    if (p.draftedAtPick) {
-      // Ignore K/DST reaches if they were drafted in the acceptable late rounds
-      if ((p.pos === 'K' || p.pos === 'DST') && p.draftedAtPick > kDstThreshold) {
-        return;
-      }
-
-      // User team is evaluated purely on their own ranking (OvrRank)
-      const referenceRank = p.ovrRank;
-      const diff = p.draftedAtPick - referenceRank; // Positive = Steal, Negative = Reach
-      
-      if (diff > 5) {
-        totalStealValue += diff;
-        if (!biggestSteal || diff > biggestSteal.diff) biggestSteal = { player: p, diff };
-      } else if (diff < -5) {
-        totalReachValue += Math.abs(diff);
-        if (!biggestReach || Math.abs(diff) > biggestReach.diff) biggestReach = { player: p, diff: Math.abs(diff) };
-      }
-    }
-  });
-
-  const stealBonus = Math.min(15, Math.floor(totalStealValue / 5));
-  const reachPenalty = Math.min(15, Math.floor(totalReachValue / 5));
-  
-  score += stealBonus;
-  score -= reachPenalty;
-
-  if (biggestSteal && biggestSteal.diff >= 12) {
-    tips.push({ type: 'positive', text: `Mega-Steal: Du hast ${biggestSteal.player.name} an Pick ${biggestSteal.player.draftedAtPick} bekommen (Dein Board: ${biggestSteal.player.ovrRank}, ADP: ${biggestSteal.player.adp || 'N/A'}).` });
-  }
-
-  if (biggestReach && biggestReach.diff >= 12) {
-    // Let's find who was available at that pick who had a better blended value
     const reachPick = biggestReach.player.draftedAtPick!;
     const betterOptions = allPlayers.filter(p => p.adp && p.adp > reachPick && p.adp < reachPick + 12 && p.pos === biggestReach!.player.pos);
     const betterOptionName = betterOptions.length > 0 ? betterOptions[0].name : 'einen besseren Value';

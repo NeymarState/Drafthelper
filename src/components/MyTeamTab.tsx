@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, RosterState, DraftSettings } from '../types';
 import { getAdjustedProjection, calculateVORP } from '../utils/calculations';
 import { Shield, Award, Zap, Calendar, UserX, Sparkles, ChevronDown, ChevronUp, FileText, Target, ShieldAlert } from 'lucide-react';
@@ -118,7 +118,7 @@ export const MyTeamTab: React.FC<MyTeamTabProps> = ({
                 <span className="font-bold text-slate-300 flex items-center gap-2">
                   <Award className="w-4 h-4 text-emerald-400" /> GEDRAFTETE SPIELER ({userTeam.length})
                 </span>
-                <span className="text-slate-400 text-[10px]">KLICKE AUF EIN PROFIL FÜR DETAILLIERTE NOTES</span>
+                <span className="text-slate-400 text-[10px]">KLICKE AUF EIN PROFIL für DETAILLIERTE NOTES</span>
               </div>
 
               <div className="divide-y divide-slate-800">

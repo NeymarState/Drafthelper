@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Player, DraftSettings } from '../types';
 import { evaluateDraft, DraftEvaluationResult } from '../utils/evaluation';
 import { X, CheckCircle, AlertTriangle, XCircle, Award } from 'lucide-react';
@@ -78,17 +78,30 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
                 </div>
                 
                 {/* Mini Leaderboard */}
-                <div className="mt-4 w-full max-w-[200px] border-t border-slate-800 pt-3 space-y-1">
+                <div className="mt-4 w-full border-t border-slate-800 pt-3 space-y-1">
+                  <div className="flex justify-between text-[8px] font-bold text-slate-500 uppercase tracking-widest px-1 mb-2">
+                    <span>Team</span>
+                    <div className="flex gap-4">
+                      <span>Starters</span>
+                      <span>Bench</span>
+                    </div>
+                  </div>
                   {result.teamRankings.slice(0, 3).map((team, idx) => (
                     <div key={team.teamId} className={`flex justify-between text-[10px] font-mono p-1 rounded ${team.isUser ? 'bg-blue-900/40 text-blue-300 font-bold' : 'text-slate-400'}`}>
                       <span>{idx + 1}. Team {team.teamId}</span>
-                      <span>{team.projectedPoints}</span>
+                      <div className="flex gap-4">
+                        <span className="text-emerald-400">{team.starterPoints}</span>
+                        <span className="text-slate-500">{team.benchPoints}</span>
+                      </div>
                     </div>
                   ))}
                   {result.powerRanking > 3 && (
                     <div className="flex justify-between text-[10px] font-mono p-1 rounded bg-blue-900/40 text-blue-300 font-bold border-t border-slate-800/50 mt-1">
                       <span>{result.powerRanking}. Team {settings.userPickSlot} (Du)</span>
-                      <span>{result.teamRankings.find(t => t.isUser)?.projectedPoints}</span>
+                      <div className="flex gap-4">
+                        <span className="text-emerald-400">{result.teamRankings.find(t => t.isUser)?.starterPoints}</span>
+                        <span className="text-slate-500">{result.teamRankings.find(t => t.isUser)?.benchPoints}</span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -136,7 +149,7 @@ export const DraftEvaluationModal: React.FC<DraftEvaluationModalProps> = ({
             onClick={onClose}
             className="px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded shadow transition-colors"
           >
-            SchlieÃŸen
+            Schließen
           </button>
         </div>
         

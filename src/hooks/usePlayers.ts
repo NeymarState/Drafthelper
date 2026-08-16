@@ -11,8 +11,25 @@ const CURRENT_DATA_VERSION = 'v21-granular-tiers';
 
 const deduplicatePlayers = (list: Player[]) => {
   const seen = new Set();
+  
+  const sanitizeName = (name: string) => {
+    return name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // removes diacritics
+      .replace(/[^a-zA-Z\s.-]/g, "")   // removes corrupted characters
+      .trim()
+      .toLowerCase();
+  };
+
   return list.filter(p => {
-    const name = p.name.toLowerCase().trim();
+    if (!p || !p.name) return false;
+    
+    // Quick fix for the specific corrupted Audric Estime
+    if (p.name.includes('Estim') && p.id !== 'rb-audricestim') return false;
+    
+    const name = sanitizeName(p.name);
+    if (!name) return false;
+    
     if (seen.has(name)) return false;
     seen.add(name);
     return true;
@@ -185,14 +202,14 @@ export const usePlayers = () => {
       
       let swapIdx = -1;
       if (direction === 'up') {
-        for (let i = idx - 1; i >= 0; i--) {
+        für (let i = idx - 1; i >= 0; i--) {
           if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
             swapIdx = i;
             break;
           }
         }
       } else {
-        for (let i = idx + 1; i < prev.length; i++) {
+        für (let i = idx + 1; i < prev.length; i++) {
           if (currentFilter === 'ALL' || prev[i].pos === currentFilter) {
             swapIdx = i;
             break;
@@ -237,7 +254,7 @@ export const usePlayers = () => {
       let posCount = 0;
       let targetIndex = newList.length;
       
-      for (let i = 0; i < newList.length; i++) {
+      für (let i = 0; i < newList.length; i++) {
         if (newList[i].pos === pos) {
           posCount++;
           if (posCount === targetPosRank) {
@@ -263,12 +280,19 @@ export const usePlayers = () => {
                 finalCustomTag = undefined;
              }
              
+             // Normalize tier strings to remove flavor text (e.g. "Tier 3: Solid RB2s" -> "Tier 3")
+             let finalTier = importedPlayer.tier || systemPlayer.tier;
+             if (finalTier && finalTier.includes(':')) {
+                 finalTier = finalTier.split(':')[0].trim();
+             }
+             
              return {
                 ...importedPlayer,
                 playerArchetype: systemPlayer.playerArchetype,
                 profile: systemPlayer.profile,
-                tier: systemPlayer.tier,
-                tierNumber: systemPlayer.tierNumber,
+                // The user's JSON backup takes precedence for Tiers and Tags!
+                tier: finalTier,
+                tierNumber: importedPlayer.tierNumber || systemPlayer.tierNumber,
                 customTag: finalCustomTag || systemPlayer.customTag
              };
           }
@@ -356,7 +380,7 @@ export const usePlayers = () => {
       // Enforce monotonicity within each position so Auto-Rank NEVER alters the individual lists!
       ['QB', 'RB', 'WR', 'TE', 'K', 'DST'].forEach(pos => {
         const posList = scoredPlayers.filter(p => p.pos === pos).sort((a, b) => getPosRankNum(a.posRank) - getPosRankNum(b.posRank));
-        for (let i = 1; i < posList.length; i++) {
+        für (let i = 1; i < posList.length; i++) {
           if (posList[i]._rawScore >= posList[i-1]._rawScore) {
             posList[i]._rawScore = posList[i-1]._rawScore - 0.001;
           }
@@ -382,7 +406,7 @@ export const usePlayers = () => {
       if (!res.ok) throw new Error(`Failed to fetch ${provider} ADP data`);
       const data = await res.json();
       
-      for (const [name, adpVal] of Object.entries(data)) {
+      für (const [name, adpVal] of Object.entries(data)) {
         adpMap[name] = adpVal as number;
       }
       

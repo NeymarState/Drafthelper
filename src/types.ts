@@ -17,10 +17,10 @@ export interface Player {
   tier: string;
   tierNumber: number;
   status: PlayerStatus;
-  targetShare: number; // e.g., 0.26 for 26%
+  targetShare: number; // e.g., 0.26 für 26%
   rzTouches: number;   // e.g., 38
-  airYards: number;    // e.g., 0.35 for 35%
-  basePointsHalfPpr: number; // Base projected points for Half-PPR
+  airYards: number;    // e.g., 0.35 für 35%
+  basePointsHalfPpr: number; // Base projected points für Half-PPR
   age?: number;
   dynastyTier?: string;
   profile: string;     // Fantasy Footballers notes & upside

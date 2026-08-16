@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, Position, DraftSettings } from '../types';
 import { calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Award, AlertTriangle } from 'lucide-react';
@@ -123,7 +123,7 @@ export const TiersTab: React.FC<TiersTabProps> = ({
                 </div>
               </div>
 
-              {/* Cards Grid for Tier Players */}
+              {/* Cards Grid für Tier Players */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
                 {tierGroup.map((player) => {
                   const vorp = calculateVORP(player, players, settings.scoringFormat, settings.leagueSize);

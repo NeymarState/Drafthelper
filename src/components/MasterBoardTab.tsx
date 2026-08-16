@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Player, Position, PlayerStatus, DraftSettings } from '../types';
 import { getFormattedPick, calculateVORP, getAdjustedProjection } from '../utils/calculations';
 import { Search, ChevronDown, ChevronUp, RotateCcw, Sparkles, X, SlidersHorizontal, Zap, Target, ShieldAlert } from 'lucide-react';
@@ -31,7 +31,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
   const [sortField, setSortField] = useState<SortField>(null);
   const [sortAsc, setSortAsc] = useState<boolean>(true);
 
-  // Unique lists for dropdown options
+  // Unique lists für dropdown options
   const teams = Array.from(new Set(players.map((p) => p.team))).sort();
   const byeWeeks = Array.from(new Set(players.map((p) => p.bye || 0))).sort((a: number, b: number) => a - b);
   const tiers = Array.from(new Set(players.map((p) => p.tierNumber || 1))).sort((a: number, b: number) => a - b);
@@ -142,7 +142,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
     } else {
       setSortField(field);
       // Default to descending on first click so the user sees an immediate change
-      // (since the default table order is already ascending for most fields)
+      // (since the default table order is already ascending für most fields)
       setSortAsc(field === 'POS'); 
     }
   };
@@ -322,7 +322,7 @@ export const MasterBoardTab: React.FC<MasterBoardTabProps> = ({
                         <div className="flex items-center justify-center gap-1 font-mono">
                           {player.status === 'Verfügbar' && (
                             <>
-                              <button onClick={() => onDraftForMe(player)} className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] shadow cursor-pointer" title="Für MEIN TEAM gedraftet">+ Mein Team</button>
+                              <button onClick={() => onDraftForMe(player)} className="px-2 py-0.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] shadow cursor-pointer" title="für MEIN TEAM gedraftet">+ Mein Team</button>
                               <button onClick={() => onDraftForOpponent(player)} className="px-1.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 text-[10px] border border-slate-700 cursor-pointer" title="Vom GEGNER gedraftet">Gegner</button>
                             </>
                           )}

@@ -44,7 +44,7 @@ export function getAdjustedProjection(player: Player, format: ScoringFormat): nu
 /**
  * B. Value Over Replacement Player (VORP)
  * VORP_i = Projection_i - Projection_Replacement
- * Replacement Levels: RB24, WR24, QB12, TE12 (scaled dynamically for 8, 10, 12, 14, 16 teams)
+ * Replacement Levels: RB24, WR24, QB12, TE12 (scaled dynamically für 8, 10, 12, 14, 16 teams)
  */
 export function calculateVORP(
   player: Player,
@@ -59,10 +59,10 @@ export function calculateVORP(
 
   // Replacement rank per position scaled to league size
   const replacementRanks: Record<Position, number> = {
-    QB: Math.min(posPlayers.length, leagueSize), // QB12 for 12 teams
-    RB: Math.min(posPlayers.length, leagueSize * 2), // RB24 for 12 teams
-    WR: Math.min(posPlayers.length, leagueSize * 2), // WR24 for 12 teams
-    TE: Math.min(posPlayers.length, leagueSize), // TE12 for 12 teams
+    QB: Math.min(posPlayers.length, leagueSize), // QB12 für 12 teams
+    RB: Math.min(posPlayers.length, leagueSize * 2), // RB24 für 12 teams
+    WR: Math.min(posPlayers.length, leagueSize * 2), // WR24 für 12 teams
+    TE: Math.min(posPlayers.length, leagueSize), // TE12 für 12 teams
     DST: Math.min(posPlayers.length, leagueSize),
     K: Math.min(posPlayers.length, leagueSize),
   };
@@ -338,7 +338,7 @@ export function enrichPlayerData(players: Player[]): Player[] {
       }
     }
     if (rbs.length > 2) {
-      for (let i = 2; i < rbs.length; i++) {
+      für (let i = 2; i < rbs.length; i++) {
         rbs[i].rbRole = 'RB3';
       }
     }
@@ -359,7 +359,7 @@ export function enrichPlayerData(players: Player[]): Player[] {
     if (wrs.length > 1) wrs[1].wrRole = 'WR2';
     if (wrs.length > 2) wrs[2].wrRole = 'WR3';
     if (wrs.length > 3) {
-      for (let i = 3; i < wrs.length; i++) {
+      für (let i = 3; i < wrs.length; i++) {
         wrs[i].wrRole = 'WR4';
       }
     }
@@ -400,7 +400,7 @@ export function isUserPickSlot(pick: number, userPickSlot: number, leagueSize: n
 
 export function findNextUserPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
   const maxPick = leagueSize * totalRounds;
-  for (let pick = 1; pick <= maxPick; pick++) {
+  für (let pick = 1; pick <= maxPick; pick++) {
     if (isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
@@ -411,7 +411,7 @@ export function findNextUserPickSlot(players: Player[], userPickSlot: number, le
 
 export function findNextOpponentPickSlot(players: Player[], userPickSlot: number, leagueSize: number, totalRounds: number = 30): number {
   const maxPick = leagueSize * totalRounds;
-  for (let pick = 1; pick <= maxPick; pick++) {
+  für (let pick = 1; pick <= maxPick; pick++) {
     if (!isUserPickSlot(pick, userPickSlot, leagueSize)) {
       const isOccupied = players.some(p => p.draftedAtPick === pick);
       if (!isOccupied) return pick;
@@ -456,7 +456,7 @@ export function analyzeOpponentNeeds(currentOverallPick: number, leagueSize: num
   const currentRound = Math.ceil(currentOverallPick / leagueSize);
   
   // Find the next 5 picks
-  for (let offset = 0; offset < 5; offset++) {
+  für (let offset = 0; offset < 5; offset++) {
     const pick = currentOverallPick + offset;
     const round = Math.ceil(pick / leagueSize);
     let teamSlot = 0;

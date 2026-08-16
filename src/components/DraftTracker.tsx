@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { Player, DraftSettings } from '../types';
 import { TrendingUp } from 'lucide-react';
 
@@ -18,7 +18,15 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
           const availablePlayers = players.filter((p) => p.pos === pos && p.status === 'Verfügbar');
           const totalAvailable = players.filter((p) => p.pos === pos).length;
           const totalDrafted = totalAvailable - availablePlayers.length;
-          const fillPercent = Math.min((totalDrafted / Math.max(1, totalAvailable)) * 100, 100);
+          
+          // Absolute Draft Expectations based on league size (15-18 round drafts)
+          let expectedMax = 0;
+          if (pos === 'QB') expectedMax = Math.round(settings.leagueSize * 2);
+          if (pos === 'RB') expectedMax = Math.round(settings.leagueSize * 5.5);
+          if (pos === 'WR') expectedMax = Math.round(settings.leagueSize * 6.5);
+          if (pos === 'TE') expectedMax = Math.round(settings.leagueSize * 1.5);
+          
+          const fillPercent = Math.min((totalDrafted / Math.max(1, expectedMax)) * 100, 100);
           
           const highestTier = availablePlayers.length > 0 
             ? Math.min(...availablePlayers.map((p) => p.tierNumber || 99)) 
@@ -30,7 +38,7 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
           
           // League threshold for QB and TE (typically 1 per team)
           const threshold = (pos === 'QB' || pos === 'TE') ? settings.leagueSize : null;
-          const thresholdPercent = threshold ? Math.min((threshold / totalAvailable) * 100, 100) : null;
+          const thresholdPercent = threshold ? Math.min((threshold / Math.max(1, expectedMax)) * 100, 100) : null;
           
           const posStyles: Record<string, { fill: string, badge: string }> = {
             QB: { fill: 'bg-red-500', badge: 'bg-red-500/20 text-red-400 border border-red-500/30' },
@@ -41,29 +49,29 @@ export const DraftTracker: React.FC<DraftTrackerProps> = ({ players, settings })
           
           return (
             <div key={pos} className="space-y-1.5 relative">
-              <div className="flex flex-wrap justify-between items-end">
-                <span className="font-bold text-[11px] text-slate-300 flex items-center gap-1.5">
-                  {pos}
-                  {highestTier && highestTier < 99 && (
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${posStyles[pos].badge}`}>
-                      Tier {highestTier} ({playersInHighestTier}x)
-                    </span>
-                  )}
+              <div className="flex justify-between items-end mb-1">
+                <span className="font-bold text-slate-300 flex items-center gap-2">
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${posStyles[pos].badge}`}>
+                    {pos}
+                  </span>
+                  <span className="text-slate-400 font-mono text-[10px]">
+                    {highestTier ? `Tier ${highestTier} (${playersInHighestTier})` : 'Leer'}
+                  </span>
                 </span>
-                <span className="font-mono text-[10px] text-slate-500">
-                  {totalDrafted}/{totalAvailable}
+                <span className="text-[10px] font-mono font-bold text-slate-300">
+                  {totalDrafted} / {expectedMax}
                 </span>
               </div>
-              <div className="relative h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                <div
+              <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800 relative">
+                <div 
                   className={`h-full transition-all duration-500 ${posStyles[pos].fill}`}
                   style={{ width: `${fillPercent}%` }}
                 />
                 {thresholdPercent !== null && (
                   <div 
-                    className="absolute top-0 bottom-0 w-0.5 bg-rose-500 z-10 shadow-[0_0_5px_rgba(244,63,94,0.8)]"
+                    className="absolute top-0 bottom-0 w-px bg-white/60 z-10" 
                     style={{ left: `${thresholdPercent}%` }}
-                    title={`Starter-Schwelle (${threshold} Picks)`}
+                    title={`Starter Threshold (${threshold} Picks)`}
                   />
                 )}
               </div>

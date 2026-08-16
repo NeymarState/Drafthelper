@@ -145,7 +145,7 @@ my_team = edited_df[edited_df["Status"] == "Mein Team"]
 # Stack Radar Check
 qbs = my_team[my_team["Pos"] == "QB"]["Team"].tolist()
 pass_catchers = my_team[my_team["Pos"].isin(["WR", "TE"])]["Team"].tolist()
-for team in qbs:
+für team in qbs:
     if team in pass_catchers:
         st.success(f"⚡ Stack Aktiviert! QB + Pass-Catcher Kombi für Team {team} gedraftet!")
 

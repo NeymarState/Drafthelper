@@ -1923,7 +1923,7 @@ export const getUpdatedPlayers = (): Player[] => {
   const posGroups = ['QB', 'RB', 'WR', 'TE'];
   let parsedPlayers: Player[] = [];
   
-  // existing map for fast lookup to preserve profiles
+  // existing map für fast lookup to preserve profiles
   const existingMap = new Map<string, Player>();
   INITIAL_PLAYERS.forEach(p => existingMap.set(p.name.toLowerCase().trim(), p));
 

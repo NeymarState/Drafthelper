@@ -12,7 +12,7 @@ interface VORPChartProps {
 export const VORPChart: React.FC<VORPChartProps> = ({ allPlayers, scoringFormat, leagueSize, layout = 'row' }) => {
   const positions = ['QB', 'RB', 'WR', 'TE'] as const;
   
-  // Calculate VORP data per position for top 15 available players
+  // Calculate VORP data per position für top 15 available players
   const chartData = positions.map(pos => {
     const availablePos = allPlayers
       .filter(p => p.pos === pos && p.status === 'Verfügbar')

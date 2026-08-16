@@ -4,7 +4,8 @@ import { getAdjustedProjection, calculateVORP, getFormattedPick, calculatePickPr
 import { AlertsBanner } from './AlertsBanner';
 import { VORPChart } from './VORPChart';
 import { DraftTracker } from './DraftTracker';
-import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert, Activity, Ghost, X } from 'lucide-react';
+import { DraftEvaluationModal } from './DraftEvaluationModal';
+import { Zap, Award, Target, TrendingUp, Search, RotateCcw, ShieldAlert, Activity, Ghost, X, Sparkles } from 'lucide-react';
 
 interface DashboardTabProps {
   players: Player[];
@@ -30,6 +31,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPos, setSelectedPos] = useState<Position | 'ALL' | 'FLEX'>('ALL');
   const [showDrafted, setShowDrafted] = useState(false);
+  const [showEvaluation, setShowEvaluation] = useState(false);
   const [hideQB, setHideQB] = useState(false);
   const [hideTE, setHideTE] = useState(false);
   const [hideK, setHideK] = useState(false);
@@ -72,7 +74,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     return false;
   };
 
-  // Filter and sort players for the Dashboard Draft List
+  // Filter and sort players für the Dashboard Draft List
   const displayPlayers = players
     .filter((p) => {
       const q = searchQuery.toLowerCase();
@@ -109,7 +111,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
     })
     .slice(0, 15); // Show top 15 in Dashboard
 
-  // Total Projected Points for Starter Lineup
+  // Total Projected Points für Starter Lineup
   const starterPlayers = [
     roster.QB,
     roster.RB1,
@@ -214,51 +216,23 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Starters & Bench Roster */}
         <div className="lg:col-span-8 space-y-4">
-          {/* Draft Needs Chart */}
-          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 mb-3">
-              <Target className="w-4 h-4 text-blue-400" /> DRAFT BEDARF (TEAM NEEDS)
-            </h3>
-            <div className="grid grid-cols-4 gap-4">
-              {[
-                { pos: 'QB', target: 1, current: userTeam.filter((p) => p.pos === 'QB').length, color: 'bg-red-500' },
-                { pos: 'RB', target: 5, current: userTeam.filter((p) => p.pos === 'RB').length, color: 'bg-green-500' },
-                { pos: 'WR', target: 5, current: userTeam.filter((p) => p.pos === 'WR').length, color: 'bg-blue-500' },
-                { pos: 'TE', target: 1, current: userTeam.filter((p) => p.pos === 'TE').length, color: 'bg-orange-500' },
-              ].map((need) => {
-                const fillPercent = Math.min((need.current / need.target) * 100, 100);
-                const isComplete = need.current >= need.target;
-                return (
-                  <div key={need.pos} className="space-y-1.5">
-                    <div className="flex justify-between items-end">
-                      <span className="font-bold text-[11px] text-slate-300">{need.pos}</span>
-                      <span className="font-mono text-[10px] text-slate-500">
-                        {need.current}/{need.target}
-                      </span>
-                    </div>
-                    <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
-                      <div
-                        className={`h-full transition-all duration-500 ${need.color} ${
-                          isComplete ? 'opacity-50' : ''
-                        }`}
-                        style={{ width: `${fillPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <DraftTracker players={players} settings={settings} />
           
           <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl overflow-hidden">
             <div className="p-3 border-b border-slate-700 bg-slate-800/40 flex justify-between items-center">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
                 <Award className="w-4 h-4 text-blue-400" /> MEIN ROSTER (STARTERS)
               </h2>
-              <div className="text-right font-mono text-xs">
-                <span className="text-slate-400 text-[10px] mr-2">STARTER PROJ:</span>
-                <span className="text-emerald-400 font-bold text-sm">{Math.round(totalStarterProj * 10) / 10} PTS</span>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={() => setShowEvaluation(true)}
+                  className="flex items-center gap-1.5 px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white rounded text-[10px] font-bold shadow-lg transition-colors border border-indigo-500/50"
+                >
+                  <Sparkles className="w-3 h-3" /> BEWERTUNG
+                </button>
+                <div className="text-right font-mono text-xs hidden sm:block">
+                  <span className="text-slate-400 text-[10px] mr-2">STARTER PROJ:</span>
+                  <span className="text-emerald-400 font-bold text-sm">{Math.round(totalStarterProj * 10) / 10} PTS</span>
+                </div>
               </div>
             </div>
 
@@ -282,7 +256,7 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                 BENCH SPIELER ({roster.BENCH.length})
               </h3>
-              <span className="text-[10px] font-mono text-slate-500">TIEFENPLATZE & HANDCUFFS</span>
+              <span className="text-[10px] font-mono text-slate-500">TIEFENPLÄTZE & HANDCUFFS</span>
             </div>
 
             <div className="p-3">
@@ -343,6 +317,43 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
               )}
             </div>
           </div>
+          
+          {/* Draft Needs Chart */}
+          <div className="bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 mb-3">
+              <Target className="w-4 h-4 text-blue-400" /> DRAFT BEDARF (TEAM NEEDS)
+            </h3>
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                { pos: 'QB', target: 1, current: userTeam.filter((p) => p.pos === 'QB').length, color: 'bg-red-500' },
+                { pos: 'RB', target: 5, current: userTeam.filter((p) => p.pos === 'RB').length, color: 'bg-green-500' },
+                { pos: 'WR', target: 5, current: userTeam.filter((p) => p.pos === 'WR').length, color: 'bg-blue-500' },
+                { pos: 'TE', target: 1, current: userTeam.filter((p) => p.pos === 'TE').length, color: 'bg-orange-500' },
+              ].map((need) => {
+                const fillPercent = Math.min((need.current / need.target) * 100, 100);
+                const isComplete = need.current >= need.target;
+                return (
+                  <div key={need.pos} className="space-y-1.5">
+                    <div className="flex justify-between items-end">
+                      <span className="font-bold text-[11px] text-slate-300">{need.pos}</span>
+                      <span className="font-mono text-[10px] text-slate-500">
+                        {need.current}/{need.target}
+                      </span>
+                    </div>
+                    <div className="h-2 w-full bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+                      <div
+                        className={`h-full transition-all duration-500 ${need.color} ${
+                          isComplete ? 'opacity-50' : ''
+                        }`}
+                        style={{ width: `${fillPercent}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <DraftTracker players={players} settings={settings} />
         </div>
 
         {/* Right Column: Dynamic Draft Assistant & Best VORP Available */}
@@ -621,6 +632,15 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           </div>
         </div>
       </div>
+
+      {showEvaluation && (
+        <DraftEvaluationModal
+          onClose={() => setShowEvaluation(false)}
+          players={players}
+          userTeam={userTeam}
+          settings={settings}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-// Web Audio API Utility for Sound Effects
+// Web Audio API Utility für Sound Effects
 
 let audioCtx: AudioContext | null = null;
 
@@ -35,18 +35,18 @@ const playTone = (freq: number, type: OscillatorType, duration: number, vol: num
 };
 
 export const playTurnSound = () => {
-  // A pleasant double chime for "Your Turn"
+  // A pleasant double chime für "Your Turn"
   playTone(523.25, 'sine', 0.5, 0.2); // C5
   setTimeout(() => playTone(659.25, 'sine', 0.6, 0.2), 150); // E5
 };
 
 export const playSuccessSound = () => {
-  // A quick happy blip for Target/Sleeper
+  // A quick happy blip für Target/Sleeper
   playTone(880, 'sine', 0.1, 0.1);
   setTimeout(() => playTone(1108.73, 'sine', 0.3, 0.1), 100);
 };
 
 export const playWarningSound = () => {
-  // A low dull buzz for Avoid/Fade
+  // A low dull buzz für Avoid/Fade
   playTone(150, 'sawtooth', 0.4, 0.1);
 };
