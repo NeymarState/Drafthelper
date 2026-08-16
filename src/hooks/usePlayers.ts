@@ -67,7 +67,7 @@ export const usePlayers = () => {
         // Fix any encoding issues from previous versions
         parsedPlayers = parsedPlayers.map(p => {
           if (typeof p.status === 'string' && p.status.toLowerCase().includes('verf')) {
-            p.status = 'Verfügbar';
+            p.status = 'VERFÜGBAR';
           }
           return p;
         });
@@ -130,7 +130,7 @@ export const usePlayers = () => {
             if (existing) {
               return { 
                 ...fresh, 
-                status: (existing.status && /^VERFÜGBAR$/.test(existing.status)) ? fresh.status : existing.status,
+                status: (existing.status && existing.status.toLowerCase().includes('verf')) ? fresh.status : existing.status,
                 customTag: existing.customTag || fresh.customTag
               };
             }
